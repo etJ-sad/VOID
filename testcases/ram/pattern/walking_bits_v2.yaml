@@ -1,0 +1,23 @@
+# RAM Pattern Test - Walking Ones/Zeros v2
+# Category: RAM > Pattern
+# Tests RAM with walking bits pattern
+
+tests:
+  - id: ram_pattern_walking_bits_v2
+    name: RAM Pattern Test - Walking Ones/Zeros v2
+    category: RAM
+    description: "Tests RAM integrity with walking ones and zeros pattern"
+    duration_estimate: 1200  # 20 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "RAM detected"
+    parameters:
+      duration: 60
+      pattern_type: "walking_ones"
+      memory_size_mb: 100
+    thresholds:
+      no_bit_errors: true
+    baseline:
+      expected_integrity: 100
+

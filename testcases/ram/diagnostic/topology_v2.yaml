@@ -1,0 +1,23 @@
+# RAM Diagnostic - Memory Topology v2
+# Category: RAM > Diagnostic
+# Detects RAM topology and configuration
+
+tests:
+  - id: ram_diagnostic_topology_v2
+    name: RAM Diagnostic - Memory Topology v2
+    category: RAM
+    description: "Detects and reports RAM topology and configuration"
+    duration_estimate: 120  # 2 minutes
+    priority: 5
+    test_type: diagnostic
+    preconditions:
+      - "RAM detected"
+    parameters:
+      duration: 10
+      collect_topology: true
+    thresholds:
+      ram_detected: true
+    baseline:
+      expected_total_gb: 8
+      expected_channels: 2
+

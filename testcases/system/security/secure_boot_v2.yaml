@@ -1,0 +1,25 @@
+# System Security Test - Secure Boot v2
+# Category: System > Security
+# Validates secure boot configuration
+
+tests:
+  - id: system_security_secure_boot_v2
+    name: System Security Test - Secure Boot v2
+    category: System
+    description: "Validates secure boot configuration and bootloader integrity"
+    duration_estimate: 600  # 10 minutes
+    priority: 10
+    test_type: diagnostic
+    preconditions:
+      - "UEFI/BIOS accessible"
+      - "Secure boot capable hardware"
+    parameters:
+      duration: 20
+      test_type: "secure_boot"
+      validate_signatures: true
+    thresholds:
+      secure_boot_enabled: true
+      signature_validation_passed: true
+    baseline:
+      expected_secure_boot: true
+

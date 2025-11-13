@@ -1,0 +1,26 @@
+# CPU Multi-threaded Benchmark v2
+# Category: CPU > Benchmark
+# Tests multi-threaded CPU performance
+
+tests:
+  - id: cpu_benchmark_multithreaded_v2
+    name: CPU Multi-threaded Benchmark v2
+    category: CPU
+    description: "Benchmarks CPU performance with multi-threaded workloads"
+    duration_estimate: 1200  # 20 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+      - "Multiple cores available"
+    parameters:
+      duration: 60
+      threads: 8
+      workload: "matrix_multiplication"
+    thresholds:
+      min_score: 1000
+      cpu_utilization_min: 80
+    baseline:
+      expected_score: 5000
+      expected_cores_utilized: 8
+

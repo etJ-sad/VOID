@@ -1,0 +1,25 @@
+# CPU Benchmark - Sorting Algorithms
+# Category: CPU > Benchmark
+# Tests CPU performance with various sorting algorithms
+
+tests:
+  - id: cpu_benchmark_sorting
+    name: CPU Benchmark - Sorting Algorithms
+    category: CPU
+    description: "Benchmarks CPU performance with different sorting algorithms"
+    duration_estimate: 450  # 7.5 minutes
+    priority: 5
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 40
+      algorithms: ["quicksort", "mergesort", "heapsort", "radix"]
+      array_sizes: [10000, 100000, 1000000]
+      data_type: "integer"
+    thresholds:
+      min_sort_operations_per_second: 1000
+    baseline:
+      expected_quicksort_ops_per_sec: 5000
+

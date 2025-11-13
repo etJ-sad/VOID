@@ -1,0 +1,27 @@
+# CPU Pattern Test - Instruction Pipeline
+# Category: CPU > Pattern
+# Tests CPU instruction pipeline efficiency
+
+tests:
+  - id: cpu_pattern_instruction_pipeline
+    name: CPU Pattern Test - Instruction Pipeline
+    category: CPU
+    description: "Tests CPU instruction pipeline efficiency and dependency handling"
+    duration_estimate: 750  # 12.5 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "CPU detected"
+      - "Pipeline architecture available"
+    parameters:
+      duration: 60
+      instruction_mix: ["arithmetic", "memory", "control", "floating_point"]
+      dependency_levels: ["none", "low", "medium", "high"]
+      pipeline_depth: "auto"
+      measure_stalls: true
+    thresholds:
+      max_pipeline_stall_rate: 0.2
+    baseline:
+      expected_pipeline_efficiency: 0.8
+      expected_instructions_per_cycle: 1.5
+

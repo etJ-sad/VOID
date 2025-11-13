@@ -1,0 +1,24 @@
+# Storage Health Test - SMART Validation v2
+# Category: Storage > Health
+# Validates SMART attributes
+
+tests:
+  - id: storage_health_smart_validation_v2
+    name: Storage Health Test - SMART Validation v2
+    category: Storage
+    description: "Validates storage SMART health attributes"
+    duration_estimate: 120  # 2 minutes
+    priority: 8
+    test_type: diagnostic
+    preconditions:
+      - "Storage detected"
+      - "SMART support available"
+    parameters:
+      duration: 10
+      validate_all_attributes: true
+    thresholds:
+      health_status: "good"
+      no_critical_errors: true
+    baseline:
+      expected_health: "good"
+

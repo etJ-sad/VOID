@@ -1,0 +1,23 @@
+# RAM Diagnostic - Memory Speed v2
+# Category: RAM > Diagnostic
+# Measures RAM speed characteristics
+
+tests:
+  - id: ram_diagnostic_speed_v2
+    name: RAM Diagnostic - Memory Speed v2
+    category: RAM
+    description: "Measures RAM speed and timing characteristics"
+    duration_estimate: 300  # 5 minutes
+    priority: 6
+    test_type: diagnostic
+    preconditions:
+      - "RAM detected"
+    parameters:
+      duration: 20
+      measure_timings: true
+    thresholds:
+      min_speed_mhz: 1600
+    baseline:
+      expected_speed_mhz: 2400
+      expected_timings: "16-16-16-39"
+

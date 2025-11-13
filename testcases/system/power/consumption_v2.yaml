@@ -1,0 +1,23 @@
+# System Power Test - Power Consumption v2
+# Category: System > Power
+# Tests system power consumption
+
+tests:
+  - id: system_power_consumption_v2
+    name: System Power Test - Power Consumption v2
+    category: System
+    description: "Measures system power consumption at idle and under load"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: benchmark
+    preconditions:
+      - "Power monitoring available"
+    parameters:
+      duration: 120
+      load_levels: [0, 25, 50, 75, 100]
+    thresholds:
+      max_power_consumption_w: 200
+    baseline:
+      expected_idle_power_w: 30
+      expected_max_power_w: 150
+

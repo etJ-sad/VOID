@@ -1,0 +1,23 @@
+# CPU Diagnostic - CPU Information v2
+# Category: CPU > Diagnostic
+# Collects detailed CPU information
+
+tests:
+  - id: cpu_diagnostic_info_v2
+    name: CPU Diagnostic - CPU Information v2
+    category: CPU
+    description: "Collects and validates detailed CPU information"
+    duration_estimate: 60  # 1 minute
+    priority: 5
+    test_type: diagnostic
+    preconditions:
+      - "CPU detected"
+    parameters:
+      duration: 10
+      collect_all_info: true
+    thresholds:
+      cpu_detected: true
+    baseline:
+      expected_cpu_count: 4
+      expected_architecture: "x86_64"
+

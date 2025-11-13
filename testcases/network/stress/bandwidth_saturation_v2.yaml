@@ -1,0 +1,23 @@
+# Network Stress Test - Bandwidth Saturation v2
+# Category: Network > Stress
+# Tests network bandwidth saturation
+
+tests:
+  - id: network_stress_bandwidth_saturation_v2
+    name: Network Stress Test - Bandwidth Saturation v2
+    category: Network
+    description: "Stress tests network by saturating bandwidth"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "Network interface detected"
+      - "Network connectivity"
+    parameters:
+      duration: 120
+      target_bandwidth_percent: 95
+    thresholds:
+      max_packet_loss_percent: 1
+    baseline:
+      expected_bandwidth_mbps: 1000
+

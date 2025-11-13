@@ -1,0 +1,22 @@
+# Network Diagnostic - Network Information v2
+# Category: Network > Diagnostic
+# Collects network information
+
+tests:
+  - id: network_diagnostic_info_v2
+    name: Network Diagnostic - Network Information v2
+    category: Network
+    description: "Collects and validates network interface information"
+    duration_estimate: 60  # 1 minute
+    priority: 5
+    test_type: diagnostic
+    preconditions:
+      - "Network interface detected"
+    parameters:
+      duration: 10
+      collect_all_info: true
+    thresholds:
+      network_detected: true
+    baseline:
+      expected_interfaces: 1
+

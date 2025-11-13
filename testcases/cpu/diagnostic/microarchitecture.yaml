@@ -1,0 +1,28 @@
+# CPU Diagnostic - Microarchitecture Analysis
+# Category: CPU > Diagnostic
+# Analyzes CPU microarchitecture details
+
+tests:
+  - id: cpu_diagnostic_microarchitecture
+    name: CPU Diagnostic - Microarchitecture Analysis
+    category: CPU
+    description: "Analyzes CPU microarchitecture including pipeline, cache, and execution units"
+    duration_estimate: 600  # 10 minutes
+    priority: 9
+    test_type: diagnostic
+    preconditions:
+      - "CPU detected"
+      - "System information accessible"
+    parameters:
+      duration: 45
+      analyze_pipeline: true
+      analyze_cache: true
+      analyze_execution_units: true
+      detect_features: true
+      collect_topology: true
+    thresholds:
+      min_features_detected: 5
+    baseline:
+      expected_cache_levels: 3
+      expected_execution_units: 4
+

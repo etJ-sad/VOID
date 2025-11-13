@@ -1,0 +1,23 @@
+# Storage Stress Test - Wear Leveling v2
+# Category: Storage > Stress
+# Tests storage wear leveling
+
+tests:
+  - id: storage_stress_wear_leveling_v2
+    name: Storage Stress Test - Wear Leveling v2
+    category: Storage
+    description: "Tests storage wear leveling algorithms"
+    duration_estimate: 3600  # 1 hour
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "Storage detected"
+      - "SSD with wear leveling"
+    parameters:
+      duration: 180
+      write_pattern: "random"
+    thresholds:
+      wear_distribution_score_min: 80
+    baseline:
+      expected_wear_distribution: 90
+

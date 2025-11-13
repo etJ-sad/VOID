@@ -1,0 +1,26 @@
+# RAM Stress Test - Concurrent Access
+# Category: RAM > Stress
+# Stress tests RAM with concurrent access patterns
+
+tests:
+  - id: ram_stress_concurrent_access
+    name: RAM Stress Test - Concurrent Access
+    category: RAM
+    description: "Stress tests RAM with multiple concurrent access patterns"
+    duration_estimate: 1200  # 20 minutes
+    priority: 6
+    test_type: stress
+    preconditions:
+      - "RAM detected"
+      - "Multi-core CPU available"
+    parameters:
+      duration: 90
+      concurrent_threads: 8
+      access_patterns: ["read", "write", "mixed"]
+      data_size_mb: 500
+      monitor_contention: true
+    thresholds:
+      max_contention_percent: 20
+    baseline:
+      expected_throughput_degradation: 0.1
+

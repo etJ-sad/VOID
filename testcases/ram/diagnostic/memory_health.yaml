@@ -1,0 +1,28 @@
+# RAM Diagnostic - Memory Health
+# Category: RAM > Diagnostic
+# Analyzes RAM health and errors
+
+tests:
+  - id: ram_diagnostic_memory_health
+    name: RAM Diagnostic - Memory Health
+    category: RAM
+    description: "Analyzes RAM health, errors, and reliability"
+    duration_estimate: 1200  # 20 minutes
+    priority: 9
+    test_type: diagnostic
+    preconditions:
+      - "RAM detected"
+      - "System information accessible"
+    parameters:
+      duration: 90
+      scan_for_errors: true
+      check_ecc_status: true
+      analyze_reliability: true
+      collect_error_statistics: true
+    thresholds:
+      max_error_count: 0
+      min_reliability_score: 95
+    baseline:
+      expected_error_count: 0
+      expected_reliability_score: 100
+

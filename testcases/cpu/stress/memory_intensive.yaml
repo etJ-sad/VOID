@@ -1,0 +1,28 @@
+# CPU Stress Test - Memory Intensive
+# Category: CPU > Stress
+# Stress tests CPU with memory-intensive operations
+
+tests:
+  - id: cpu_stress_memory_intensive
+    name: CPU Stress Test - Memory Intensive Operations
+    category: CPU
+    description: "Stress tests CPU with memory-intensive operations and cache pressure"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "CPU detected"
+      - "Sufficient RAM available"
+    parameters:
+      duration: 120
+      memory_size_gb: 2
+      access_pattern: "random"
+      cache_pressure: "high"
+      monitor_temperature: true
+      collect_memory_stats: true
+    thresholds:
+      max_temperature_celsius: 85
+      max_memory_usage_percent: 90
+    baseline:
+      expected_cache_miss_rate: 0.3
+

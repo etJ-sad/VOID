@@ -1,0 +1,25 @@
+# CPU Benchmark - Cryptographic Operations v2
+# Category: CPU > Benchmark
+# Tests CPU cryptographic performance
+
+tests:
+  - id: cpu_benchmark_cryptographic_v2
+    name: CPU Benchmark - Cryptographic Operations v2
+    category: CPU
+    description: "Benchmarks CPU performance with cryptographic operations"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+      - "Cryptographic extensions available"
+    parameters:
+      duration: 45
+      algorithms: ["AES", "SHA256", "RSA"]
+      key_size: 2048
+    thresholds:
+      min_ops_per_second: 1000
+    baseline:
+      expected_aes_throughput_mbps: 500
+      expected_sha256_throughput_mbps: 300
+

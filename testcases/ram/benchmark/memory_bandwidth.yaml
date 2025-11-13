@@ -1,0 +1,26 @@
+# RAM Benchmark - Memory Bandwidth
+# Category: RAM > Benchmark
+# Tests RAM memory bandwidth
+
+tests:
+  - id: ram_benchmark_memory_bandwidth
+    name: RAM Benchmark - Memory Bandwidth
+    category: RAM
+    description: "Measures RAM memory bandwidth with various access patterns"
+    duration_estimate: 750  # 12.5 minutes
+    priority: 9
+    test_type: benchmark
+    preconditions:
+      - "RAM detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 60
+      access_modes: ["read", "write", "read_write"]
+      data_size_gb: 1
+      threads: 4
+    thresholds:
+      min_bandwidth_gbps: 10
+    baseline:
+      expected_read_bandwidth_gbps: 20
+      expected_write_bandwidth_gbps: 18
+

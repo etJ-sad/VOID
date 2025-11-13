@@ -1,0 +1,22 @@
+# CPU Pattern Test - Instruction Mix v2
+# Category: CPU > Pattern
+# Tests CPU with various instruction patterns
+
+tests:
+  - id: cpu_pattern_instruction_mix_v2
+    name: CPU Pattern Test - Instruction Mix v2
+    category: CPU
+    description: "Tests CPU with mixed instruction patterns"
+    duration_estimate: 600  # 10 minutes
+    priority: 5
+    test_type: pattern
+    preconditions:
+      - "CPU detected"
+    parameters:
+      duration: 30
+      instruction_types: ["arithmetic", "logical", "memory", "branch"]
+    thresholds:
+      min_instructions_per_second: 1000000
+    baseline:
+      expected_instruction_throughput: 5000000
+

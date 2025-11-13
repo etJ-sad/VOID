@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="jsonGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="htmlGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#00897B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#00695C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pdfGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E53935;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C62828;stop-opacity:1" />
+        </linearGradient>
+        <filter id="elevation2_4">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.2"/>
+        </filter>
+        <filter id="elevation4_4">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.24"/>
+        </filter>
+    </defs>
+    
+    <rect width="1400" height="600" fill="#FAFAFA"/>
+    
+    <text x="24" y="40" font-family="Roboto, sans-serif" font-size="28" font-weight="300" fill="#212121">Reporting and Output</text>
+    <rect x="24" y="52" width="80" height="3" fill="#1976D2"/>
+    
+    <rect x="24" y="80" width="1352" height="500" fill="#FFFFFF" rx="4" filter="url(#elevation2_4)"/>
+    
+    <text x="48" y="116" font-family="Roboto, sans-serif" font-size="18" font-weight="400" fill="#212121">Report Generator</text>
+    <text x="48" y="142" font-family="Roboto, sans-serif" font-size="13" fill="#757575">Multi-format output for different stakeholders</text>
+    
+    <!-- JSON Report -->
+    <rect x="48" y="176" width="380" height="240" fill="#FFFFFF" rx="4" filter="url(#elevation4_4)"/>
+    <rect x="48" y="176" width="380" height="4" fill="url(#jsonGrad4)" rx="4"/>
+    <text x="238" y="208" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">JSON Report</text>
+    <text x="238" y="230" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Machine-readable format</text>
+    
+    <rect x="72" y="256" width="310" height="136" fill="#263238" rx="2"/>
+    <text x="92" y="280" font-family="Roboto Mono, monospace" font-size="11" fill="#4CAF50">{</text>
+    <text x="92" y="300" font-family="Roboto Mono, monospace" font-size="11" fill="#64B5F6">  "version":</text>
+    <text x="200" y="300" font-family="Roboto Mono, monospace" font-size="11" fill="#FFF59D">"2.3.1"</text>
+    <text x="92" y="320" font-family="Roboto Mono, monospace" font-size="11" fill="#64B5F6">  "score":</text>
+    <text x="200" y="320" font-family="Roboto Mono, monospace" font-size="11" fill="#FF9800">95</text>
+    <text x="92" y="340" font-family="Roboto Mono, monospace" font-size="11" fill="#64B5F6">  "status":</text>
+    <text x="200" y="340" font-family="Roboto Mono, monospace" font-size="11" fill="#FFF59D">"PASS"</text>
+    <text x="92" y="360" font-family="Roboto Mono, monospace" font-size="11" fill="#64B5F6">  "tests":</text>
+    <text x="200" y="360" font-family="Roboto Mono, monospace" font-size="11" fill="#FF9800">1247</text>
+    <text x="92" y="380" font-family="Roboto Mono, monospace" font-size="11" fill="#4CAF50">}</text>
+    
+    <!-- HTML Report -->
+    <rect x="460" y="176" width="380" height="240" fill="#FFFFFF" rx="4" filter="url(#elevation4_4)"/>
+    <rect x="460" y="176" width="380" height="4" fill="url(#htmlGrad4)" rx="4"/>
+    <text x="650" y="208" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">HTML Dashboard</text>
+    <text x="650" y="230" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Interactive web interface</text>
+    
+    <rect x="484" y="260" width="332" height="16" fill="#E8F5E9" rx="8"/>
+    <rect x="484" y="260" width="315" height="16" fill="#43A047" rx="8"/>
+    <text x="650" y="272" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" font-weight="500" fill="#FFFFFF">CPU Tests</text>
+    
+    <rect x="484" y="288" width="332" height="16" fill="#FFF3E0" rx="8"/>
+    <rect x="484" y="288" width="232" height="16" fill="#FB8C00" rx="8"/>
+    <text x="650" y="300" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" font-weight="500" fill="#FFFFFF">RAM Tests</text>
+    
+    <rect x="484" y="316" width="332" height="16" fill="#E8F5E9" rx="8"/>
+    <rect x="484" y="316" width="298" height="16" fill="#43A047" rx="8"/>
+    <text x="650" y="328" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" font-weight="500" fill="#FFFFFF">GPU Tests</text>
+    
+    <rect x="572" y="352" width="156" height="48" fill="#E8F5E9" rx="24"/>
+    <text x="650" y="373" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#2E7D32">95%</text>
+    <text x="650" y="390" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">PASS RATE</text>
+    
+    <!-- PDF Report -->
+    <rect x="872" y="176" width="380" height="240" fill="#FFFFFF" rx="4" filter="url(#elevation4_4)"/>
+    <rect x="872" y="176" width="380" height="4" fill="url(#pdfGrad4)" rx="4"/>
+    <text x="1062" y="208" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">PDF Certificate</text>
+    <text x="1062" y="230" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Archive and compliance</text>
+    
+    <rect x="932" y="260" width="260" height="120" fill="#F5F5F5" rx="2"/>
+    <text x="1062" y="286" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">IPC TEST CERTIFICATE</text>
+    <rect x="942" y="296" width="240" height="1" fill="#1976D2"/>
+    <text x="1062" y="318" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Model: SIMATIC IPC627E</text>
+    <text x="1062" y="338" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Score: 95/100</text>
+    <text x="1062" y="358" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Date: 2025-11-02</text>
+    <text x="1062" y="384" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#43A047">CERTIFIED</text>
+    
+    <!-- Metrics -->
+    <rect x="48" y="436" width="1300" height="64" fill="#F5F5F5" rx="2"/>
+    <text x="72" y="460" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">METRICS</text>
+    <text x="72" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Overall Score: 95/100</text>
+    <text x="280" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Decision: GO</text>
+    <text x="460" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Duration: 38.2h</text>
+    <text x="660" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Coverage: 98.4%</text>
+    <text x="880" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Anomalies: 12</text>
+    <text x="1080" y="488" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Confidence: 98.7%</text>
+    
+    <!-- Distribution Channels -->
+    <text x="48" y="536" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">DISTRIBUTION CHANNELS</text>
+    
+    <rect x="48" y="548" width="240" height="16" fill="#1976D2" rx="8"/>
+    <text x="168" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">Live Dashboard</text>
+    
+    <rect x="304" y="548" width="180" height="16" fill="#00ACC1" rx="8"/>
+    <text x="394" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">Network Share</text>
+    
+    <rect x="500" y="548" width="140" height="16" fill="#7B1FA2" rx="8"/>
+    <text x="570" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">Email Alert</text>
+    
+    <rect x="656" y="548" width="140" height="16" fill="#F57C00" rx="8"/>
+    <text x="726" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">REST API</text>
+    
+    <rect x="812" y="548" width="120" height="16" fill="#43A047" rx="8"/>
+    <text x="872" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">Slack</text>
+</svg>

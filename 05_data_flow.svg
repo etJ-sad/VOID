@@ -1,0 +1,164 @@
+<svg viewBox="0 0 1400 980" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="hwGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+        </linearGradient>
+        <filter id="elevation2">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.2"/>
+        </filter>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0 0, 8 4, 0 8" fill="#00ACC1"/>
+        </marker>
+    </defs>
+    
+    <rect width="1400" height="980" fill="#FAFAFA"/>
+    
+    <text x="24" y="40" font-family="Roboto, sans-serif" font-size="28" font-weight="300" fill="#212121">Data Flow Architecture</text>
+    <rect x="24" y="52" width="80" height="3" fill="#1976D2"/>
+    
+    <!-- Column Headers -->
+    <rect x="24" y="80" width="300" height="48" fill="#1976D2" rx="4" filter="url(#elevation2)"/>
+    <text x="174" y="110" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF">IPC Hardware</text>
+    
+    <rect x="360" y="80" width="300" height="48" fill="#00ACC1" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="110" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF">Python Tests</text>
+    
+    <rect x="696" y="80" width="300" height="48" fill="#7B1FA2" rx="4" filter="url(#elevation2)"/>
+    <text x="846" y="110" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF">3rd Party Tools</text>
+    
+    <!-- Hardware Components -->
+    <rect x="24" y="148" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="168" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">CPU</text>
+    <text x="174" y="188" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Intel i7-12700K</text>
+    
+    <rect x="24" y="220" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="240" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">RAM</text>
+    <text x="174" y="260" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">32GB DDR4-3200</text>
+    
+    <rect x="24" y="292" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="312" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">GPU</text>
+    <text x="174" y="332" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">NVIDIA RTX A2000</text>
+    
+    <rect x="24" y="364" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="384" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">Storage</text>
+    <text x="174" y="404" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">1TB NVMe + 2TB HDD</text>
+    
+    <rect x="24" y="436" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="456" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">I/O Ports</text>
+    <text x="174" y="476" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">USB | COM | PCIe</text>
+    
+    <rect x="24" y="508" width="300" height="56" fill="url(#hwGrad)" stroke="#1976D2" stroke-width="1" rx="4"/>
+    <text x="174" y="528" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#1565C0">Sensors</text>
+    <text x="174" y="548" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Temperature | Fan | Voltage</text>
+    
+    <!-- Python Scripts -->
+    <rect x="360" y="148" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="178" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">CPU Tests</text>
+    <text x="510" y="196" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">Prime95, Linpack</text>
+    
+    <rect x="360" y="220" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="250" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">RAM Tests</text>
+    <text x="510" y="268" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">MemTest, Patterns</text>
+    
+    <rect x="360" y="292" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="322" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">GPU Tests</text>
+    <text x="510" y="340" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">CUDA, OpenCL</text>
+    
+    <rect x="360" y="364" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="394" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Storage Tests</text>
+    <text x="510" y="412" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">IOPS, Throughput</text>
+    
+    <rect x="360" y="436" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="466" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">I/O Tests</text>
+    <text x="510" y="484" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">USB, COM, PCIe</text>
+    
+    <rect x="360" y="508" width="300" height="56" fill="url(#pyGrad)" rx="4" filter="url(#elevation2)"/>
+    <text x="510" y="538" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Sensor Monitor</text>
+    <text x="510" y="556" text-anchor="middle" font-family="Roboto, sans-serif" font-size="10" fill="#E3F2FD">Live Monitoring</text>
+    
+    <!-- Tools Box -->
+    <rect x="696" y="148" width="300" height="416" fill="#FFFFFF" stroke="#7B1FA2" stroke-width="2" rx="4" filter="url(#elevation2)"/>
+    <text x="846" y="176" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">TOOL SUITE</text>
+    <text x="716" y="204" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Adaptec RAID Manager</text>
+    <text x="716" y="228" font-family="Roboto, sans-serif" font-size="12" fill="#424242">nvidia-smi</text>
+    <text x="716" y="252" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Broadcom RAID</text>
+    <text x="716" y="276" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Siemens Diagnostics</text>
+    <text x="716" y="300" font-family="Roboto, sans-serif" font-size="12" fill="#424242">ASUS API Suite</text>
+    <text x="716" y="324" font-family="Roboto, sans-serif" font-size="12" fill="#424242">HWiNFO64</text>
+    <text x="716" y="348" font-family="Roboto, sans-serif" font-size="12" fill="#424242">CrystalDiskMark</text>
+    <text x="716" y="372" font-family="Roboto, sans-serif" font-size="12" fill="#424242">MemTest86 Pro</text>
+    <text x="716" y="396" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Intel Diagnostics</text>
+    <text x="716" y="420" font-family="Roboto, sans-serif" font-size="12" fill="#424242">smartmontools</text>
+    <text x="716" y="444" font-family="Roboto, sans-serif" font-size="12" fill="#424242">PassMark BurnIn</text>
+    <text x="846" y="528" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">+ 15 more</text>
+    
+    <!-- Arrows Hardware to Python -->
+    <path d="M324,176 L360,176" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M324,248 L360,248" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M324,320 L360,320" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M324,392 L360,392" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M324,464 L360,464" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M324,536 L360,536" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Arrows Python to 3rd Party Tools -->
+    <path d="M660,176 L696,220" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M660,248 L696,260" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M660,320 L696,300" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M660,392 L696,340" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M660,464 L696,380" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M660,536 L696,420" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Pipeline -->
+    <rect x="24" y="600" width="972" height="356" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <text x="48" y="632" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Processing Pipeline</text>
+    
+    <rect x="48" y="656" width="200" height="52" fill="#1976D2" rx="4"/>
+    <text x="148" y="686" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Log Collection</text>
+    
+    <rect x="48" y="728" width="200" height="52" fill="#00ACC1" rx="4"/>
+    <text x="148" y="758" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Normalization</text>
+    
+    <rect x="48" y="800" width="200" height="52" fill="#7B1FA2" rx="4"/>
+    <text x="148" y="830" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">AI/ML Engine</text>
+    
+    <rect x="48" y="872" width="200" height="52" fill="#F57C00" rx="4"/>
+    <text x="148" y="902" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Decision Engine</text>
+    
+    <rect x="268" y="872" width="200" height="52" fill="#43A047" rx="4"/>
+    <text x="368" y="902" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Report Builder</text>
+    
+    <path d="M148,580 L148,656" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M148,708 L148,728" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M148,780 L148,800" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M148,852 L148,872" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M248,898 L268,898" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Stats -->
+    <rect x="500" y="656" width="472" height="268" fill="#F5F5F5" rx="4"/>
+    <text x="520" y="688" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#757575">PIPELINE STATISTICS</text>
+    <rect x="520" y="700" width="432" height="1" fill="#E0E0E0"/>
+    
+    <text x="520" y="732" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Data Points</text>
+    <text x="932" y="732" text-anchor="end" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#1976D2">1.2M</text>
+    
+    <text x="520" y="768" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Processing Time</text>
+    <text x="932" y="768" text-anchor="end" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#00ACC1">2.3s</text>
+    
+    <text x="520" y="804" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Anomalies</text>
+    <text x="932" y="804" text-anchor="end" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#E53935">12</text>
+    
+    <text x="520" y="840" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Patterns Detected</text>
+    <text x="932" y="840" text-anchor="end" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#7B1FA2">87</text>
+    
+    <text x="520" y="876" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Confidence Level</text>
+    <text x="932" y="876" text-anchor="end" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#43A047">98.7%</text>
+    
+    <rect x="520" y="892" width="432" height="20" fill="#E8F5E9" rx="10"/>
+    <rect x="520" y="892" width="412" height="20" fill="#43A047" rx="10"/>
+    <text x="736" y="906" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#FFFFFF">FINAL SCORE: 95/100</text>
+</svg>

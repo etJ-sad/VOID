@@ -1,0 +1,98 @@
+<svg viewBox="0 0 1400 520" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="anomalyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E53935;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C62828;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="patternGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#00897B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#00695C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="decisionGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#43A047;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+        </linearGradient>
+        <filter id="elevation2">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.2"/>
+        </filter>
+        <filter id="elevation4">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.24"/>
+        </filter>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0 0, 8 4, 0 8" fill="#757575"/>
+        </marker>
+    </defs>
+    
+    <rect width="1400" height="520" fill="#FAFAFA"/>
+    
+    <text x="24" y="40" font-family="Roboto, sans-serif" font-size="28" font-weight="300" fill="#212121">AI/ML Analysis</text>
+    <rect x="24" y="52" width="80" height="3" fill="#1976D2"/>
+    
+    <rect x="24" y="80" width="1352" height="420" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    
+    <text x="48" y="116" font-family="Roboto, sans-serif" font-size="18" font-weight="400" fill="#212121">Analysis Engine</text>
+    <text x="48" y="142" font-family="Roboto, sans-serif" font-size="13" fill="#757575">Multi-model ensemble for comprehensive validation</text>
+    
+    <!-- Anomaly Detection -->
+    <rect x="48" y="176" width="380" height="300" fill="#FFFFFF" rx="4" filter="url(#elevation4)"/>
+    <rect x="48" y="176" width="380" height="56" fill="url(#anomalyGrad)" rx="4"/>
+    <text x="238" y="210" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF">Anomaly Detection</text>
+    
+    <text x="72" y="260" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">ALGORITHMS</text>
+    <rect x="72" y="268" width="330" height="1" fill="#E0E0E0"/>
+    
+    <text x="72" y="292" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Isolation Forest</text>
+    <text x="72" y="316" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Autoencoder Networks</text>
+    <text x="72" y="340" font-family="Roboto, sans-serif" font-size="13" fill="#424242">One-Class SVM</text>
+    <text x="72" y="364" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Statistical Z-Score</text>
+    
+    <rect x="72" y="388" width="330" height="64" fill="#FFEBEE" rx="2"/>
+    <text x="92" y="410" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#C62828">BASELINE DEVIATION</text>
+    <rect x="92" y="422" width="290" height="8" fill="#FFCDD2" rx="4"/>
+    <rect x="92" y="422" width="218" height="8" fill="#E53935" rx="4"/>
+    <text x="237" y="446" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">75% deviation detected</text>
+    
+    <!-- Pattern Recognition -->
+    <rect x="460" y="176" width="380" height="300" fill="#FFFFFF" rx="4" filter="url(#elevation4)"/>
+    <rect x="460" y="176" width="380" height="56" fill="url(#patternGrad)" rx="4"/>
+    <text x="650" y="210" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF">Pattern Recognition</text>
+    
+    <text x="484" y="260" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">TECHNIQUES</text>
+    <rect x="484" y="268" width="330" height="1" fill="#E0E0E0"/>
+    
+    <text x="484" y="292" font-family="Roboto, sans-serif" font-size="13" fill="#424242">LSTM Time-Series</text>
+    <text x="484" y="316" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Correlation Matrix</text>
+    <text x="484" y="340" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Trend Detection</text>
+    <text x="484" y="364" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Causal Inference</text>
+    
+    <rect x="484" y="388" width="330" height="64" fill="#E0F2F1" rx="2"/>
+    <text x="504" y="410" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#00695C">CONFIDENCE LEVEL</text>
+    <path d="M504,425 L524,420 L544,428 L564,422 L584,430 L604,425 L624,432 L644,428 L664,435 L684,430 L704,438 L724,433 L744,440 L764,436 L784,442 L804,438" stroke="#00897B" stroke-width="2" fill="none"/>
+    <text x="649" y="458" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#757575">Strong correlation detected</text>
+    
+    <!-- Decision Engine -->
+    <rect x="872" y="176" width="380" height="300" fill="#FFFFFF" rx="4" filter="url(#elevation4)"/>
+    <rect x="872" y="176" width="380" height="56" fill="url(#decisionGrad)" rx="4"/>
+    <text x="1062" y="210" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF">Decision Engine</text>
+    
+    <text x="896" y="260" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">DECISION LOGIC</text>
+    <rect x="896" y="268" width="330" height="1" fill="#E0E0E0"/>
+    
+    <text x="896" y="292" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Rule-Based Thresholds</text>
+    <text x="896" y="316" font-family="Roboto, sans-serif" font-size="13" fill="#424242">ML Ensemble Scoring</text>
+    <text x="896" y="340" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Weighted Voting</text>
+    <text x="896" y="364" font-family="Roboto, sans-serif" font-size="13" fill="#424242">Confidence Threshold</text>
+    
+    <rect x="896" y="388" width="330" height="64" fill="#E8F5E9" rx="2"/>
+    <text x="916" y="410" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#2E7D32">FINAL SCORE</text>
+    <rect x="916" y="422" width="290" height="12" fill="#C8E6C9" rx="6"/>
+    <rect x="916" y="422" width="276" height="12" fill="#43A047" rx="6"/>
+    <text x="1061" y="456" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#2E7D32">95 / 100</text>
+    
+    <!-- Connection Arrows -->
+    <path d="M428,336 L460,336" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M840,336" stroke="#757575" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <text x="444" y="326" font-family="Roboto, sans-serif" font-size="10" fill="#9E9E9E">features</text>
+    <text x="856" y="326" font-family="Roboto, sans-serif" font-size="10" fill="#9E9E9E">scores</text>
+</svg>

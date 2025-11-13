@@ -1,0 +1,28 @@
+# CPU Stress Test - Floating Point Stress
+# Category: CPU > Stress
+# Stress tests CPU with floating point operations
+
+tests:
+  - id: cpu_stress_floating_point
+    name: CPU Stress Test - Floating Point Operations
+    category: CPU
+    description: "Stress tests CPU with intensive floating point calculations"
+    duration_estimate: 1500  # 25 minutes
+    priority: 6
+    test_type: stress
+    preconditions:
+      - "CPU detected"
+      - "FPU available"
+    parameters:
+      duration: 100
+      precision: "double"
+      operations: ["add", "multiply", "divide", "sqrt", "sin", "cos"]
+      iterations_per_second: 5
+      use_simd: true
+      monitor_fpu_usage: true
+    thresholds:
+      max_temperature_celsius: 85
+      min_operations_per_second: 1000000
+    baseline:
+      expected_fpu_utilization: 0.95
+

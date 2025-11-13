@@ -1,0 +1,25 @@
+# CPU Stress Test - Prime Number Calculation v2
+# Category: CPU > Stress
+# Tests CPU with prime number calculation workload
+
+tests:
+  - id: cpu_stress_prime_calculation_v2
+    name: CPU Stress Test - Prime Number Calculation v2
+    category: CPU
+    description: "Stress tests CPU with intensive prime number calculations"
+    duration_estimate: 3600  # 60 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "CPU detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 180
+      max_prime: 1000000
+      threads: 4
+    thresholds:
+      min_primes_found: 10000
+      cpu_utilization_min: 90
+    baseline:
+      expected_primes_per_second: 5000
+

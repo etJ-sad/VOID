@@ -1,0 +1,25 @@
+# CPU Diagnostic - Cache Performance v2
+# Category: CPU > Diagnostic
+# Tests CPU cache performance
+
+tests:
+  - id: cpu_diagnostic_cache_v2
+    name: CPU Diagnostic - Cache Performance v2
+    category: CPU
+    description: "Tests CPU cache hierarchy and performance"
+    duration_estimate: 300  # 5 minutes
+    priority: 6
+    test_type: diagnostic
+    preconditions:
+      - "CPU detected"
+    parameters:
+      duration: 20
+      test_levels: ["L1", "L2", "L3"]
+    thresholds:
+      cache_detected: true
+      min_cache_size_mb: 1
+    baseline:
+      expected_l1_size_kb: 32
+      expected_l2_size_kb: 256
+      expected_l3_size_mb: 8
+

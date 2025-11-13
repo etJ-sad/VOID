@@ -1,0 +1,26 @@
+# RAM Pattern Test - Access Patterns
+# Category: RAM > Pattern
+# Tests RAM access patterns
+
+tests:
+  - id: ram_pattern_access_patterns
+    name: RAM Pattern Test - Access Patterns
+    category: RAM
+    description: "Tests various RAM access patterns and their performance"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "RAM detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 75
+      patterns: ["sequential", "random", "strided", "circular"]
+      data_size_mb: 200
+      stride_sizes: [1, 4, 16, 64, 256]
+    thresholds:
+      min_pattern_efficiency: 0.7
+    baseline:
+      expected_sequential_efficiency: 0.95
+      expected_random_efficiency: 0.75
+

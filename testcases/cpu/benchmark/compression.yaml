@@ -1,0 +1,26 @@
+# CPU Benchmark - Compression Performance
+# Category: CPU > Benchmark
+# Tests CPU performance with compression algorithms
+
+tests:
+  - id: cpu_benchmark_compression
+    name: CPU Benchmark - Compression Performance
+    category: CPU
+    description: "Benchmarks CPU performance with data compression algorithms"
+    duration_estimate: 600  # 10 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 45
+      algorithms: ["gzip", "lz4", "zlib"]
+      data_size_mb: 50
+      compression_level: 6
+    thresholds:
+      min_compression_speed_mbps: 100
+    baseline:
+      expected_gzip_speed_mbps: 200
+      expected_lz4_speed_mbps: 500
+

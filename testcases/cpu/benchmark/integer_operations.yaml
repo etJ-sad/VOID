@@ -1,0 +1,24 @@
+# CPU Benchmark - Integer Operations
+# Category: CPU > Benchmark
+# Tests CPU integer arithmetic performance
+
+tests:
+  - id: cpu_benchmark_integer_ops
+    name: CPU Benchmark - Integer Operations
+    category: CPU
+    description: "Benchmarks CPU performance with integer arithmetic operations"
+    duration_estimate: 300  # 5 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+    parameters:
+      duration: 30
+      operation_types: ["add", "multiply", "divide", "modulo"]
+      data_size: 1000000
+      iterations: 1000
+    thresholds:
+      min_operations_per_second: 50000
+    baseline:
+      expected_ops_per_second: 100000
+

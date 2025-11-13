@@ -1,0 +1,25 @@
+# RAM Stress Test - Memory Leak Detection v2
+# Category: RAM > Stress
+# Detects memory leaks
+
+tests:
+  - id: ram_stress_memory_leak_v2
+    name: RAM Stress Test - Memory Leak Detection v2
+    category: RAM
+    description: "Detects memory leaks through repeated allocation cycles"
+    duration_estimate: 2400  # 40 minutes
+    priority: 9
+    test_type: stress
+    preconditions:
+      - "RAM detected"
+      - "Sufficient free memory"
+    parameters:
+      duration: 180
+      allocation_cycles: 1000
+      monitor_interval: 10
+    thresholds:
+      max_memory_growth_mb: 50
+      no_leaks: true
+    baseline:
+      expected_memory_stable: true
+

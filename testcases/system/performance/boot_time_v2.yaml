@@ -1,0 +1,23 @@
+# System Performance Test - Boot Time v2
+# Category: System > Performance
+# Tests system boot time
+
+tests:
+  - id: system_performance_boot_time_v2
+    name: System Performance Test - Boot Time v2
+    category: System
+    description: "Measures system boot time and startup performance"
+    duration_estimate: 300  # 5 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "System accessible"
+      - "Boot logging available"
+    parameters:
+      duration: 20
+      measure_to_desktop: true
+    thresholds:
+      max_boot_time_seconds: 60
+    baseline:
+      expected_boot_time_seconds: 30
+

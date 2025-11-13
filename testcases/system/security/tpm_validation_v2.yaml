@@ -1,0 +1,23 @@
+# TPM Security Validation v2
+# Category: System > Security
+# Validates TPM functionality
+
+tests:
+  - id: system_security_tpm_validation_v2
+    name: TPM Security Validation v2
+    category: System
+    description: "Validates TPM presence, version, and basic cryptographic operations"
+    duration_estimate: 600  # 10 minutes
+    priority: 5
+    test_type: benchmark
+    preconditions:
+      - "TPM hardware detected"
+      - "TPM drivers loaded"
+    parameters:
+      duration: 20
+      tpm_version: "2.0"
+    thresholds:
+      tpm_version_min: "2.0"
+    baseline:
+      expected_tpm_version: "2.0"
+

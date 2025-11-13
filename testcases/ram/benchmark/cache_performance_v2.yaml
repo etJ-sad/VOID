@@ -1,0 +1,22 @@
+# RAM Benchmark - Cache Performance v2
+# Category: RAM > Benchmark
+# Tests RAM cache performance
+
+tests:
+  - id: ram_benchmark_cache_performance_v2
+    name: RAM Benchmark - Cache Performance v2
+    category: RAM
+    description: "Benchmarks RAM cache performance characteristics"
+    duration_estimate: 600  # 10 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "RAM detected"
+    parameters:
+      duration: 30
+      cache_sizes: ["small", "medium", "large"]
+    thresholds:
+      min_cache_hit_rate: 0.7
+    baseline:
+      expected_cache_hit_rate: 0.85
+

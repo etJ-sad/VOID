@@ -1,0 +1,157 @@
+<svg viewBox="0 0 1200 1400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="step" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+        </linearGradient>
+        <filter id="elevation2">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.2"/>
+        </filter>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0 0, 8 4, 0 8" fill="#00ACC1"/>
+        </marker>
+    </defs>
+    
+    <rect width="1200" height="1400" fill="#FAFAFA"/>
+    
+    <text x="24" y="40" font-family="Roboto, sans-serif" font-size="28" font-weight="300" fill="#212121">Test Execution Flow</text>
+    <rect x="24" y="52" width="80" height="3" fill="#1976D2"/>
+    <text x="24" y="76" font-family="Roboto, sans-serif" font-size="13" fill="#757575">48-hour validation cycle</text>
+    
+    <!-- START -->
+    <ellipse cx="600" cy="120" rx="72" ry="32" fill="#1976D2" filter="url(#elevation2)"/>
+    <text x="600" y="128" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF">START</text>
+    
+    <path d="M600,152 L600,180" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Steps -->
+    <rect x="280" y="180" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="180" width="4" height="72" fill="#1976D2" rx="2"/>
+    <circle cx="318" cy="216" r="16" fill="#1976D2"/>
+    <text x="318" y="222" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">1</text>
+    <text x="348" y="208" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Hardware Detection</text>
+    <text x="348" y="228" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Enumerate all components</text>
+    <text x="348" y="244" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">15 minutes</text>
+    
+    <path d="M600,252 L600,280" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="280" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="280" width="4" height="72" fill="#00ACC1" rx="2"/>
+    <circle cx="318" cy="316" r="16" fill="#00ACC1"/>
+    <text x="318" y="322" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">2</text>
+    <text x="348" y="308" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Test Selection</text>
+    <text x="348" y="328" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Generate test plan, estimate duration</text>
+    <text x="348" y="344" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">10 minutes</text>
+    
+    <path d="M600,352 L600,380" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="380" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="380" width="4" height="72" fill="#7B1FA2" rx="2"/>
+    <circle cx="318" cy="416" r="16" fill="#7B1FA2"/>
+    <text x="318" y="422" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">3</text>
+    <text x="348" y="408" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Pre-Flight Checks</text>
+    <text x="348" y="428" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Verify conditions, load baselines</text>
+    <text x="348" y="444" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">5 minutes</text>
+    
+    <path d="M600,452 L600,480" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Parallel Execution -->
+    <rect x="160" y="480" width="880" height="260" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="160" y="480" width="4" height="260" fill="#F57C00" rx="2"/>
+    <circle cx="198" cy="516" r="16" fill="#F57C00"/>
+    <text x="198" y="522" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">4</text>
+    <text x="228" y="512" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Parallel Test Execution</text>
+    <text x="228" y="532" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Main testing phase - approximately 40 hours</text>
+    
+    <rect x="180" y="556" width="440" height="168" fill="#F5F5F5" rx="2"/>
+    <text x="200" y="580" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">TEST COMPONENTS</text>
+    <rect x="200" y="592" width="300" height="12" fill="#1976D2" rx="6"/>
+    <text x="210" y="602" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">CPU 30min</text>
+    <rect x="200" y="612" width="240" height="12" fill="#00ACC1" rx="6"/>
+    <text x="210" y="622" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">RAM 20min</text>
+    <rect x="200" y="632" width="200" height="12" fill="#7B1FA2" rx="6"/>
+    <text x="210" y="642" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">GPU 15min</text>
+    <rect x="200" y="652" width="160" height="12" fill="#F57C00" rx="6"/>
+    <text x="210" y="662" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">Storage 10min</text>
+    <rect x="200" y="672" width="180" height="12" fill="#43A047" rx="6"/>
+    <text x="210" y="682" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">I/O Ports 15min</text>
+    <rect x="200" y="692" width="140" height="12" fill="#E53935" rx="6"/>
+    <text x="210" y="702" font-family="Roboto, sans-serif" font-size="9" fill="#FFFFFF">Sensors Live</text>
+    
+    <rect x="640" y="556" width="380" height="168" fill="#FFF3E0" rx="2"/>
+    <text x="660" y="580" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#E65100">CHECKPOINTS</text>
+    <text x="660" y="604" font-family="Roboto, sans-serif" font-size="12" fill="#424242">6h - Initial validation</text>
+    <text x="660" y="628" font-family="Roboto, sans-serif" font-size="12" fill="#424242">18h - Mid-point review</text>
+    <text x="660" y="652" font-family="Roboto, sans-serif" font-size="12" fill="#424242">36h - Final checks</text>
+    <text x="660" y="676" font-family="Roboto, sans-serif" font-size="12" fill="#424242">46h - Pre-completion</text>
+    <text x="660" y="704" font-family="Roboto, sans-serif" font-size="11" fill="#757575">GO/NO-GO at each gate</text>
+    
+    <path d="M600,740 L600,770" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="770" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="770" width="4" height="72" fill="#1976D2" rx="2"/>
+    <circle cx="318" cy="806" r="16" fill="#1976D2"/>
+    <text x="318" y="812" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">5</text>
+    <text x="348" y="798" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Data Aggregation</text>
+    <text x="348" y="818" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Collect logs and metrics</text>
+    <text x="348" y="834" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">30 minutes</text>
+    
+    <path d="M600,842 L600,870" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="870" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="870" width="4" height="72" fill="#00ACC1" rx="2"/>
+    <circle cx="318" cy="906" r="16" fill="#00ACC1"/>
+    <text x="318" y="912" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">6</text>
+    <text x="348" y="898" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">AI/ML Analysis</text>
+    <text x="348" y="918" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Anomaly detection and scoring</text>
+    <text x="348" y="934" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">3 hours</text>
+    
+    <path d="M600,942 L600,970" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="970" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="970" width="4" height="72" fill="#7B1FA2" rx="2"/>
+    <circle cx="318" cy="1006" r="16" fill="#7B1FA2"/>
+    <text x="318" y="1012" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">7</text>
+    <text x="348" y="998" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Decision Engine</text>
+    <text x="348" y="1018" font-family="Roboto, sans-serif" font-size="12" fill="#757575">GO/NO-GO determination</text>
+    <text x="348" y="1034" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">15 minutes</text>
+    
+    <path d="M600,1042 L600,1070" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="1070" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="1070" width="4" height="72" fill="#F57C00" rx="2"/>
+    <circle cx="318" cy="1106" r="16" fill="#F57C00"/>
+    <text x="318" y="1112" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">8</text>
+    <text x="348" y="1098" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Report Generation</text>
+    <text x="348" y="1118" font-family="Roboto, sans-serif" font-size="12" fill="#757575">JSON, HTML, PDF formats</text>
+    <text x="348" y="1134" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">1 hour</text>
+    
+    <path d="M600,1142 L600,1170" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <rect x="280" y="1170" width="640" height="72" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="280" y="1170" width="4" height="72" fill="#43A047" rx="2"/>
+    <circle cx="318" cy="1206" r="16" fill="#43A047"/>
+    <text x="318" y="1212" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">9</text>
+    <text x="348" y="1198" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#212121">Distribution</text>
+    <text x="348" y="1218" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Network, email, dashboard</text>
+    <text x="348" y="1234" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">30 minutes</text>
+    
+    <path d="M600,1242 L600,1270" stroke="#00ACC1" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- END -->
+    <ellipse cx="600" cy="1310" rx="72" ry="32" fill="#43A047" filter="url(#elevation2)"/>
+    <text x="600" y="1318" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#FFFFFF">COMPLETE</text>
+    
+    <!-- Metrics -->
+    <rect x="24" y="1356" width="360" height="32" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <text x="48" y="1378" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Total Duration</text>
+    <text x="360" y="1378" text-anchor="end" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#1976D2">38.2h</text>
+    
+    <rect x="408" y="1356" width="360" height="32" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <text x="432" y="1378" font-family="Roboto, sans-serif" font-size="12" fill="#757575">Coverage</text>
+    <text x="744" y="1378" text-anchor="end" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">98.4%</text>
+    
+    <rect x="792" y="1356" width="384" height="32" fill="#E8F5E9" rx="4" filter="url(#elevation2)"/>
+    <text x="816" y="1378" font-family="Roboto, sans-serif" font-size="12" fill="#2E7D32">Final Status</text>
+    <text x="1152" y="1378" text-anchor="end" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#43A047">PASS - GO</text>
+</svg>

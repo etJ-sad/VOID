@@ -1,0 +1,22 @@
+# System Diagnostic - System Information v2
+# Category: System > Diagnostic
+# Collects system information
+
+tests:
+  - id: system_diagnostic_info_v2
+    name: System Diagnostic - System Information v2
+    category: System
+    description: "Collects comprehensive system information"
+    duration_estimate: 120  # 2 minutes
+    priority: 5
+    test_type: diagnostic
+    preconditions:
+      - "System accessible"
+    parameters:
+      duration: 10
+      collect_all_info: true
+    thresholds:
+      system_detected: true
+    baseline:
+      expected_os: "Windows"
+

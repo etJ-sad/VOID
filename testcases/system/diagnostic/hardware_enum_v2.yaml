@@ -1,0 +1,22 @@
+# System Diagnostic - Hardware Enumeration v2
+# Category: System > Diagnostic
+# Enumerates all hardware components
+
+tests:
+  - id: system_diagnostic_hardware_enum_v2
+    name: System Diagnostic - Hardware Enumeration v2
+    category: System
+    description: "Enumerates and validates all detected hardware components"
+    duration_estimate: 180  # 3 minutes
+    priority: 6
+    test_type: diagnostic
+    preconditions:
+      - "System accessible"
+    parameters:
+      duration: 15
+      validate_components: true
+    thresholds:
+      components_detected_min: 5
+    baseline:
+      expected_components: ["CPU", "RAM", "Storage", "Network"]
+

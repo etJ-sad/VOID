@@ -1,0 +1,24 @@
+# GPU Stress Test - Thermal v2
+# Category: GPU > Stress
+# Tests GPU thermal behavior
+
+tests:
+  - id: gpu_stress_thermal_v2
+    name: GPU Stress Test - Thermal v2
+    category: GPU
+    description: "Stress tests GPU thermal behavior under sustained load"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "GPU detected"
+      - "Temperature sensors available"
+    parameters:
+      duration: 120
+      workload: "compute_intensive"
+    thresholds:
+      max_temp_celsius: 85
+      throttling_allowed: true
+    baseline:
+      expected_max_temp: 75
+

@@ -1,0 +1,28 @@
+# CPU Stress Test - Thermal Throttling v2
+# Category: CPU > Stress
+# Tests CPU thermal throttling behavior under sustained load
+
+tests:
+  - id: cpu_stress_thermal_throttling_v2
+    name: CPU Stress Test - Thermal Throttling v2
+    category: CPU
+    description: "Tests CPU thermal throttling behavior under sustained high load"
+    duration_estimate: 1800  # 30 minutes
+    priority: 9
+    test_type: stress
+    preconditions:
+      - "CPU detected"
+      - "Temperature sensors available"
+      - "Initial temperature < 60°C"
+    parameters:
+      duration: 120
+      load_percent: 100
+      monitor_frequency: true
+    thresholds:
+      max_temp_celsius: 95
+      throttling_allowed: true
+      min_frequency_mhz: 2000
+    baseline:
+      expected_max_temp: 85
+      expected_throttle_point: 90
+

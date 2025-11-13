@@ -1,0 +1,25 @@
+# CPU Diagnostic - Performance Counters
+# Category: CPU > Diagnostic
+# Collects CPU performance counter data
+
+tests:
+  - id: cpu_diagnostic_performance_counters
+    name: CPU Diagnostic - Performance Counters
+    category: CPU
+    description: "Collects and analyzes CPU performance counter data"
+    duration_estimate: 300  # 5 minutes
+    priority: 8
+    test_type: diagnostic
+    preconditions:
+      - "CPU detected"
+      - "Performance counters accessible"
+    parameters:
+      duration: 30
+      counters: ["instructions", "cycles", "cache_misses", "branch_mispredictions", "tlb_misses"]
+      sampling_rate: 10
+      collect_all_metrics: true
+    thresholds:
+      min_counters_collected: 5
+    baseline:
+      expected_instructions_per_cycle: 1.0
+

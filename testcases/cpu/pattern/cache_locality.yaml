@@ -1,0 +1,27 @@
+# CPU Pattern Test - Cache Locality
+# Category: CPU > Pattern
+# Tests CPU cache locality patterns
+
+tests:
+  - id: cpu_pattern_cache_locality
+    name: CPU Pattern Test - Cache Locality
+    category: CPU
+    description: "Tests CPU cache locality patterns and spatial/temporal locality"
+    duration_estimate: 600  # 10 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "CPU detected"
+      - "Cache hierarchy available"
+    parameters:
+      duration: 60
+      locality_types: ["spatial", "temporal", "mixed"]
+      data_size_mb: 50
+      stride_sizes: [1, 4, 16, 64, 256]
+      measure_cache_hits: true
+    thresholds:
+      min_cache_hit_rate: 0.7
+    baseline:
+      expected_spatial_locality_hit_rate: 0.9
+      expected_temporal_locality_hit_rate: 0.85
+

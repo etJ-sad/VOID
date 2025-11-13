@@ -1,0 +1,26 @@
+# RAM Pattern Test - Memory Alignment
+# Category: RAM > Pattern
+# Tests RAM memory alignment patterns
+
+tests:
+  - id: ram_pattern_memory_alignment
+    name: RAM Pattern Test - Memory Alignment
+    category: RAM
+    description: "Tests RAM performance with different memory alignment patterns"
+    duration_estimate: 600  # 10 minutes
+    priority: 5
+    test_type: pattern
+    preconditions:
+      - "RAM detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 60
+      alignments: [1, 4, 8, 16, 32, 64]
+      data_size_mb: 100
+      measure_alignment_impact: true
+    thresholds:
+      max_alignment_penalty_percent: 15
+    baseline:
+      expected_aligned_performance: 1.0
+      expected_unaligned_performance: 0.9
+

@@ -1,0 +1,22 @@
+# System Pattern Test - Resource Usage Patterns v2
+# Category: System > Pattern
+# Tests system resource usage patterns
+
+tests:
+  - id: system_pattern_resource_usage_v2
+    name: System Pattern Test - Resource Usage Patterns v2
+    category: System
+    description: "Tests system resource usage with CPU, memory, and I/O intensive patterns"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "System accessible"
+    parameters:
+      duration: 45
+      patterns: ["cpu_intensive", "memory_intensive", "io_intensive"]
+    thresholds:
+      resource_utilization_max: 95
+    baseline:
+      expected_resource_efficiency: "good"
+

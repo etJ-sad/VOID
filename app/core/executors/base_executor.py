@@ -1,0 +1,148 @@
+"""
+Base Test Executor
+Common functionality for all test executors
+"""
+
+import asyncio
+import logging
+import time
+from datetime import datetime
+from typing import Dict, Any
+from abc import ABC, abstractmethod
+from app.models.schemas import TestCase, TestResult, TestStatus
+
+logger = logging.getLogger(__name__)
+
+
+class BaseTestExecutor(ABC):
+    """Base class for all test executors"""
+    
+    def __init__(self):
+        self.category = self.__class__.__name__.replace('Executor', '').upper()
+    
+    async def execute(self, test_case: TestCase) -> TestResult:
+        """Execute a test case and return result"""
+        logger.info(f"Executing {self.category} test: {test_case.name}")
+        
+        result = TestResult(
+            test_id=test_case.id,
+            test_name=test_case.name,
+            status=TestStatus.RUNNING,
+            start_time=datetime.now()
+        )
+        
+        try:
+            # Route to appropriate test type handler
+            metrics = await self._route_test(test_case)
+            result.metrics = metrics
+            result.status = self._evaluate_result(test_case, metrics)
+        except asyncio.CancelledError:
+            # Test was cancelled - re-raise to allow proper cancellation handling
+            logger.info(f"Test {test_case.name} was cancelled")
+            result.status = TestStatus.CANCELLED
+            raise
+        except Exception as e:
+            logger.error(f"Test {test_case.name} failed with error: {e}")
+            result.status = TestStatus.ERROR
+            result.errors.append(str(e))
+        
+        result.end_time = datetime.now()
+        result.duration = (result.end_time - result.start_time).total_seconds()
+        
+        return result
+    
+    async def _route_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Route test to appropriate handler based on test type"""
+        test_type = test_case.test_type.lower()
+        
+        if test_type == "stress":
+            return await self.run_stress_test(test_case)
+        elif test_type == "pattern":
+            return await self.run_pattern_test(test_case)
+        elif test_type == "benchmark":
+            return await self.run_benchmark_test(test_case)
+        elif test_type == "diagnostic":
+            return await self.run_diagnostic_test(test_case)
+        else:
+            return await self.run_generic_test(test_case)
+    
+    # Abstract methods - must be implemented by subclasses
+    @abstractmethod
+    async def run_stress_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Run stress test"""
+        pass
+    
+    @abstractmethod
+    async def run_pattern_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Run pattern test"""
+        pass
+    
+    @abstractmethod
+    async def run_benchmark_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Run benchmark test"""
+        pass
+    
+    @abstractmethod
+    async def run_diagnostic_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Run diagnostic test"""
+        pass
+    
+    async def run_generic_test(self, test_case: TestCase) -> Dict[str, Any]:
+        """Run generic test (default implementation)"""
+        duration = test_case.parameters.get("duration", 5)
+        await self._safe_sleep(duration)
+        return {"completed": True, "duration": duration}
+    
+    async def _safe_sleep(self, delay: float):
+        """Sleep with cancellation support - raises CancelledError if cancelled"""
+        try:
+            await asyncio.sleep(delay)
+        except asyncio.CancelledError:
+            # Re-raise to allow proper cancellation handling upstream
+            raise
+    
+    def _evaluate_result(self, test_case: TestCase, metrics: Dict[str, Any]) -> TestStatus:
+        """Evaluate if test passed based on metrics and thresholds"""
+        if not metrics:
+            return TestStatus.FAILED
+        
+        thresholds = test_case.thresholds
+        if not thresholds:
+            return TestStatus.PASSED
+        
+        # Category-specific threshold checking
+        return self._check_thresholds(test_case, metrics, thresholds)
+    
+    def _check_thresholds(self, test_case: TestCase, metrics: Dict[str, Any], thresholds: Dict[str, Any]) -> TestStatus:
+        """Check thresholds - override in subclasses for category-specific checks"""
+        # Common threshold checks
+        if "temp_max_celsius" in thresholds and "temp_max" in metrics:
+            if metrics["temp_max"] > thresholds["temp_max_celsius"]:
+                return TestStatus.FAILED
+        
+        return TestStatus.PASSED
+    
+    def _collect_common_metrics(self) -> Dict[str, Any]:
+        """Collect common metrics (CPU, memory, temperature)"""
+        import psutil
+        
+        metrics = {}
+        
+        # CPU
+        metrics["cpu_percent"] = psutil.cpu_percent(interval=0.1)
+        
+        # Memory
+        mem = psutil.virtual_memory()
+        metrics["memory_percent"] = mem.percent
+        
+        # Temperature
+        if hasattr(psutil, 'sensors_temperatures'):
+            temps = psutil.sensors_temperatures()
+            if temps:
+                for sensor_name, entries in temps.items():
+                    if entries:
+                        metrics["temperature"] = entries[0].current
+                        break
+        
+        return metrics
+

@@ -1,0 +1,24 @@
+# Storage Benchmark - Random I/O v2
+# Category: Storage > Benchmark
+# Tests random I/O performance
+
+tests:
+  - id: storage_benchmark_random_io_v2
+    name: Storage Benchmark - Random I/O v2
+    category: Storage
+    description: "Benchmarks storage random read/write performance"
+    duration_estimate: 600  # 10 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "Storage detected"
+    parameters:
+      duration: 30
+      block_size_kb: 4
+      operations: ["read", "write"]
+    thresholds:
+      min_iops: 1000
+    baseline:
+      expected_read_iops: 50000
+      expected_write_iops: 30000
+

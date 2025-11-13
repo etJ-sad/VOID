@@ -1,0 +1,23 @@
+# Storage Pattern Test - File Operations v2
+# Category: Storage > Pattern
+# Tests storage with file operations
+
+tests:
+  - id: storage_pattern_file_ops_v2
+    name: Storage Pattern Test - File Operations v2
+    category: Storage
+    description: "Tests storage with various file operation patterns"
+    duration_estimate: 600  # 10 minutes
+    priority: 5
+    test_type: pattern
+    preconditions:
+      - "Storage detected"
+      - "Write permissions"
+    parameters:
+      duration: 30
+      operations: ["create", "read", "write", "delete"]
+    thresholds:
+      no_errors: true
+    baseline:
+      expected_operations_per_second: 1000
+

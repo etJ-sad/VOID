@@ -1,0 +1,22 @@
+# Storage Pattern Test - Access Patterns v2
+# Category: Storage > Pattern
+# Tests storage with various access patterns
+
+tests:
+  - id: storage_pattern_access_v2
+    name: Storage Pattern Test - Access Patterns v2
+    category: Storage
+    description: "Tests storage with sequential, random, and mixed access patterns"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "Storage detected"
+    parameters:
+      duration: 45
+      patterns: ["sequential", "random", "mixed"]
+    thresholds:
+      no_errors: true
+    baseline:
+      expected_pattern_performance: "good"
+

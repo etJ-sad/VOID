@@ -1,0 +1,47 @@
+# SIMATIC IPC BX-32A Test Preset
+# Preset configuration for SIMATIC IPC BX-32A device
+# This preset contains recommended test cases for this specific device model
+
+preset:
+  id: simatic_ipc_bx_32a
+  name: SIMATIC IPC BX-32A
+  description: "Complete test suite for SIMATIC IPC BX-32A industrial PC"
+  device_type: "Industrial PC"
+  manufacturer: "Siemens"
+  model: "BX-32A"
+  
+  # Hardware specifications (for reference)
+  hardware:
+    cpu: "Intel Core i5 or equivalent"
+    ram: "4GB - 16GB DDR4"
+    storage: "SSD 128GB - 512GB"
+    network: "Gigabit Ethernet"
+    gpu: "Integrated"
+  
+  # Test case selection for this device (lighter than BX-39A)
+  test_cases:
+    # CPU Tests
+    - cpu_stress_thermal_throttling_v2
+    - cpu_benchmark_multithreaded_v2
+    - cpu_diagnostic_info_v2
+    
+    # RAM Tests
+    - ram_stress_continuous_allocation_v2
+    - ram_benchmark_bandwidth_v2
+    - ram_diagnostic_topology_v2
+    
+    # Storage Tests
+    - storage_benchmark_sequential_io_v2
+    - storage_benchmark_random_io_v2
+    - storage_health_smart_validation_v2
+    
+    # Network Tests
+    - network_benchmark_latency_v2
+    - network_benchmark_throughput_v2
+    - network_diagnostic_info_v2
+    
+    # System Tests
+    - system_performance_boot_time_v2
+    - system_stability_uptime_v2
+    - system_diagnostic_info_v2
+

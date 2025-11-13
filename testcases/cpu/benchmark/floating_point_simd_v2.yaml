@@ -1,0 +1,25 @@
+# CPU Floating Point & SIMD Test v2
+# Category: CPU > Benchmark
+# Tests floating point and SIMD performance
+
+tests:
+  - id: cpu_benchmark_floating_point_simd_v2
+    name: CPU Floating Point & SIMD Test v2
+    category: CPU
+    description: "Tests CPU floating point and SIMD instruction performance"
+    duration_estimate: 600  # 10 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "CPU detected"
+      - "SIMD extensions available (SSE, AVX)"
+    parameters:
+      duration: 30
+      operations: ["add", "multiply", "divide"]
+      vector_size: 256
+    thresholds:
+      min_flops: 1000000
+    baseline:
+      expected_gflops: 50
+      expected_simd_utilization: 0.8
+

@@ -1,0 +1,23 @@
+# Network Benchmark - Jitter v2
+# Category: Network > Benchmark
+# Tests network jitter
+
+tests:
+  - id: network_benchmark_jitter_v2
+    name: Network Benchmark - Jitter v2
+    category: Network
+    description: "Benchmarks network jitter characteristics"
+    duration_estimate: 300  # 5 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "Network interface detected"
+      - "Network connectivity"
+    parameters:
+      duration: 30
+      packet_count: 1000
+    thresholds:
+      max_jitter_ms: 10
+    baseline:
+      expected_jitter_ms: 2
+

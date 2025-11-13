@@ -1,0 +1,23 @@
+# GPU CUDA Compute Benchmark v2
+# Category: GPU > Compute
+# Tests GPU CUDA compute performance
+
+tests:
+  - id: gpu_compute_cuda_benchmark_v2
+    name: GPU CUDA Compute Benchmark v2
+    category: GPU
+    description: "Benchmarks GPU CUDA compute performance"
+    duration_estimate: 900  # 15 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "GPU detected"
+      - "CUDA available"
+    parameters:
+      duration: 45
+      kernel_type: "matrix_multiply"
+    thresholds:
+      min_gflops: 1000
+    baseline:
+      expected_gflops: 5000
+

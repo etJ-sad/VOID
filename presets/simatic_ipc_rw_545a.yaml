@@ -1,0 +1,81 @@
+# SIMATIC IPC RW-545A Test Preset
+# Preset configuration for SIMATIC IPC RW-545A device
+# This preset contains recommended test cases for this specific device model
+
+preset:
+  id: simatic_ipc_rw_545a
+  name: SIMATIC IPC RW-545A
+  description: "Complete test suite for SIMATIC IPC RW-545A rugged industrial PC"
+  device_type: "Rugged Industrial PC"
+  manufacturer: "Siemens"
+  model: "RW-545A"
+  
+  # Hardware specifications (for reference)
+  hardware:
+    cpu: "Intel Core i7 or equivalent"
+    ram: "8GB - 32GB DDR4"
+    storage: "SSD 256GB - 1TB"
+    network: "Gigabit Ethernet"
+    gpu: "Integrated or Discrete"
+  
+  # Test case selection for this device (comprehensive for rugged device)
+  test_cases:
+    # CPU Tests
+    - cpu_stress_thermal_throttling_v2
+    - cpu_stress_prime_calculation_v2
+    - cpu_benchmark_multithreaded_v2
+    - cpu_benchmark_cryptographic_v2
+    - cpu_benchmark_floating_point_simd_v2
+    - cpu_diagnostic_info_v2
+    - cpu_diagnostic_cache_v2
+    - cpu_pattern_instruction_mix_v2
+    
+    # RAM Tests
+    - ram_stress_continuous_allocation_v2
+    - ram_stress_memory_leak_v2
+    - ram_benchmark_bandwidth_v2
+    - ram_benchmark_cache_performance_v2
+    - ram_pattern_checkerboard_v2
+    - ram_pattern_walking_bits_v2
+    - ram_diagnostic_topology_v2
+    - ram_diagnostic_speed_v2
+    - ram_diagnostic_integrity_v2
+    
+    # GPU Tests (if available)
+    - gpu_stress_thermal_v2
+    - gpu_benchmark_memory_bandwidth_v2
+    - gpu_compute_cuda_benchmark_v2
+    - gpu_pattern_compute_v2
+    - gpu_diagnostic_info_v2
+    
+    # Storage Tests
+    - storage_stress_endurance_v2
+    - storage_stress_wear_leveling_v2
+    - storage_benchmark_sequential_io_v2
+    - storage_benchmark_random_io_v2
+    - storage_benchmark_queue_depth_v2
+    - storage_health_smart_validation_v2
+    - storage_pattern_access_v2
+    - storage_pattern_file_ops_v2
+    
+    # Network Tests
+    - network_stress_bandwidth_saturation_v2
+    - network_stress_connection_stability_v2
+    - network_benchmark_latency_v2
+    - network_benchmark_throughput_v2
+    - network_benchmark_jitter_v2
+    - network_pattern_traffic_v2
+    - network_diagnostic_info_v2
+    
+    # System Tests
+    - system_performance_boot_time_v2
+    - system_performance_responsiveness_v2
+    - system_thermal_cooling_efficiency_v2
+    - system_power_consumption_v2
+    - system_stability_uptime_v2
+    - system_security_secure_boot_v2
+    - system_security_tpm_validation_v2
+    - system_diagnostic_info_v2
+    - system_diagnostic_hardware_enum_v2
+    - system_pattern_resource_usage_v2
+

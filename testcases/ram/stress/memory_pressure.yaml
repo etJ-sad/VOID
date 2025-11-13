@@ -1,0 +1,27 @@
+# RAM Stress Test - Memory Pressure
+# Category: RAM > Stress
+# Stress tests RAM under memory pressure
+
+tests:
+  - id: ram_stress_memory_pressure
+    name: RAM Stress Test - Memory Pressure
+    category: RAM
+    description: "Stress tests RAM under high memory pressure conditions"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "RAM detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 120
+      target_memory_percent: 85
+      allocation_pattern: "aggressive"
+      monitor_swapping: true
+      collect_performance_metrics: true
+    thresholds:
+      max_swap_usage_percent: 10
+      max_memory_fragmentation: 0.3
+    baseline:
+      expected_memory_efficiency: 0.9
+

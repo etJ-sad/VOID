@@ -1,0 +1,23 @@
+# System Stability Test - Uptime v2
+# Category: System > Stability
+# Tests system stability and uptime
+
+tests:
+  - id: system_stability_uptime_v2
+    name: System Stability Test - Uptime v2
+    category: System
+    description: "Tests system stability over extended uptime period"
+    duration_estimate: 86400  # 24 hours
+    priority: 10
+    test_type: stress
+    preconditions:
+      - "System accessible"
+    parameters:
+      duration: 3600
+      monitor_interval: 60
+    thresholds:
+      no_crashes: true
+      no_hangs: true
+    baseline:
+      expected_uptime_hours: 24
+

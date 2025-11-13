@@ -1,0 +1,25 @@
+# RAM Stress Test - Continuous Allocation v2
+# Category: RAM > Stress
+# Tests RAM with continuous allocation patterns
+
+tests:
+  - id: ram_stress_continuous_allocation_v2
+    name: RAM Stress Test - Continuous Allocation v2
+    category: RAM
+    description: "Stress tests RAM with continuous allocation and deallocation"
+    duration_estimate: 1800  # 30 minutes
+    priority: 8
+    test_type: stress
+    preconditions:
+      - "RAM detected"
+      - "Sufficient free memory"
+    parameters:
+      duration: 120
+      allocation_size_mb: 100
+      cycles: 100
+    thresholds:
+      max_memory_usage_percent: 90
+      no_errors: true
+    baseline:
+      expected_allocation_speed_mbps: 1000
+

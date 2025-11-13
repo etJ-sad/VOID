@@ -1,0 +1,25 @@
+# Storage Stress Test - Endurance v2
+# Category: Storage > Stress
+# Tests storage endurance
+
+tests:
+  - id: storage_stress_endurance_v2
+    name: Storage Stress Test - Endurance v2
+    category: Storage
+    description: "Tests storage endurance with repeated write cycles"
+    duration_estimate: 7200  # 2 hours
+    priority: 9
+    test_type: stress
+    preconditions:
+      - "Storage detected"
+      - "Sufficient free space"
+    parameters:
+      duration: 300
+      write_cycles: 1000
+      block_size_mb: 100
+    thresholds:
+      no_errors: true
+      endurance_score_min: 95
+    baseline:
+      expected_endurance: 100
+

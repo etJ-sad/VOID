@@ -1,0 +1,22 @@
+# Network Pattern Test - Traffic Patterns v2
+# Category: Network > Pattern
+# Tests network with various traffic patterns
+
+tests:
+  - id: network_pattern_traffic_v2
+    name: Network Pattern Test - Traffic Patterns v2
+    category: Network
+    description: "Tests network with bursty, steady, and variable traffic patterns"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "Network interface detected"
+    parameters:
+      duration: 45
+      patterns: ["bursty", "steady", "variable"]
+    thresholds:
+      no_errors: true
+    baseline:
+      expected_pattern_performance: "good"
+

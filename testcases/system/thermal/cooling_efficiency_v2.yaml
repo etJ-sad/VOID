@@ -1,0 +1,24 @@
+# System Thermal Test - Cooling Efficiency v2
+# Category: System > Thermal
+# Tests system cooling efficiency
+
+tests:
+  - id: system_thermal_cooling_efficiency_v2
+    name: System Thermal Test - Cooling Efficiency v2
+    category: System
+    description: "Tests system cooling efficiency under sustained load"
+    duration_estimate: 3600  # 60 minutes
+    priority: 9
+    test_type: stress
+    preconditions:
+      - "Temperature sensors available"
+      - "Cooling system operational"
+    parameters:
+      duration: 180
+      load_type: "full_system"
+    thresholds:
+      max_system_temp_celsius: 80
+      cooling_efficiency_min: 0.8
+    baseline:
+      expected_system_temp_range: [50, 75]
+

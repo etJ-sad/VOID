@@ -1,0 +1,22 @@
+# GPU Diagnostic - GPU Information v2
+# Category: GPU > Diagnostic
+# Collects GPU information
+
+tests:
+  - id: gpu_diagnostic_info_v2
+    name: GPU Diagnostic - GPU Information v2
+    category: GPU
+    description: "Collects and validates GPU information"
+    duration_estimate: 60  # 1 minute
+    priority: 5
+    test_type: diagnostic
+    preconditions:
+      - "GPU detected"
+    parameters:
+      duration: 10
+      collect_all_info: true
+    thresholds:
+      gpu_detected: true
+    baseline:
+      expected_vram_gb: 4
+

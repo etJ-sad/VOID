@@ -1,0 +1,22 @@
+# GPU Pattern Test - Compute Patterns v2
+# Category: GPU > Pattern
+# Tests GPU with various compute patterns
+
+tests:
+  - id: gpu_pattern_compute_v2
+    name: GPU Pattern Test - Compute Patterns v2
+    category: GPU
+    description: "Tests GPU with various compute workload patterns"
+    duration_estimate: 600  # 10 minutes
+    priority: 6
+    test_type: pattern
+    preconditions:
+      - "GPU detected"
+    parameters:
+      duration: 30
+      patterns: ["matrix", "vector", "reduction"]
+    thresholds:
+      min_throughput: 1000
+    baseline:
+      expected_throughput: 5000
+

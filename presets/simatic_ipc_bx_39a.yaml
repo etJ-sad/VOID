@@ -1,0 +1,58 @@
+# SIMATIC IPC BX-39A Test Preset
+# Preset configuration for SIMATIC IPC BX-39A device
+# This preset contains recommended test cases for this specific device model
+
+preset:
+  id: simatic_ipc_bx_39a
+  name: SIMATIC IPC BX-39A
+  description: "Complete test suite for SIMATIC IPC BX-39A industrial PC"
+  device_type: "Industrial PC"
+  manufacturer: "Siemens"
+  model: "BX-39A"
+  
+  # Hardware specifications (for reference)
+  hardware:
+    cpu: "Intel Core i7 or equivalent"
+    ram: "8GB - 32GB DDR4"
+    storage: "SSD 256GB - 1TB"
+    network: "Gigabit Ethernet"
+    gpu: "Integrated"
+  
+  # Test case selection for this device
+  test_cases:
+    # CPU Tests
+    - cpu_stress_thermal_throttling_v2
+    - cpu_stress_prime_calculation_v2
+    - cpu_benchmark_multithreaded_v2
+    - cpu_benchmark_cryptographic_v2
+    - cpu_diagnostic_info_v2
+    - cpu_diagnostic_cache_v2
+    
+    # RAM Tests
+    - ram_stress_continuous_allocation_v2
+    - ram_stress_memory_leak_v2
+    - ram_benchmark_bandwidth_v2
+    - ram_benchmark_cache_performance_v2
+    - ram_diagnostic_topology_v2
+    - ram_diagnostic_speed_v2
+    
+    # Storage Tests
+    - storage_stress_endurance_v2
+    - storage_benchmark_sequential_io_v2
+    - storage_benchmark_random_io_v2
+    - storage_health_smart_validation_v2
+    - storage_pattern_access_v2
+    
+    # Network Tests
+    - network_stress_bandwidth_saturation_v2
+    - network_benchmark_latency_v2
+    - network_benchmark_throughput_v2
+    - network_diagnostic_info_v2
+    
+    # System Tests
+    - system_performance_boot_time_v2
+    - system_thermal_cooling_efficiency_v2
+    - system_stability_uptime_v2
+    - system_diagnostic_info_v2
+    - system_diagnostic_hardware_enum_v2
+

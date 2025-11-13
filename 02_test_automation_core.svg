@@ -1,0 +1,197 @@
+<svg viewBox="0 0 1400 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="layer1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="layer2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#00ACC1;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0097A7;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="layer3" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#7B1FA2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#6A1B9A;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="layer4" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#F57C00;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E64A19;stop-opacity:1" />
+        </linearGradient>
+        <filter id="elevation2">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.2"/>
+        </filter>
+    </defs>
+    
+    <rect width="1400" height="1080" fill="#FAFAFA"/>
+    
+    <text x="24" y="40" font-family="Roboto, sans-serif" font-size="28" font-weight="300" fill="#212121">Test Automation Core</text>
+    <rect x="24" y="52" width="80" height="3" fill="url(#layer1)"/>
+    
+    <!-- LAYER 1: Generation -->
+    <rect x="24" y="80" width="1352" height="220" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="24" y="80" width="1352" height="4" fill="url(#layer1)" rx="4"/>
+    
+    <text x="48" y="112" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Test Generation Layer</text>
+    <text x="1310" y="112" font-family="Roboto, sans-serif" font-size="14" font-weight="300" fill="#757575">Layer 1</text>
+    
+    <rect x="48" y="136" width="640" height="140" fill="#F5F5F5" rx="2"/>
+    <text x="68" y="160" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#1976D2">Hardware Detection</text>
+    <text x="68" y="184" font-family="Roboto, sans-serif" font-size="12" fill="#424242">CPU Enumeration</text>
+    <text x="68" y="204" font-family="Roboto, sans-serif" font-size="12" fill="#424242">RAM Detection</text>
+    <text x="68" y="224" font-family="Roboto, sans-serif" font-size="12" fill="#424242">GPU Discovery</text>
+    <text x="68" y="244" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Storage Mapping</text>
+    <text x="68" y="264" font-family="Roboto, sans-serif" font-size="12" fill="#424242">I/O Detection</text>
+    
+    <text x="320" y="184" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Sensor Enumeration</text>
+    <text x="320" y="204" font-family="Roboto, sans-serif" font-size="12" fill="#424242">PCIe Bus Scan</text>
+    <text x="320" y="224" font-family="Roboto, sans-serif" font-size="12" fill="#424242">BIOS/UEFI Info</text>
+    <text x="320" y="244" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Network Interfaces</text>
+    <text x="320" y="264" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Security Modules</text>
+    
+    <rect x="708" y="136" width="640" height="140" fill="#F5F5F5" rx="2"/>
+    <text x="728" y="160" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#1976D2">Test Case Generator</text>
+    <text x="728" y="184" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Auto Test Selection</text>
+    <text x="728" y="204" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Baseline Comparison</text>
+    <text x="728" y="224" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Priority Assignment</text>
+    <text x="728" y="244" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Duration Estimation</text>
+    <text x="728" y="264" font-family="Roboto, sans-serif" font-size="12" fill="#424242">48h Optimization</text>
+    
+    <text x="1000" y="184" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Dependency Analysis</text>
+    <text x="1000" y="204" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Risk Assessment</text>
+    <text x="1000" y="224" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Coverage Calculator</text>
+    <text x="1000" y="244" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Parallel Planner</text>
+    <text x="1000" y="264" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Model Library</text>
+    
+    <!-- LAYER 2: Definition -->
+    <rect x="24" y="320" width="1352" height="260" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="24" y="320" width="1352" height="4" fill="url(#layer2)" rx="4"/>
+    
+    <text x="48" y="352" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Test Definition Layer</text>
+    <text x="1310" y="352" font-family="Roboto, sans-serif" font-size="14" font-weight="300" fill="#757575">Layer 2</text>
+    
+    <rect x="48" y="376" width="280" height="180" fill="#F5F5F5" rx="2"/>
+    <text x="68" y="400" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">Pre-Conditions</text>
+    <text x="68" y="424" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Hardware Present</text>
+    <text x="68" y="444" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Drivers Loaded</text>
+    <text x="68" y="464" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Tools Available</text>
+    <text x="68" y="484" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Temperature OK</text>
+    <text x="68" y="504" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Baseline Loaded</text>
+    <text x="68" y="524" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Resources Free</text>
+    <text x="68" y="544" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Network Connected</text>
+    
+    <rect x="348" y="376" width="280" height="180" fill="#F5F5F5" rx="2"/>
+    <text x="368" y="400" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">Test Suite</text>
+    <text x="368" y="424" font-family="Roboto, sans-serif" font-size="12" fill="#424242">CPU Stress</text>
+    <text x="368" y="444" font-family="Roboto, sans-serif" font-size="12" fill="#424242">RAM Pattern</text>
+    <text x="368" y="464" font-family="Roboto, sans-serif" font-size="12" fill="#424242">GPU Compute</text>
+    <text x="368" y="484" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Disk Performance</text>
+    <text x="368" y="504" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Network Throughput</text>
+    <text x="368" y="524" font-family="Roboto, sans-serif" font-size="12" fill="#424242">I/O Operations</text>
+    <text x="368" y="544" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Security Validation</text>
+    
+    <rect x="648" y="376" width="280" height="180" fill="#F5F5F5" rx="2"/>
+    <text x="668" y="400" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">Test Lifecycle</text>
+    <text x="668" y="424" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Setup</text>
+    <text x="668" y="444" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Execute</text>
+    <text x="668" y="464" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Validate</text>
+    <text x="668" y="484" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Measure</text>
+    <text x="668" y="504" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Cleanup</text>
+    <text x="668" y="524" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Report</text>
+    <text x="668" y="544" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Archive</text>
+    
+    <rect x="948" y="376" width="400" height="88" fill="#F5F5F5" rx="2"/>
+    <text x="968" y="400" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">Test Data</text>
+    <text x="968" y="424" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Baseline Performance Data</text>
+    <text x="968" y="444" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Threshold Values</text>
+    <text x="968" y="464" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Expected Results</text>
+    
+    <rect x="948" y="476" width="400" height="80" fill="#F5F5F5" rx="2"/>
+    <text x="968" y="500" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#00ACC1">Libraries</text>
+    <text x="968" y="524" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Python Core | NumPy | Pandas</text>
+    <text x="968" y="544" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Tool Wrappers | ML Models</text>
+    
+    <!-- LAYER 3: Runtime -->
+    <rect x="24" y="600" width="1352" height="200" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="24" y="600" width="1352" height="4" fill="url(#layer3)" rx="4"/>
+    
+    <text x="48" y="632" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Test Runtime Layer</text>
+    <text x="1310" y="632" font-family="Roboto, sans-serif" font-size="14" font-weight="300" fill="#757575">Layer 3</text>
+    
+    <rect x="48" y="656" width="1300" height="52" fill="#F5F5F5" rx="2"/>
+    <text x="68" y="680" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#7B1FA2">Runtime Engine</text>
+    <text x="68" y="700" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Parallel Execution | Progress Tracking | Timeout Control | Error Recovery</text>
+    
+    <rect x="48" y="728" width="640" height="52" fill="#F5F5F5" rx="2"/>
+    <text x="68" y="752" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#7B1FA2">Logging</text>
+    <text x="68" y="772" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Structured JSON | Time-Series | Error Traces</text>
+    
+    <rect x="708" y="728" width="640" height="52" fill="#F5F5F5" rx="2"/>
+    <text x="728" y="752" font-family="Roboto, sans-serif" font-size="14" font-weight="500" fill="#7B1FA2">Reporting</text>
+    <text x="728" y="772" font-family="Roboto, sans-serif" font-size="12" fill="#424242">Real-time Results | Dashboard | Alerts</text>
+    
+    <!-- LAYER 4: Adaption -->
+    <rect x="24" y="820" width="1352" height="236" fill="#FFFFFF" rx="4" filter="url(#elevation2)"/>
+    <rect x="24" y="820" width="1352" height="4" fill="url(#layer4)" rx="4"/>
+    
+    <text x="48" y="852" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Hardware Abstraction Layer</text>
+    <text x="1310" y="852" font-family="Roboto, sans-serif" font-size="14" font-weight="300" fill="#757575">Layer 4</text>
+    
+    <rect x="48" y="876" width="110" height="56" fill="#1976D2" rx="2"/>
+    <text x="103" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">CPU</text>
+    
+    <rect x="174" y="876" width="110" height="56" fill="#00ACC1" rx="2"/>
+    <text x="229" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">RAM</text>
+    
+    <rect x="300" y="876" width="110" height="56" fill="#7B1FA2" rx="2"/>
+    <text x="355" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">GPU</text>
+    
+    <rect x="426" y="876" width="110" height="56" fill="#F57C00" rx="2"/>
+    <text x="481" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Storage</text>
+    
+    <rect x="552" y="876" width="110" height="56" fill="#1976D2" rx="2"/>
+    <text x="607" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">USB</text>
+    
+    <rect x="678" y="876" width="110" height="56" fill="#00ACC1" rx="2"/>
+    <text x="733" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">COM</text>
+    
+    <rect x="804" y="876" width="110" height="56" fill="#7B1FA2" rx="2"/>
+    <text x="859" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Network</text>
+    
+    <rect x="930" y="876" width="110" height="56" fill="#F57C00" rx="2"/>
+    <text x="985" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Sensors</text>
+    
+    <rect x="1056" y="876" width="110" height="56" fill="#1976D2" rx="2"/>
+    <text x="1111" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">PCIe</text>
+    
+    <rect x="1182" y="876" width="166" height="56" fill="#00ACC1" rx="2"/>
+    <text x="1265" y="908" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">Security Module</text>
+    
+    <text x="48" y="964" font-family="Roboto, sans-serif" font-size="12" font-weight="500" fill="#757575">THIRD PARTY TOOLS</text>
+    <rect x="48" y="976" width="100" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="98" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">Adaptec</text>
+    
+    <rect x="160" y="976" width="100" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="210" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">NVIDIA</text>
+    
+    <rect x="272" y="976" width="100" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="322" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">Broadcom</text>
+    
+    <rect x="384" y="976" width="110" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="439" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">Siemens IPC</text>
+    
+    <rect x="506" y="976" width="90" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="551" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">ASUS API</text>
+    
+    <rect x="608" y="976" width="90" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="653" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">HWiNFO</text>
+    
+    <rect x="710" y="976" width="120" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="770" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">CrystalDiskMark</text>
+    
+    <rect x="842" y="976" width="100" height="28" fill="#E0E0E0" rx="14"/>
+    <text x="892" y="995" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#424242">MemTest86</text>
+    
+    <text x="960" y="995" font-family="Roboto, sans-serif" font-size="11" fill="#9E9E9E">+12 more tools</text>
+    
+    <rect x="48" y="1020" width="1300" height="32" fill="#E3F2FD" rx="2"/>
+    <text x="700" y="1042" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#1976D2">Estimated Duration: 48 hours (parallel execution)</text>
+</svg>

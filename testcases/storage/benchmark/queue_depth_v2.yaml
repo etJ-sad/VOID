@@ -1,0 +1,22 @@
+# Storage Benchmark - Queue Depth v2
+# Category: Storage > Benchmark
+# Tests storage performance at different queue depths
+
+tests:
+  - id: storage_benchmark_queue_depth_v2
+    name: Storage Benchmark - Queue Depth v2
+    category: Storage
+    description: "Benchmarks storage performance at various queue depths"
+    duration_estimate: 900  # 15 minutes
+    priority: 6
+    test_type: benchmark
+    preconditions:
+      - "Storage detected"
+    parameters:
+      duration: 45
+      queue_depths: [1, 4, 16, 32, 64]
+    thresholds:
+      min_iops: 500
+    baseline:
+      expected_max_iops: 100000
+

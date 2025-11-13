@@ -1,0 +1,24 @@
+# Network Stress Test - Connection Stability v2
+# Category: Network > Stress
+# Tests network connection stability
+
+tests:
+  - id: network_stress_connection_stability_v2
+    name: Network Stress Test - Connection Stability v2
+    category: Network
+    description: "Tests network connection stability under load"
+    duration_estimate: 3600  # 1 hour
+    priority: 9
+    test_type: stress
+    preconditions:
+      - "Network interface detected"
+      - "Network connectivity"
+    parameters:
+      duration: 300
+      connection_count: 100
+    thresholds:
+      max_disconnections: 0
+      stability_score_min: 99
+    baseline:
+      expected_stability: 100
+

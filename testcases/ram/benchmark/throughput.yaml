@@ -1,0 +1,27 @@
+# RAM Benchmark - Throughput
+# Category: RAM > Benchmark
+# Tests RAM throughput performance
+
+tests:
+  - id: ram_benchmark_throughput
+    name: RAM Benchmark - Memory Throughput
+    category: RAM
+    description: "Measures RAM read/write throughput"
+    duration_estimate: 450  # 7.5 minutes
+    priority: 7
+    test_type: benchmark
+    preconditions:
+      - "RAM detected"
+      - "Sufficient memory available"
+    parameters:
+      duration: 40
+      operations: ["read", "write", "copy"]
+      data_size_mb: 200
+      block_size_mb: 10
+    thresholds:
+      min_read_throughput_mbps: 5000
+      min_write_throughput_mbps: 4000
+    baseline:
+      expected_read_throughput_mbps: 8000
+      expected_write_throughput_mbps: 6000
+
