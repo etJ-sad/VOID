@@ -60,20 +60,25 @@ tmp/
 temp/
 *.tmp
 
-# AI Models
-models/*.pkl
-models/*.joblib
-models/*.h5
-models/*.pt
-models/*.onnx
-models/*.safetensors
-models/*.bin
-models/*.json
-models/*.txt
+# Small AI Models (sklearn models - included in git)
+# models/*.pkl          # COMMENTED OUT - we want to upload these
+# models/*.joblib       # COMMENTED OUT - we want to upload these
 
-# Large AI Models (can be large - 50MB - 2GB+)
+# Large AI Models (Hugging Face - excluded from git, too large)
 models/time_series_forecaster/
 models/anomaly_detector/
 models/pattern_analyzer/
+models/phi1_5_small_llm/
 models/phi2_small_llm/
+
+# Large model files (Hugging Face safetensors, bin, etc.)
+models/*.safetensors
+models/*.bin
+models/*.h5
+models/*.pt
+models/*.onnx
+
+# Model config files from Hugging Face (usually needed, but regenerated)
+# models/*.json        # COMMENTED OUT - may be needed
+# models/*.txt         # COMMENTED OUT - may be needed
 
