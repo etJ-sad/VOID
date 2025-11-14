@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID Framework - Industrial Device Validation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #FAFAFA; color: #212121; }
+        
+        /* Header */
+        .header { background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 16px 0; position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 1600px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+        .logo { font-size: 20px; font-weight: 500; color: #212121; }
+        .logo-sub { font-size: 12px; color: #757575; font-weight: 400; margin-top: 2px; }
+        .nav { display: flex; gap: 16px; flex-shrink: 0; }
+        .nav-link { padding: 8px 16px; border-radius: 4px; border: 1px solid #E0E0E0; background: white; font-size: 14px; cursor: pointer; transition: all 0.3s; text-decoration: none; color: #424242; }
+        .nav-link:hover { background: #F5F5F5; }
+        .nav-link.primary { background: #1976D2; color: white; border: none; }
+        .nav-link.primary:hover { background: #1565C0; }
+        
+        /* Container */
+        .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border-left: 4px solid #1976D2; transition: all 0.2s; }
+        .stat-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .stat-card.highlight { border-left-color: #43A047; }
+        .stat-card.warning { border-left-color: #FF9800; }
+        .stat-card.danger { border-left-color: #E53935; }
+        .stat-label { font-size: 13px; color: #757575; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 500; }
+        .stat-value { font-size: 36px; font-weight: 300; color: #1976D2; line-height: 1.2; }
+        .stat-card.highlight .stat-value { color: #43A047; }
+        .stat-card.warning .stat-value { color: #FF9800; }
+        .stat-card.danger .stat-value { color: #E53935; }
+        .stat-sublabel { font-size: 13px; color: #9E9E9E; margin-top: 8px; }
+        .stat-trend { font-size: 12px; color: #43A047; margin-top: 4px; }
+        
+        /* Section */
+        .section { background: white; border-radius: 4px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #E0E0E0; }
+        .section-title { font-size: 18px; font-weight: 500; color: #212121; }
+        .section-actions { display: flex; gap: 8px; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #F5F5F5; padding: 14px 12px; text-align: left; font-size: 13px; font-weight: 500; color: #616161; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px 12px; font-size: 15px; color: #424242; border-bottom: 1px solid #F5F5F5; }
+        tr:hover { background: #FAFAFA; }
+        
+        /* Status Badge */
+        .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .status.completed { background: #E8F5E9; color: #2E7D32; }
+        .status.running { background: #E3F2FD; color: #1565C0; }
+        .status.failed { background: #FFEBEE; color: #C62828; }
+        .status.pending { background: #FFF3E0; color: #E65100; }
+        
+        /* Progress Bar */
+        .progress-container { background: #E0E0E0; height: 6px; border-radius: 3px; overflow: hidden; margin: 8px 0; }
+        .progress-bar { background: #1976D2; height: 100%; transition: width 0.3s; }
+        .progress-text { font-size: 11px; color: #757575; margin-top: 4px; }
+        
+        /* Button */
+        .btn { padding: 10px 18px; border-radius: 4px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #1976D2; color: white; }
+        .btn-primary:hover { background: #1565C0; }
+        .btn-secondary { background: #E0E0E0; color: #424242; }
+        .btn-secondary:hover { background: #BDBDBD; }
+        .btn-text { background: none; color: #1976D2; padding: 6px 10px; font-size: 14px; }
+        .btn-text:hover { background: #E3F2FD; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 60px 20px; color: #9E9E9E; }
+        .empty-state-text { font-size: 17px; margin-bottom: 8px; color: #757575; font-weight: 500; }
+        .empty-state-subtext { font-size: 14px; color: #9E9E9E; }
+        
+        /* Link */
+        .link { color: #1976D2; text-decoration: none; cursor: pointer; }
+        .link:hover { text-decoration: underline; }
+        
+        /* Loading */
+        .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid #E0E0E0; border-top-color: #1976D2; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Toast Notification */
+        @keyframes slideUpToast {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        /* Table improvements */
+        table { font-size: 15px; }
+        th { font-weight: 500; font-size: 13px; }
+        td { vertical-align: middle; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            #presetsGrid { grid-template-columns: 1fr; }
+            table { font-size: 11px; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: 24px; flex: 1;">
+                <div>
+                    <div class="logo">VOID Framework</div>
+                    <div class="logo-sub">Validation Of Industrial Devices</div>
+                </div>
+                <div style="height: 40px; width: 1px; background: #E0E0E0;"></div>
+                <div id="headerIpcModel" style="display: flex; align-items: center; gap: 12px;">
+                    <div>
+                        <div style="font-size: 16px; font-weight: 500; color: #212121; line-height: 1.2;">
+                            <span id="headerIpcModelName">Detecting...</span>
+                        </div>
+                        <div style="font-size: 12px; color: #757575; line-height: 1.2;" id="headerIpcModelStatus">
+                            Detecting...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav">
+                <a href="/test_selection.html" class="nav-link primary">Start New Test Session</a>
+                <a href="/test_management.html" class="nav-link">Test Case Management</a>
+                <a href="/api/docs" class="nav-link">API Documentation</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card" id="activeSessionsCard">
+                <div class="stat-label">Active Sessions</div>
+                <div class="stat-value" id="activeSessions">0</div>
+                <div class="stat-sublabel">Currently running</div>
+                <div class="stat-trend" id="activeSessionsTrend"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Sessions</div>
+                <div class="stat-value" id="totalSessions">0</div>
+                <div class="stat-sublabel">All time</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="completedSessions">0</div>
+                <div class="stat-sublabel">Successfully finished</div>
+                <div class="stat-trend" id="completedSessionsTrend"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Available Tests</div>
+                <div class="stat-value" id="availableTests">0</div>
+                <div class="stat-sublabel">Test cases loaded</div>
+            </div>
+            <div class="stat-card" id="systemHealthCard">
+                <div class="stat-label">System Health</div>
+                <div class="stat-value" id="systemHealth" style="font-size: 18px;">Healthy</div>
+                <div class="stat-sublabel" id="systemHealthDetails">All systems operational</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Success Rate</div>
+                <div class="stat-value" id="successRate">-</div>
+                <div class="stat-sublabel">Completed sessions</div>
+            </div>
+        </div>
+
+        <!-- Device Presets -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Device Presets</div>
+                    <div style="font-size: 12px; color: #757575; margin-top: 4px;">Select a preset to quickly start testing for your device</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-text" onclick="loadPresets()">Refresh</button>
+                </div>
+            </div>
+            <div id="presetsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sessions List -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Test Sessions</div>
+                    <div style="font-size: 12px; color: #757575; margin-top: 4px;" id="sessionsSummary">Loading...</div>
+                </div>
+                <div class="section-actions">
+                    <select id="sessionFilter" onchange="applySessionFilter()" style="padding: 8px 12px; border: 1px solid #E0E0E0; border-radius: 4px; font-size: 13px; margin-right: 8px;">
+                        <option value="all">All Sessions</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                    <button class="btn btn-text" onclick="loadSessions()">Refresh</button>
+                </div>
+            </div>
+            <div id="sessionsTable">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let sessions = [];
+        let updateInterval = null;
+        let previousStats = {
+            activeSessions: 0,
+            completedSessions: 0
+        };
+        let sessionFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSystemStatus();
+            loadSessions();
+            loadAvailableTests();
+            loadPresets();
+            startAutoUpdate();
+            
+            // Load IPC model immediately
+            loadSystemStatus();
+        });
+
+        // Auto update every 3 seconds
+        function startAutoUpdate() {
+            updateInterval = setInterval(() => {
+                loadSystemStatus();
+                loadSessions();
+                // Reload presets to update matching status
+                loadPresets();
+            }, 3000);
+        }
+
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch(`${API_URL}/system/status`);
+                const data = await response.json();
+                
+                // Update active sessions with trend
+                const activeSessions = data.active_sessions || 0;
+                document.getElementById('activeSessions').textContent = activeSessions;
+                updateTrend('activeSessionsTrend', activeSessions, previousStats.activeSessions);
+                previousStats.activeSessions = activeSessions;
+                
+                // Update active sessions card style
+                const activeCard = document.getElementById('activeSessionsCard');
+                if (activeSessions > 0) {
+                    activeCard.classList.add('warning');
+                    activeCard.classList.remove('highlight', 'danger');
+                } else {
+                    activeCard.classList.remove('warning', 'danger', 'highlight');
+                }
+                
+                // Update system health
+                const healthCard = document.getElementById('systemHealthCard');
+                const healthValue = document.getElementById('systemHealth');
+                const healthDetails = document.getElementById('systemHealthDetails');
+                
+                if (data.system_health === 'healthy') {
+                    healthCard.classList.add('highlight');
+                    healthCard.classList.remove('warning', 'danger');
+                    healthValue.textContent = 'Healthy';
+                    healthValue.style.color = '#43A047';
+                    healthDetails.textContent = 'All systems operational';
+                } else if (data.system_health === 'degraded') {
+                    healthCard.classList.add('warning');
+                    healthCard.classList.remove('highlight', 'danger');
+                    healthValue.textContent = 'Degraded';
+                    healthValue.style.color = '#FF9800';
+                    healthDetails.textContent = 'High load detected';
+                } else {
+                    healthCard.classList.add('danger');
+                    healthCard.classList.remove('highlight', 'warning');
+                    healthValue.textContent = 'Critical';
+                    healthValue.style.color = '#E53935';
+                    healthDetails.textContent = 'System issues detected';
+                }
+                
+                // Update IPC model display in header
+                if (data.current_ipc_model) {
+                    document.getElementById('headerIpcModelName').textContent = data.current_ipc_model;
+                    
+                    if (data.matching_preset_id) {
+                        document.getElementById('headerIpcModelStatus').innerHTML = 
+                            `<span style="color: #1976D2; font-weight: 500;">Matching preset found</span>`;
+                        document.getElementById('headerIpcModelBadge').style.display = 'block';
+                    } else {
+                        document.getElementById('headerIpcModelStatus').textContent = 
+                            'No matching preset';
+                        document.getElementById('headerIpcModelBadge').style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading system status:', error);
+            }
+        }
+        
+        // Update trend indicator
+        function updateTrend(elementId, current, previous) {
+            const trendEl = document.getElementById(elementId);
+            if (!trendEl) return;
+            
+            if (previous === undefined || previous === null) {
+                trendEl.textContent = '';
+                return;
+            }
+            
+            const diff = current - previous;
+            if (diff > 0) {
+                trendEl.textContent = `+${diff} from last update`;
+                trendEl.style.color = '#43A047';
+            } else if (diff < 0) {
+                trendEl.textContent = `${diff} from last update`;
+                trendEl.style.color = '#E53935';
+            } else {
+                trendEl.textContent = 'No change';
+                trendEl.style.color = '#757575';
+            }
+        }
+        
+        // Refresh IPC model
+        async function refreshIpcModel() {
+            // Force reload by adding timestamp to bypass cache
+            await loadSystemStatus();
+        }
+
+        // Load available tests count
+        async function loadAvailableTests() {
+            try {
+                const response = await fetch(`${API_URL}/tests/available`);
+                const data = await response.json();
+                document.getElementById('availableTests').textContent = data.total_tests;
+            } catch (error) {
+                console.error('Error loading tests:', error);
+            }
+        }
+
+        // Load presets
+        async function loadPresets() {
+            try {
+                const response = await fetch(`${API_URL}/presets`);
+                const data = await response.json();
+                
+                // Get matching preset ID from system status
+                const statusResponse = await fetch(`${API_URL}/system/status`);
+                const statusData = await statusResponse.json();
+                const matchingPresetId = statusData.matching_preset_id;
+                
+                const container = document.getElementById('presetsGrid');
+                if (data.presets.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-text">No presets available</div></div>';
+                    return;
+                }
+                
+                container.innerHTML = data.presets.map(preset => {
+                    const isMatching = preset.id === matchingPresetId;
+                    const borderColor = isMatching ? '#1976D2' : '#E8EAED';
+                    const borderWidth = isMatching ? '2px' : '1px';
+                    const bgColor = isMatching ? '#E3F2FD' : 'white';
+                    const badge = isMatching ? '<div style="display: inline-block; background: #1976D2; color: white; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-left: 10px;">CURRENT DEVICE</div>' : '';
+                    
+                    // Calculate estimated duration
+                    const totalHours = preset.test_case_count * 0.5; // Rough estimate
+                    const durationText = totalHours < 1 ? `${Math.round(totalHours * 60)}m` : `${totalHours.toFixed(1)}h`;
+                    
+                    return `
+                    <div style="background: ${bgColor}; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: ${borderWidth} solid ${borderColor}; cursor: pointer; transition: all 0.2s; position: relative; display: flex; flex-direction: column;" 
+                         onclick="usePreset('${preset.id}')" 
+                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)'"
+                         onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)'">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+                            <div style="flex: 1;">
+                                <div style="font-size: 20px; font-weight: 500; color: #1A1A1A; margin-bottom: 6px;">
+                                    ${preset.name}
+                                </div>
+                                ${badge}
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: #5F6368; margin-bottom: 18px; line-height: 1.6;">${preset.description}</div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; padding-top: 14px; border-top: 1px solid #E8EAED;">
+                            <span style="font-size: 12px; color: #80868B; background: #F5F5F5; padding: 5px 10px; border-radius: 4px;">${preset.manufacturer}</span>
+                            <span style="font-size: 12px; color: #80868B; background: #F5F5F5; padding: 5px 10px; border-radius: 4px;">${preset.device_type}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <div>
+                                <div style="font-size: 16px; color: #1976D2; font-weight: 500;">
+                                    ${preset.test_case_count} test cases
+                                </div>
+                                <div style="font-size: 12px; color: #9E9E9E; margin-top: 3px;">
+                                    Est. duration: ${durationText}
+                                </div>
+                            </div>
+                            <button style="background: #1976D2; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;" 
+                                    onmouseover="this.style.background='#1565C0'" 
+                                    onmouseout="this.style.background='#1976D2'"
+                                    onclick="event.stopPropagation(); usePreset('${preset.id}')">
+                                Use Preset
+                            </button>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading presets:', error);
+            }
+        }
+
+        // Use preset to start test session
+        async function usePreset(presetId) {
+            try {
+                // Get preset details
+                const presetResponse = await fetch(`${API_URL}/presets/${presetId}`);
+                const presetData = await presetResponse.json();
+                
+                if (!presetResponse.ok) {
+                    showNotification(`Error: ${presetData.detail}`, 'error');
+                    return;
+                }
+                
+                // Show confirmation with details
+                const confirmMsg = `Start test session with preset "${presetData.preset.name}"?\n\n` +
+                    `• ${presetData.total_tests} test cases\n` +
+                    `• Estimated duration: ${presetData.total_duration_hours} hours\n` +
+                    `• Device: ${presetData.preset.model}`;
+                
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+                
+                // Create session
+                const createResponse = await fetch(`${API_URL}/sessions/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const createData = await createResponse.json();
+                
+                if (createData.status === 'success') {
+                    // Run with preset
+                    const runResponse = await fetch(`${API_URL}/sessions/${createData.session_id}/run?preset_id=${presetId}`, {
+                        method: 'POST'
+                    });
+                    
+                    if (runResponse.ok) {
+                        showNotification(`Test session started with "${presetData.preset.name}"`, 'success');
+                        loadSessions();
+                        // Scroll to sessions table
+                        document.getElementById('sessionsTable').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        const error = await runResponse.json();
+                        showNotification(`Error: ${error.detail}`, 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error using preset:', error);
+                showNotification('Error starting test session', 'error');
+            }
+        }
+        
+        // Show notification toast
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '24px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = type === 'success' ? '#43A047' : type === 'error' ? '#E53935' : '#1976D2';
+            toast.style.color = 'white';
+            toast.style.padding = '16px 24px';
+            toast.style.borderRadius = '8px';
+            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+            toast.style.zIndex = '10000';
+            toast.style.fontSize = '14px';
+            toast.style.animation = 'slideUpToast 0.3s';
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideUpToast 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Load sessions
+        async function loadSessions() {
+            try {
+                const response = await fetch(`${API_URL}/sessions`);
+                const data = await response.json();
+                
+                // Load full session data for each session to get test results and decision
+                sessions = await Promise.all(
+                    data.sessions.map(async (s) => {
+                        try {
+                            const fullSession = await fetch(`${API_URL}/sessions/${s.session_id}`);
+                            return await fullSession.json();
+                        } catch (e) {
+                            return s; // Fallback to summary if full load fails
+                        }
+                    })
+                );
+                
+                document.getElementById('totalSessions').textContent = data.total;
+                
+                const completed = sessions.filter(s => s.status === 'completed').length;
+                const failed = sessions.filter(s => s.status === 'failed').length;
+                const active = sessions.filter(s => ['testing', 'analyzing', 'detecting', 'planning'].includes(s.status)).length;
+                
+                document.getElementById('completedSessions').textContent = completed;
+                updateTrend('completedSessionsTrend', completed, previousStats.completedSessions);
+                previousStats.completedSessions = completed;
+                
+                // Calculate success rate
+                const totalFinished = completed + failed;
+                if (totalFinished > 0) {
+                    const successRate = Math.round((completed / totalFinished) * 100);
+                    document.getElementById('successRate').textContent = `${successRate}%`;
+                } else {
+                    document.getElementById('successRate').textContent = '-';
+                }
+                
+                // Update sessions summary
+                const summary = `${data.total} total • ${active} active • ${completed} completed • ${failed} failed`;
+                document.getElementById('sessionsSummary').textContent = summary;
+                
+                renderSessionsTable();
+            } catch (error) {
+                console.error('Error loading sessions:', error);
+            }
+        }
+        
+        // Apply session filter
+        function applySessionFilter() {
+            sessionFilter = document.getElementById('sessionFilter').value;
+            renderSessionsTable();
+        }
+
+        // Render sessions table
+        function renderSessionsTable() {
+            const container = document.getElementById('sessionsTable');
+            
+            // Filter sessions
+            let filteredSessions = sessions;
+            if (sessionFilter === 'active') {
+                filteredSessions = sessions.filter(s => ['testing', 'analyzing', 'detecting', 'planning'].includes(s.status));
+            } else if (sessionFilter === 'completed') {
+                filteredSessions = sessions.filter(s => s.status === 'completed');
+            } else if (sessionFilter === 'failed') {
+                filteredSessions = sessions.filter(s => s.status === 'failed');
+            }
+            
+            if (filteredSessions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-text">No ${sessionFilter === 'all' ? '' : sessionFilter} test sessions</div>
+                        <div class="empty-state-subtext">${sessionFilter === 'all' ? 'Create a new session to get started' : 'Try selecting a different filter'}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IPC ID</th>
+                            <th>Session ID</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Tests</th>
+                            <th>Decision</th>
+                            <th>Duration</th>
+                            <th>Started</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // Sort by start time (newest first)
+            const sortedSessions = [...filteredSessions].sort((a, b) => 
+                new Date(b.start_time) - new Date(a.start_time)
+            );
+            
+            for (const session of sortedSessions) {
+                const statusClass = getStatusClass(session.status);
+                const progress = Math.round(session.progress_percent || 0);
+                const startTime = new Date(session.start_time);
+                const startTimeStr = startTime.toLocaleString();
+                
+                // Calculate duration
+                let durationStr = '-';
+                if (session.end_time) {
+                    const duration = (new Date(session.end_time) - startTime) / 1000; // seconds
+                    if (duration < 60) {
+                        durationStr = `${Math.round(duration)}s`;
+                    } else if (duration < 3600) {
+                        durationStr = `${Math.round(duration / 60)}m`;
+                    } else {
+                        durationStr = `${Math.round(duration / 3600)}h`;
+                    }
+                } else if (session.status !== 'completed' && session.status !== 'failed') {
+                    const duration = (new Date() - startTime) / 1000; // seconds
+                    if (duration < 60) {
+                        durationStr = `${Math.round(duration)}s`;
+                    } else if (duration < 3600) {
+                        durationStr = `${Math.round(duration / 60)}m`;
+                    } else {
+                        durationStr = `${Math.round(duration / 3600)}h`;
+                    }
+                }
+                
+                // Get test counts
+                let testInfo = '-';
+                let testPassed = 0;
+                let testTotal = 0;
+                if (session.test_results && session.test_results.length > 0) {
+                    testTotal = session.test_results.length;
+                    testPassed = session.test_results.filter(r => r.status === 'passed').length;
+                    testInfo = `${testPassed}/${testTotal}`;
+                } else if (session.test_cases && session.test_cases.length > 0) {
+                    testTotal = session.test_cases.length;
+                    testInfo = `0/${testTotal}`;
+                }
+                
+                const decision = session.decision ? 
+                    `<span style="color: ${session.decision.decision === 'GO' ? '#2E7D32' : '#C62828'}; font-weight: 500;">${session.decision.decision}</span>` : 
+                    '<span style="color: #757575;">-</span>';
+                
+                // Progress bar color based on status
+                let progressColor = '#1976D2';
+                if (session.status === 'completed') progressColor = '#43A047';
+                else if (session.status === 'failed') progressColor = '#E53935';
+                else if (session.status === 'stopped') progressColor = '#FF9800';
+                
+                html += `
+                    <tr>
+                        <td style="font-size: 15px;"><strong>${session.ipc_id}</strong></td>
+                        <td><span style="font-family: Consolas, Monaco, 'Courier New', monospace; font-size: 13px; color: #757575;">${session.session_id.substring(0, 8)}...</span></td>
+                        <td><span class="status ${statusClass}" style="font-size: 12px;">${session.status.toUpperCase()}</span></td>
+                        <td>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: ${progress}%; background: ${progressColor};"></div>
+                            </div>
+                            <div class="progress-text">${progress}%</div>
+                        </td>
+                        <td style="font-size: 14px; color: #757575;">
+                            <div style="font-weight: 500;">${testInfo}</div>
+                            ${testTotal > 0 ? `<div style="font-size: 12px; color: #9E9E9E; margin-top: 2px;">${Math.round((testPassed / testTotal) * 100)}% pass</div>` : ''}
+                        </td>
+                        <td style="font-size: 15px;">${decision}</td>
+                        <td style="font-size: 14px; color: #757575; font-weight: 500;">${durationStr}</td>
+                        <td style="font-size: 14px; color: #757575;">${startTimeStr}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn btn-text" onclick="viewSession('${session.session_id}')" title="View details" style="font-size: 14px; padding: 6px 10px;">View</button>
+                                ${session.status === 'testing' || session.status === 'analyzing' || session.status === 'detecting' || session.status === 'planning' ? 
+                                    `<button class="btn btn-text" onclick="stopSession('${session.session_id}')" style="color: #E53935; font-size: 14px; padding: 6px 10px;" title="Stop session">Stop</button>` : 
+                                    ''
+                                }
+                                <button class="btn btn-text" onclick="deleteSession('${session.session_id}')" style="color: #757575; font-size: 14px; padding: 6px 10px;" title="Delete session">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const map = {
+                'completed': 'completed',
+                'failed': 'failed',
+                'testing': 'running',
+                'analyzing': 'running',
+                'detecting': 'running',
+                'planning': 'running',
+                'initializing': 'pending'
+            };
+            return map[status] || 'pending';
+        }
+
+        // Redirect to test selection (removed direct session creation)
+        function createNewSession() {
+            window.location.href = '/test_selection.html';
+        }
+
+        // View session details
+        function viewSession(sessionId) {
+            window.location.href = `/session_details.html?session_id=${sessionId}`;
+        }
+
+        // Stop session
+        async function stopSession(sessionId) {
+            if (!confirm(`Stop test session ${sessionId}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}/stop`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`Session stopped: ${data.message}`);
+                    loadSessions();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (error) {
+                console.error('Error stopping session:', error);
+                alert('Error stopping session');
+            }
+        }
+
+        // Delete session
+        async function deleteSession(sessionId) {
+            if (!confirm(`Delete test session ${sessionId}? This cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`Session deleted: ${data.message}`);
+                    loadSessions();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (error) {
+                console.error('Error deleting session:', error);
+                alert('Error deleting session');
+            }
+        }
+    </script>
+</body>
+</html>
+

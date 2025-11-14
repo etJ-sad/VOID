@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID Framework - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #FAFAFA; color: #212121; }
+        
+        /* Header */
+        .header { background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 24px 0; position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; font-weight: 400; color: #212121; }
+        .header .subtitle { font-size: 14px; color: #757575; margin-top: 4px; }
+        
+        /* Container */
+        .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+        
+        /* Cards */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .card { background: #FFFFFF; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .card-title { font-size: 13px; color: #757575; font-weight: 500; margin-bottom: 8px; text-transform: uppercase; }
+        .card-value { font-size: 32px; font-weight: 300; color: #1976D2; margin-bottom: 4px; }
+        .card-subtitle { font-size: 13px; color: #9E9E9E; }
+        
+        /* Section */
+        .section { background: #FFFFFF; border-radius: 8px; padding: 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .section-title { font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #212121; }
+        
+        /* Buttons */
+        .btn { padding: 12px 24px; border-radius: 4px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #1976D2; color: white; }
+        .btn-primary:hover { background: #1565C0; }
+        .btn-secondary { background: #E0E0E0; color: #424242; }
+        .btn-secondary:hover { background: #BDBDBD; }
+        
+        /* Progress bar */
+        .progress-bar { background: #E0E0E0; border-radius: 8px; height: 8px; margin: 12px 0; overflow: hidden; }
+        .progress-fill { background: #1976D2; height: 100%; transition: width 0.3s; }
+        
+        /* Session list */
+        .session-item { padding: 16px; border-left: 4px solid #E0E0E0; margin-bottom: 12px; background: #FAFAFA; cursor: pointer; transition: all 0.3s; }
+        .session-item:hover { background: #F5F5F5; }
+        .session-item.active { border-left-color: #43A047; }
+        .session-item.testing { border-left-color: #1976D2; }
+        .session-item.failed { border-left-color: #E53935; }
+        .session-name { font-weight: 500; color: #212121; margin-bottom: 4px; }
+        .session-status { font-size: 13px; color: #757575; }
+        
+        /* Badge */
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .badge.success { background: #E8F5E9; color: #2E7D32; }
+        .badge.danger { background: #FFEBEE; color: #C62828; }
+        .badge.warning { background: #FFF3E0; color: #E65100; }
+        .badge.info { background: #E3F2FD; color: #1565C0; }
+        
+        /* Loading */
+        .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #E0E0E0; border-top-color: #1976D2; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: 8px; padding: 32px; max-width: 500px; width: 90%; }
+        .modal-title { font-size: 20px; font-weight: 400; margin-bottom: 16px; }
+        .modal-body { margin-bottom: 24px; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; }
+        
+        /* Form */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-size: 14px; color: #616161; font-weight: 500; }
+        .form-input { width: 100%; padding: 12px; border: 1px solid #E0E0E0; border-radius: 4px; font-size: 14px; font-family: 'Roboto', sans-serif; }
+        .form-input:focus { outline: none; border-color: #1976D2; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>VOID Framework</h1>
+                <div class="subtitle">Validation Of Industrial Devices</div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="window.location.href='/test_selection.html'">📋 Test Auswahl</button>
+                <button class="btn btn-primary" onclick="showCreateSessionModal()">+ Quick Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-title">Active Sessions</div>
+                <div class="card-value" id="activeSessions">0</div>
+                <div class="card-subtitle">Currently running</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Sessions</div>
+                <div class="card-value" id="totalSessions">0</div>
+                <div class="card-subtitle">All time</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Completed</div>
+                <div class="card-value" id="completedSessions">0</div>
+                <div class="card-subtitle">Finished tests</div>
+            </div>
+            <div class="card">
+                <div class="card-title">System Health</div>
+                <div class="card-value" style="font-size: 20px;">
+                    <span class="badge success">Healthy</span>
+                </div>
+                <div class="card-subtitle">All systems operational</div>
+            </div>
+        </div>
+
+        <!-- Sessions List -->
+        <div class="section">
+            <h2 class="section-title">Test Sessions</h2>
+            <div id="sessionsList">
+                <p style="color: #9E9E9E; text-align: center; padding: 32px;">No sessions yet. Create one to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Session Modal -->
+    <div id="createSessionModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Create New Test Session</h3>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">IPC ID (Optional)</label>
+                    <input type="text" id="ipcIdInput" class="form-input" placeholder="Leave empty for auto-generated ID">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideCreateSessionModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createSession()">Create & Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_URL = '/api';
+        
+        // State
+        let sessions = [];
+        let updateInterval = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSystemStatus();
+            loadSessions();
+            startAutoUpdate();
+        });
+        
+        // Auto update every 2 seconds
+        function startAutoUpdate() {
+            updateInterval = setInterval(() => {
+                loadSystemStatus();
+                loadSessions();
+            }, 2000);
+        }
+        
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch(`${API_URL}/system/status`);
+                const data = await response.json();
+                
+                document.getElementById('activeSessions').textContent = data.active_sessions;
+            } catch (error) {
+                console.error('Error loading system status:', error);
+            }
+        }
+        
+        // Load sessions
+        async function loadSessions() {
+            try {
+                const response = await fetch(`${API_URL}/sessions`);
+                const data = await response.json();
+                
+                sessions = data.sessions;
+                document.getElementById('totalSessions').textContent = data.total;
+                
+                const completed = sessions.filter(s => s.status === 'completed').length;
+                document.getElementById('completedSessions').textContent = completed;
+                
+                renderSessions();
+            } catch (error) {
+                console.error('Error loading sessions:', error);
+            }
+        }
+        
+        // Render sessions list
+        function renderSessions() {
+            const container = document.getElementById('sessionsList');
+            
+            if (sessions.length === 0) {
+                container.innerHTML = '<p style="color: #9E9E9E; text-align: center; padding: 32px;">No sessions yet. Create one to get started.</p>';
+                return;
+            }
+            
+            container.innerHTML = sessions.map(session => `
+                <div class="session-item ${session.status}" onclick="viewSession('${session.session_id}')">
+                    <div class="session-name">
+                        ${session.ipc_id}
+                        <span class="badge ${getStatusBadgeClass(session.status)}">${session.status.toUpperCase()}</span>
+                    </div>
+                    <div class="session-status">
+                        Session ID: ${session.session_id} | Started: ${new Date(session.start_time).toLocaleString()}
+                    </div>
+                    ${session.progress_percent !== undefined ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${session.progress_percent}%"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #757575; margin-top: 4px;">Progress: ${Math.round(session.progress_percent)}%</div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // Get badge class for status
+        function getStatusBadgeClass(status) {
+            const map = {
+                'completed': 'success',
+                'testing': 'info',
+                'analyzing': 'info',
+                'failed': 'danger',
+                'detecting': 'info',
+                'planning': 'info'
+            };
+            return map[status] || 'warning';
+        }
+        
+        // Show create session modal
+        function showCreateSessionModal() {
+            document.getElementById('createSessionModal').classList.add('show');
+        }
+        
+        // Hide create session modal
+        function hideCreateSessionModal() {
+            document.getElementById('createSessionModal').classList.remove('show');
+            document.getElementById('ipcIdInput').value = '';
+        }
+        
+        // Create new session
+        async function createSession() {
+            const ipcId = document.getElementById('ipcIdInput').value.trim() || null;
+            
+            try {
+                // Create session
+                const createResponse = await fetch(`${API_URL}/sessions/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipc_id: ipcId })
+                });
+                
+                const createData = await createResponse.json();
+                
+                if (createData.status === 'success') {
+                    // Start test execution
+                    await fetch(`${API_URL}/sessions/${createData.session_id}/run`, {
+                        method: 'POST'
+                    });
+                    
+                    hideCreateSessionModal();
+                    loadSessions();
+                    
+                    alert(`Test session created and started!\nSession ID: ${createData.session_id}`);
+                } else {
+                    alert('Error creating session: ' + (createData.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error creating session:', error);
+                alert('Error creating session. Check console for details.');
+            }
+        }
+        
+        // View session details
+        async function viewSession(sessionId) {
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}`);
+                const session = await response.json();
+                
+                let message = `Session Details:\n\n`;
+                message += `IPC ID: ${session.ipc_id}\n`;
+                message += `Status: ${session.status}\n`;
+                message += `Progress: ${Math.round(session.progress_percent)}%\n`;
+                message += `Tests: ${session.test_results.length}\n`;
+                
+                if (session.decision) {
+                    message += `\nDecision: ${session.decision.decision}\n`;
+                    message += `Score: ${session.decision.score}/100\n`;
+                    message += `Confidence: ${session.decision.confidence}%\n`;
+                }
+                
+                alert(message);
+            } catch (error) {
+                console.error('Error loading session:', error);
+                alert('Error loading session details');
+            }
+        }
+    </script>
+</body>
+</html>
+

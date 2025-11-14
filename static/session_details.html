@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details - VOID Framework</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #FAFAFA; color: #212121; }
+        
+        /* Header */
+        .header { background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px 0; }
+        .header-content { max-width: 1600px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .breadcrumb { font-size: 13px; color: #757575; }
+        .breadcrumb a { color: #1976D2; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        
+        /* Container */
+        .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+        
+        /* Section */
+        .section { background: white; border-radius: 4px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .section-title { font-size: 18px; font-weight: 500; color: #212121; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #E0E0E0; }
+        
+        /* Info Grid */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .info-label { font-size: 12px; color: #757575; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .info-value { font-size: 14px; color: #212121; font-weight: 400; }
+        .info-value.mono { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 12px; }
+        
+        /* Decision Box */
+        .decision-box { padding: 32px; border-radius: 4px; text-align: center; margin: 16px 0; }
+        .decision-box.go { background: #E8F5E9; border: 3px solid #43A047; }
+        .decision-box.no-go { background: #FFEBEE; border: 3px solid #E53935; }
+        .decision-box.pending { background: #FFF3E0; border: 3px solid #FB8C00; }
+        .decision-title { font-size: 48px; font-weight: 300; margin-bottom: 12px; }
+        .decision-title.go { color: #2E7D32; }
+        .decision-title.no-go { color: #C62828; }
+        .decision-title.pending { color: #E65100; }
+        .decision-subtitle { font-size: 16px; color: #616161; margin-bottom: 8px; }
+        .decision-score { font-size: 32px; font-weight: 300; margin-top: 12px; }
+        
+        /* Test Results Table */
+        .test-results-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .test-results-table th { background: #F5F5F5; padding: 14px 12px; text-align: left; font-size: 11px; font-weight: 500; color: #616161; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E0E0E0; }
+        .test-results-table td { padding: 14px 12px; font-size: 13px; border-bottom: 1px solid #F0F0F0; vertical-align: top; }
+        .test-results-table tbody tr:hover { background: #F9F9F9; }
+        .test-results-table tr.expanded { background: #F5F5F5; }
+        .test-name { font-weight: 500; color: #212121; }
+        .test-details { display: none; padding: 16px; background: #FAFAFA; border-left: 4px solid #1976D2; margin-top: 8px; }
+        .test-details.expanded { display: block; }
+        .test-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+        .test-metric { padding: 8px; background: white; border-radius: 4px; }
+        .test-metric-label { font-size: 11px; color: #757575; margin-bottom: 4px; }
+        .test-metric-value { font-size: 16px; font-weight: 500; color: #1976D2; }
+        .test-errors { margin-top: 12px; padding: 12px; background: #FFEBEE; border-radius: 4px; }
+        .test-errors-title { font-size: 12px; font-weight: 500; color: #C62828; margin-bottom: 8px; }
+        .test-error-item { font-size: 12px; color: #C62828; margin-bottom: 4px; padding-left: 16px; }
+        
+        /* Status Badge */
+        .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .status.passed { background: #E8F5E9; color: #2E7D32; }
+        .status.failed { background: #FFEBEE; color: #C62828; }
+        .status.running { background: #E3F2FD; color: #1565C0; }
+        .status.pending { background: #F5F5F5; color: #757575; }
+        .status.error { background: #FFF3E0; color: #E65100; }
+        
+        /* AI Analysis */
+        .ai-section { margin-top: 20px; }
+        .ai-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .ai-metric-card { padding: 16px; background: #F5F5F5; border-radius: 4px; }
+        .ai-metric-label { font-size: 12px; color: #757575; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .ai-metric-value { font-size: 24px; font-weight: 300; color: #1976D2; }
+        .ai-metric-value.risk-critical { color: #C62828; }
+        .ai-metric-value.risk-high { color: #E53935; }
+        .ai-metric-value.risk-medium { color: #FB8C00; }
+        .ai-metric-value.risk-low { color: #43A047; }
+        
+        .anomaly-algorithms { margin-top: 20px; }
+        .anomaly-algorithm { padding: 12px; background: #FAFAFA; border-left: 4px solid #1976D2; margin-bottom: 12px; }
+        .anomaly-algorithm-title { font-weight: 500; margin-bottom: 8px; }
+        .anomaly-algorithm-details { font-size: 12px; color: #757575; }
+        
+        .pattern-recognition { margin-top: 20px; }
+        .pattern-item { padding: 8px 12px; background: #E3F2FD; border-radius: 4px; display: inline-block; margin-right: 8px; margin-bottom: 8px; font-size: 12px; }
+        
+        .recommendations { margin-top: 20px; }
+        .recommendation-item { padding: 12px; background: #FFF9C4; border-left: 4px solid #FBC02D; margin-bottom: 8px; font-size: 13px; }
+        
+        /* Checkpoints */
+        .checkpoints-timeline { position: relative; padding: 20px 0; }
+        .checkpoint-item { position: relative; padding: 16px 0 16px 60px; border-left: 3px solid #E0E0E0; margin-left: 20px; }
+        .checkpoint-item:last-child { border-left: none; }
+        .checkpoint-item.completed { border-left-color: #43A047; }
+        .checkpoint-item.no-go { border-left-color: #E53935; }
+        .checkpoint-item.pending { border-left-color: #E0E0E0; }
+        .checkpoint-icon { position: absolute; left: -12px; top: 16px; width: 24px; height: 24px; border-radius: 50%; background: #E0E0E0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .checkpoint-item.completed .checkpoint-icon { background: #43A047; }
+        .checkpoint-item.no-go .checkpoint-icon { background: #E53935; }
+        .checkpoint-item.pending .checkpoint-icon { background: #E0E0E0; color: #757575; }
+        .checkpoint-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .checkpoint-name { font-weight: 500; font-size: 15px; color: #212121; }
+        .checkpoint-time { font-size: 12px; color: #757575; }
+        .checkpoint-decision { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500; margin-left: 8px; }
+        .checkpoint-decision.go { background: #E8F5E9; color: #2E7D32; }
+        .checkpoint-decision.no-go { background: #FFEBEE; color: #C62828; }
+        .checkpoint-decision.pending { background: #F5F5F5; color: #757575; }
+        .checkpoint-details { margin-top: 12px; padding: 12px; background: #FAFAFA; border-radius: 4px; font-size: 13px; }
+        .checkpoint-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+        
+        /* Running test animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        .checkpoint-metric { padding: 8px; background: white; border-radius: 4px; }
+        .checkpoint-metric-label { font-size: 11px; color: #757575; margin-bottom: 4px; }
+        .checkpoint-metric-value { font-size: 16px; font-weight: 500; color: #1976D2; }
+        .checkpoint-reasoning { margin-top: 12px; padding: 12px; background: #E3F2FD; border-radius: 4px; font-size: 12px; }
+        .checkpoint-reasoning-title { font-weight: 500; margin-bottom: 8px; color: #1565C0; }
+        .checkpoint-reasoning-item { margin-bottom: 4px; color: #424242; }
+        .checkpoint-warnings { margin-top: 12px; padding: 12px; background: #FFF3E0; border-radius: 4px; font-size: 12px; }
+        .checkpoint-warnings-title { font-weight: 500; margin-bottom: 8px; color: #E65100; }
+        .checkpoint-warning-item { margin-bottom: 4px; color: #E65100; }
+        
+        /* Progress Bar */
+        .progress-bar-large { background: #E0E0E0; height: 12px; border-radius: 6px; overflow: hidden; margin: 16px 0; }
+        .progress-fill-large { background: #1976D2; height: 100%; transition: width 0.3s; }
+        
+        /* Button */
+        .btn { padding: 8px 16px; border-radius: 4px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #1976D2; color: white; }
+        .btn-primary:hover { background: #1565C0; }
+        .btn-text { background: none; color: #1976D2; padding: 4px 8px; }
+        .btn-text:hover { background: #E3F2FD; }
+        .btn-expand { background: none; border: none; color: #1976D2; cursor: pointer; font-size: 12px; padding: 4px 8px; }
+        .btn-expand:hover { background: #E3F2FD; border-radius: 4px; }
+        
+        /* Report Links */
+        .report-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+        .report-link { display: inline-block; padding: 12px 20px; background: #F5F5F5; border-radius: 4px; text-decoration: none; color: #424242; font-size: 14px; transition: all 0.3s; border: 1px solid #E0E0E0; }
+        .report-link:hover { background: #E0E0E0; border-color: #BDBDBD; }
+        .report-link.json { border-left: 4px solid #1976D2; }
+        .report-link.html { border-left: 4px solid #43A047; }
+        .report-link.pdf { border-left: 4px solid #E53935; }
+        
+        /* Hardware Table */
+        .hardware-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .hardware-table th { background: #F5F5F5; padding: 10px; text-align: left; font-size: 11px; font-weight: 500; color: #616161; text-transform: uppercase; }
+        .hardware-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #F5F5F5; }
+        
+        /* Loading */
+        .loading { text-align: center; padding: 40px; color: #757575; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px; color: #9E9E9E; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="/">Dashboard</a> / Session Details
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary" onclick="window.location.reload()">Refresh</button>
+                <button class="btn btn-secondary" id="stopBtn" onclick="stopSession()" style="display: none; background: #FFEBEE; color: #C62828; border-color: #C62828;">Stop Session</button>
+                <button class="btn btn-secondary" onclick="deleteSession()" style="background: #F5F5F5; color: #757575;">Delete Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Session Overview -->
+        <div class="section">
+            <div class="section-title">Session Overview</div>
+            <div id="sessionOverview">Loading...</div>
+        </div>
+
+        <!-- Checkpoints -->
+        <div class="section" id="checkpointsSection" style="display: none;">
+            <div class="section-title">Checkpoints (GO/NO-GO Gates)</div>
+            <div id="checkpointsContent"></div>
+        </div>
+
+        <!-- Decision Result -->
+        <div class="section" id="decisionSection" style="display: none;">
+            <div class="section-title">Final Decision</div>
+            <div id="decisionResult"></div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="section" id="aiAnalysisSection" style="display: none;">
+            <div class="section-title">AI/ML Analysis</div>
+            <div id="aiAnalysisContent"></div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="section">
+            <div class="section-title">Test Results</div>
+            <div id="testResults">Loading...</div>
+        </div>
+
+        <!-- Hardware Profile -->
+        <div class="section" id="hardwareSection" style="display: none;">
+            <div class="section-title">Hardware Profile</div>
+            <div id="hardwareProfile"></div>
+        </div>
+
+        <!-- Reports -->
+        <div class="section" id="reportsSection" style="display: none;">
+            <div class="section-title">Generated Reports</div>
+            <div id="reportsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        let updateInterval = null;
+        let currentSession = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!sessionId) {
+                alert('No session ID provided');
+                window.location.href = '/';
+                return;
+            }
+            loadSessionDetails();
+            startAutoUpdate();
+        });
+
+        // Stop session
+        async function stopSession() {
+            if (!confirm(`Stop test session?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}/stop`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    alert('Session stopped successfully');
+                    window.location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (error) {
+                console.error('Error stopping session:', error);
+                alert('Error stopping session');
+            }
+        }
+
+        // Delete session
+        async function deleteSession() {
+            if (!confirm(`Delete this test session? This cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Session deleted successfully');
+                    window.location.href = '/';
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (error) {
+                console.error('Error deleting session:', error);
+                alert('Error deleting session');
+            }
+        }
+
+        // Auto update
+        function startAutoUpdate() {
+            updateInterval = setInterval(loadSessionDetails, 3000);
+        }
+
+        // Load session details
+        async function loadSessionDetails() {
+            try {
+                const response = await fetch(`${API_URL}/sessions/${sessionId}`);
+                const session = await response.json();
+                
+                // Store session globally
+                currentSession = session;
+                
+                // Debug: Log session data to check if test_cases are present
+                console.log('Session data:', session);
+                console.log('Test cases:', session.test_cases);
+                console.log('Test cases count:', session.test_cases?.length || 0);
+                console.log('Test results:', session.test_results);
+                console.log('Test results count:', session.test_results?.length || 0);
+                
+                // If test_cases are missing, try to load them
+                if ((!session.test_cases || session.test_cases.length === 0) && session.test_results && session.test_results.length > 0) {
+                    console.log('Test cases missing, attempting to load from API...');
+                    const testIds = session.test_results.map(tr => tr.test_id);
+                    const loadedCases = [];
+                    for (const testId of testIds) {
+                        try {
+                            const testResponse = await fetch(`${API_URL}/tests/${testId}`);
+                            if (testResponse.ok) {
+                                const testCase = await testResponse.json();
+                                loadedCases.push(testCase);
+                            }
+                        } catch (e) {
+                            console.error(`Error loading test case ${testId}:`, e);
+                        }
+                    }
+                    if (loadedCases.length > 0) {
+                        session.test_cases = loadedCases;
+                        currentSession.test_cases = loadedCases;
+                        console.log(`Loaded ${loadedCases.length} test cases from API`);
+                    }
+                }
+                
+                // Show/hide stop button based on status
+                const stopBtn = document.getElementById('stopBtn');
+                if (session.status === 'testing' || session.status === 'analyzing' || session.status === 'detecting' || session.status === 'planning') {
+                    stopBtn.style.display = 'block';
+                } else {
+                    stopBtn.style.display = 'none';
+                }
+                
+                renderSessionOverview(session);
+                renderTestResults(session);
+                
+                if (session.checkpoints && session.checkpoints.length > 0) {
+                    renderCheckpoints(session);
+                }
+                
+                if (session.decision) {
+                    renderDecision(session);
+                }
+                
+                if (session.ai_analysis) {
+                    renderAIAnalysis(session);
+                }
+                
+                if (session.hardware_profile) {
+                    renderHardwareProfile(session);
+                }
+                
+                if (session.reports && session.reports.length > 0) {
+                    renderReports(session);
+                }
+                
+                // Stop auto-update if completed
+                if (session.status === 'completed' || session.status === 'failed' || session.status === 'stopped') {
+                    clearInterval(updateInterval);
+                }
+            } catch (error) {
+                console.error('Error loading session:', error);
+                document.getElementById('sessionOverview').innerHTML = '<div class="empty-state">Error loading session data</div>';
+            }
+        }
+
+        // Render session overview
+        function renderSessionOverview(session) {
+            const progress = Math.round(session.progress_percent || 0);
+            const duration = session.total_duration ? `${session.total_duration.toFixed(2)} hours` : 'In progress';
+            const passed = session.test_results ? session.test_results.filter(r => r.status === 'passed').length : 0;
+            const failed = session.test_results ? session.test_results.filter(r => r.status === 'failed').length : 0;
+            const total = session.test_results ? session.test_results.length : 0;
+            
+            document.getElementById('sessionOverview').innerHTML = `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Session ID</div>
+                        <div class="info-value mono">${session.session_id}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">IPC ID</div>
+                        <div class="info-value">${session.ipc_id}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value"><span class="status ${getStatusClass(session.status)}">${session.status.toUpperCase()}</span></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Start Time</div>
+                        <div class="info-value">${new Date(session.start_time).toLocaleString()}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Duration</div>
+                        <div class="info-value">${duration}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tests</div>
+                        <div class="info-value">${passed} passed / ${failed} failed / ${total} total</div>
+                    </div>
+                </div>
+                <div class="progress-bar-large">
+                    <div class="progress-fill-large" style="width: ${progress}%"></div>
+                </div>
+                <div style="font-size: 12px; color: #757575; margin-top: 8px;">Progress: ${progress}%</div>
+            `;
+        }
+
+        // Render checkpoints
+        function renderCheckpoints(session) {
+            document.getElementById('checkpointsSection').style.display = 'block';
+            
+            const checkpoints = session.checkpoints || [];
+            const expectedCheckpoints = [
+                { id: '6h', name: 'Initial Validation', hour: 6 },
+                { id: '18h', name: 'Mid-point Review', hour: 18 },
+                { id: '36h', name: 'Final Checks', hour: 36 },
+                { id: '46h', name: 'Pre-completion', hour: 46 }
+            ];
+            
+            let html = '<div class="checkpoints-timeline">';
+            
+            expectedCheckpoints.forEach(expected => {
+                const checkpoint = checkpoints.find(cp => cp.checkpoint_id === expected.id);
+                const isCompleted = checkpoint !== undefined;
+                const decision = checkpoint ? checkpoint.decision : 'PENDING';
+                const decisionClass = decision === 'GO' ? 'completed' : decision === 'NO_GO' ? 'no-go' : 'pending';
+                const decisionText = decision === 'GO' ? 'GO' : decision === 'NO_GO' ? 'NO-GO' : 'PENDING';
+                
+                html += `
+                    <div class="checkpoint-item ${decisionClass}">
+                        <div class="checkpoint-icon">${isCompleted ? (decision === 'GO' ? '✓' : '✗') : '○'}</div>
+                        <div class="checkpoint-header">
+                            <div>
+                                <span class="checkpoint-name">${expected.name}</span>
+                                <span class="checkpoint-decision ${decision.toLowerCase().replace('_', '-')}">${decisionText}</span>
+                            </div>
+                            <div class="checkpoint-time">
+                                ${isCompleted ? `At ${checkpoint.elapsed_hours.toFixed(1)}h` : `Expected at ${expected.hour}h`}
+                            </div>
+                        </div>
+                `;
+                
+                if (isCompleted) {
+                    html += `
+                        <div class="checkpoint-details">
+                            <div class="checkpoint-metrics">
+                                <div class="checkpoint-metric">
+                                    <div class="checkpoint-metric-label">Score</div>
+                                    <div class="checkpoint-metric-value">${checkpoint.score.toFixed(1)}/100</div>
+                                </div>
+                                <div class="checkpoint-metric">
+                                    <div class="checkpoint-metric-label">Confidence</div>
+                                    <div class="checkpoint-metric-value">${checkpoint.confidence.toFixed(1)}%</div>
+                                </div>
+                                <div class="checkpoint-metric">
+                                    <div class="checkpoint-metric-label">Tests Completed</div>
+                                    <div class="checkpoint-metric-value">${checkpoint.tests_completed}/${session.test_cases.length}</div>
+                                </div>
+                                <div class="checkpoint-metric">
+                                    <div class="checkpoint-metric-label">Pass Rate</div>
+                                    <div class="checkpoint-metric-value">${checkpoint.tests_completed > 0 ? ((checkpoint.tests_passed / checkpoint.tests_completed) * 100).toFixed(1) : 0}%</div>
+                                </div>
+                            </div>
+                    `;
+                    
+                    if (checkpoint.reasoning && checkpoint.reasoning.length > 0) {
+                        html += `
+                            <div class="checkpoint-reasoning">
+                                <div class="checkpoint-reasoning-title">Reasoning:</div>
+                                ${checkpoint.reasoning.map(r => `<div class="checkpoint-reasoning-item">• ${r}</div>`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    if (checkpoint.warnings && checkpoint.warnings.length > 0) {
+                        html += `
+                            <div class="checkpoint-warnings">
+                                <div class="checkpoint-warnings-title">Warnings:</div>
+                                ${checkpoint.warnings.map(w => `<div class="checkpoint-warning-item">⚠ ${w}</div>`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="checkpoint-details" style="color: #9E9E9E; font-style: italic;">
+                            Checkpoint not yet reached
+                        </div>
+                    `;
+                }
+                
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            document.getElementById('checkpointsContent').innerHTML = html;
+        }
+
+        // Render decision
+        function renderDecision(session) {
+            document.getElementById('decisionSection').style.display = 'block';
+            
+            const decision = session.decision;
+            const decisionClass = decision.decision === 'GO' ? 'go' : decision.decision === 'NO_GO' ? 'no-go' : 'pending';
+            
+            let html = `
+                <div class="decision-box ${decisionClass}">
+                    <div class="decision-title ${decisionClass}">${decision.decision.replace('_', '-')}</div>
+                    <div class="decision-subtitle">Confidence: ${decision.confidence.toFixed(1)}%</div>
+                    <div class="decision-score">Score: ${decision.score.toFixed(1)}/100</div>
+                </div>
+            `;
+            
+            if (decision.reasoning && decision.reasoning.length > 0) {
+                html += '<div style="margin-top: 24px;"><strong style="font-size: 14px;">Reasoning:</strong><ul style="margin-left: 24px; margin-top: 12px; line-height: 1.8;">';
+                decision.reasoning.forEach(reason => {
+                    html += `<li style="margin-bottom: 8px; font-size: 13px; color: #424242;">${reason}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            if (decision.warnings && decision.warnings.length > 0) {
+                html += '<div style="margin-top: 24px;"><strong style="font-size: 14px; color: #FB8C00;">Warnings:</strong><ul style="margin-left: 24px; margin-top: 12px; line-height: 1.8;">';
+                decision.warnings.forEach(warning => {
+                    html += `<li style="margin-bottom: 8px; font-size: 13px; color: #E65100;">${warning}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            if (decision.critical_failures && decision.critical_failures.length > 0) {
+                html += '<div style="margin-top: 24px;"><strong style="font-size: 14px; color: #C62828;">Critical Failures:</strong><ul style="margin-left: 24px; margin-top: 12px; line-height: 1.8;">';
+                decision.critical_failures.forEach(failure => {
+                    html += `<li style="margin-bottom: 8px; font-size: 13px; color: #C62828;">${failure}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            document.getElementById('decisionResult').innerHTML = html;
+        }
+
+        // Render AI Analysis
+        function renderAIAnalysis(session) {
+            document.getElementById('aiAnalysisSection').style.display = 'block';
+            
+            const ai = session.ai_analysis;
+            
+            let html = `
+                <div style="background: #E3F2FD; border-left: 4px solid #1976D2; padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+                    <div style="font-weight: 600; font-size: 14px; color: #1565C0; margin-bottom: 8px;">How AI/ML Analysis Works</div>
+                    <div style="font-size: 13px; color: #424242; line-height: 1.6;">
+                        The VOID Framework uses multiple AI algorithms to analyze test results in real-time:
+                        <ul style="margin: 8px 0; padding-left: 20px;">
+                            <li><strong>Isolation Forest:</strong> Detects outliers by isolating anomalous data points</li>
+                            <li><strong>One-Class SVM:</strong> Learns normal behavior patterns and flags deviations</li>
+                            <li><strong>Statistical Z-Score:</strong> Identifies data points that deviate significantly from the mean</li>
+                            <li><strong>Pattern Recognition:</strong> Analyzes temporal patterns, correlations, and trends across test metrics</li>
+                        </ul>
+                        The system combines these algorithms to provide a comprehensive anomaly score (0-100) and risk assessment (LOW/MEDIUM/HIGH/CRITICAL).
+                    </div>
+                </div>
+                <div class="ai-metrics-grid">
+                    <div class="ai-metric-card">
+                        <div class="ai-metric-label">Anomaly Score</div>
+                        <div class="ai-metric-value">${ai.overall_anomaly_score.toFixed(1)}/100</div>
+                    </div>
+                    <div class="ai-metric-card">
+                        <div class="ai-metric-label">Risk Level</div>
+                        <div class="ai-metric-value risk-${ai.risk_level.toLowerCase()}">${ai.risk_level}</div>
+                    </div>
+                    <div class="ai-metric-card">
+                        <div class="ai-metric-label">Anomalies Detected</div>
+                        <div class="ai-metric-value">${ai.anomaly_detection.reduce((sum, a) => sum + a.anomalies_found, 0)}</div>
+                    </div>
+                    <div class="ai-metric-card">
+                        <div class="ai-metric-label">Patterns Found</div>
+                        <div class="ai-metric-value">${ai.pattern_recognition.patterns_detected.length}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Anomaly Detection Algorithms - Expandable
+            if (ai.anomaly_detection && ai.anomaly_detection.length > 0) {
+                html += '<div style="margin-top: 24px;"><div style="font-weight: 600; font-size: 14px; margin-bottom: 12px; color: #1976D2;">Anomaly Detection Algorithms</div>';
+                html += '<table class="ai-details-table" style="width: 100%; border-collapse: collapse;">';
+                html += '<thead><tr><th style="width: 30%;">Algorithm</th><th style="width: 20%;">Anomalies</th><th style="width: 20%;">Score</th><th style="width: 30%;">Details</th></tr></thead><tbody>';
+                
+                ai.anomaly_detection.forEach((alg, algIdx) => {
+                    html += `
+                        <tr style="cursor: pointer; border-bottom: 1px solid #F0F0F0;" onclick="toggleAIRow('anomaly-${algIdx}')">
+                            <td style="padding: 12px; font-weight: 500;">${alg.algorithm}</td>
+                            <td style="padding: 12px; text-align: center;">
+                                <span style="background: ${alg.anomalies_found > 0 ? '#FFEBEE' : '#E8F5E9'}; color: ${alg.anomalies_found > 0 ? '#C62828' : '#2E7D32'}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                                    ${alg.anomalies_found}
+                                </span>
+                            </td>
+                            <td style="padding: 12px; text-align: center; font-weight: 500; color: ${alg.anomaly_score > 70 ? '#C62828' : alg.anomaly_score > 40 ? '#F57C00' : '#2E7D32'};">
+                                ${alg.anomaly_score.toFixed(1)}/100
+                            </td>
+                            <td style="padding: 12px; text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                        </tr>
+                        <tr id="ai-anomaly-${algIdx}" style="display: none; background: #FAFAFA;">
+                            <td colspan="4" style="padding: 16px 24px;">
+                                ${renderAnomalyDetails(alg)}
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table></div>';
+            }
+            
+            // Pattern Recognition - Expandable
+            if (ai.pattern_recognition && ai.pattern_recognition.patterns_detected && ai.pattern_recognition.patterns_detected.length > 0) {
+                html += '<div style="margin-top: 24px;"><div style="font-weight: 600; font-size: 14px; margin-bottom: 12px; color: #1976D2;">Pattern Recognition</div>';
+                html += '<table class="ai-details-table" style="width: 100%; border-collapse: collapse;">';
+                html += '<thead><tr><th style="width: 50%;">Pattern</th><th style="width: 20%;">Confidence</th><th style="width: 30%;">Details</th></tr></thead><tbody>';
+                
+                ai.pattern_recognition.patterns_detected.forEach((pattern, patIdx) => {
+                    const confidence = ai.pattern_recognition.confidence || 75; // Default confidence
+                    html += `
+                        <tr style="cursor: pointer; border-bottom: 1px solid #F0F0F0;" onclick="toggleAIRow('pattern-${patIdx}')">
+                            <td style="padding: 12px; font-weight: 500;">${pattern}</td>
+                            <td style="padding: 12px; text-align: center;">
+                                <span style="background: #E3F2FD; color: #1565C0; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                                    ${confidence}%
+                                </span>
+                            </td>
+                            <td style="padding: 12px; text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                        </tr>
+                        <tr id="ai-pattern-${patIdx}" style="display: none; background: #FAFAFA;">
+                            <td colspan="3" style="padding: 16px 24px;">
+                                ${renderPatternDetails(pattern, ai.pattern_recognition)}
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table></div>';
+            } else if (ai.pattern_recognition) {
+                html += '<div style="margin-top: 24px;"><div style="font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #1976D2;">Pattern Recognition</div>';
+                html += '<div style="color: #9E9E9E; font-style: italic; padding: 12px; background: #FAFAFA; border-radius: 4px;">No patterns detected</div></div>';
+            }
+            
+            // Recommendations - Expandable
+            if (ai.recommendations && ai.recommendations.length > 0) {
+                html += '<div style="margin-top: 24px;"><div style="font-weight: 600; font-size: 14px; margin-bottom: 12px; color: #1976D2;">Recommendations</div>';
+                html += '<div style="display: flex; flex-direction: column; gap: 12px;">';
+                ai.recommendations.forEach((rec, recIdx) => {
+                    const priority = rec.includes('critical') || rec.includes('Critical') ? 'high' : 
+                                   rec.includes('warning') || rec.includes('Warning') ? 'medium' : 'low';
+                    const bgColor = priority === 'high' ? '#FFEBEE' : priority === 'medium' ? '#FFF3E0' : '#E8F5E9';
+                    const borderColor = priority === 'high' ? '#E53935' : priority === 'medium' ? '#F57C00' : '#43A047';
+                    const icon = priority === 'high' ? 'HIGH' : priority === 'medium' ? 'MED' : 'LOW';
+                    
+                    html += `
+                        <div style="background: ${bgColor}; padding: 14px 16px; border-radius: 4px; border-left: 4px solid ${borderColor};">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: ${borderColor}; color: white; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 600;">
+                                    ${icon}
+                                </span>
+                                <div style="flex: 1; font-size: 13px; color: #212121;">${rec}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div></div>';
+            }
+            
+            document.getElementById('aiAnalysisContent').innerHTML = html;
+        }
+        
+        // Toggle AI analysis row details
+        function toggleAIRow(rowId) {
+            const detailsRow = document.getElementById(`ai-${rowId}`);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+                } else {
+                detailsRow.style.display = 'none';
+            }
+        }
+        
+        // Render anomaly detection details
+        function renderAnomalyDetails(alg) {
+            let html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+            
+            // Show affected metrics
+            if (alg.affected_metrics && alg.affected_metrics.length > 0) {
+                html += `
+                    <div>
+                        <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">Affected Metrics:</div>
+                        <div style="font-size: 13px; color: #212121; font-weight: 500;">${alg.affected_metrics.join(', ')}</div>
+                    </div>
+                `;
+            }
+            
+            // Show additional details from details dict
+            if (alg.details && Object.keys(alg.details).length > 0) {
+                Object.entries(alg.details).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined && typeof value !== 'object') {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        let displayValue = value;
+                        if (typeof value === 'number') {
+                            displayValue = value.toFixed(2);
+                        }
+                        html += `
+                            <div>
+                                <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${label}:</div>
+                                <div style="font-size: 13px; color: #212121; font-weight: 500;">${displayValue}</div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            
+            html += '</div>';
+            
+            // Show algorithm description
+            const algorithmDescriptions = {
+                'Isolation Forest': 'Isolates anomalies by randomly selecting features and split values. Anomalies are isolated closer to the root of the tree.',
+                'One-Class SVM': 'Learns a decision boundary around normal data points. Points outside this boundary are considered anomalous.',
+                'Statistical Z-Score': 'Measures how many standard deviations a data point is from the mean. High Z-scores indicate anomalies.'
+            };
+            
+            if (algorithmDescriptions[alg.algorithm]) {
+                html += `<div style="margin-top: 16px; padding: 12px; background: #F5F5F5; border-radius: 4px; border-left: 3px solid #1976D2;">
+                    <div style="font-size: 11px; color: #757575; margin-bottom: 4px; text-transform: uppercase; font-weight: 600;">How it works:</div>
+                    <div style="font-size: 13px; color: #424242; line-height: 1.5;">${algorithmDescriptions[alg.algorithm]}</div>
+                </div>`;
+            }
+            
+            // Show anomaly details if available
+            if (alg.anomalies && alg.anomalies.length > 0) {
+                html += '<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E0E0E0;">';
+                html += '<div style="font-size: 12px; font-weight: 600; color: #C62828; margin-bottom: 8px;">Detected Anomalies:</div>';
+                alg.anomalies.forEach((anomaly, idx) => {
+                    html += `<div style="background: white; padding: 8px 12px; border-radius: 4px; margin-bottom: 6px; border-left: 3px solid #E53935;">
+                        <div style="font-size: 12px; color: #212121;"><strong>${idx + 1}.</strong> ${anomaly.description || anomaly}</div>
+                        ${anomaly.severity ? `<div style="font-size: 11px; color: #757575; margin-top: 2px;">Severity: ${anomaly.severity}</div>` : ''}
+                    </div>`;
+                });
+                html += '</div>';
+            } else {
+                html += `<div style="margin-top: 16px; padding: 12px; background: #E8F5E9; border-radius: 4px; border-left: 3px solid #43A047;">
+                    <div style="font-size: 13px; color: #2E7D32;">No anomalies detected by this algorithm. System behavior is within expected parameters.</div>
+                </div>`;
+            }
+            
+            return html;
+        }
+        
+        // Render pattern details
+        function renderPatternDetails(pattern, patternRecognition) {
+            let html = '<div>';
+            
+            // Pattern description
+            const patternDescriptions = {
+                'consistent_performance': 'Test metrics show stable and predictable behavior over time.',
+                'degrading_performance': 'Performance metrics are gradually decreasing, indicating potential issues.',
+                'improving_performance': 'Performance metrics are improving over time.',
+                'periodic_fluctuation': 'Metrics show regular periodic variations.',
+                'temperature_correlation': 'Strong correlation between temperature and performance metrics.',
+                'load_dependent': 'Performance varies based on system load.'
+            };
+            
+            const patternKey = pattern.toLowerCase().replace(/\s+/g, '_');
+            const description = patternDescriptions[patternKey] || 'Pattern detected in test execution metrics.';
+            
+            html += `<div style="padding: 12px; background: #E3F2FD; border-radius: 4px; border-left: 3px solid #1976D2; margin-bottom: 16px;">
+                <div style="font-size: 11px; color: #1565C0; margin-bottom: 4px; text-transform: uppercase; font-weight: 600;">Pattern Description:</div>
+                <div style="font-size: 13px; color: #424242; line-height: 1.5;">${description}</div>
+            </div>`;
+            
+            // Show correlations if available
+            if (patternRecognition.correlations && Object.keys(patternRecognition.correlations).length > 0) {
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<div style="font-size: 12px; font-weight: 600; color: #1976D2; margin-bottom: 8px;">Correlations Detected:</div>';
+                html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">';
+                Object.entries(patternRecognition.correlations).forEach(([key, value]) => {
+                    const correlationStrength = Math.abs(value) > 0.7 ? 'Strong' : Math.abs(value) > 0.4 ? 'Moderate' : 'Weak';
+                    const correlationType = value > 0 ? 'Positive' : 'Negative';
+                    html += `<div style="background: white; padding: 10px 12px; border-radius: 4px; border: 1px solid #E0E0E0;">
+                        <div style="font-size: 12px; color: #212121; font-weight: 500;">${key.replace(/_/g, ' ')}</div>
+                        <div style="font-size: 11px; color: #757575; margin-top: 2px;">${correlationStrength} ${correlationType} (${value.toFixed(2)})</div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+            
+            // Show trends if available
+            if (patternRecognition.trends && Object.keys(patternRecognition.trends).length > 0) {
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<div style="font-size: 12px; font-weight: 600; color: #1976D2; margin-bottom: 8px;">Trends Identified:</div>';
+                html += '<div style="display: flex; flex-direction: column; gap: 8px;">';
+                Object.entries(patternRecognition.trends).forEach(([key, value]) => {
+                    const trendIcon = value === 'increasing' ? '↗' : value === 'decreasing' ? '↘' : '→';
+                    const trendColor = value === 'increasing' ? '#43A047' : value === 'decreasing' ? '#E53935' : '#757575';
+                    html += `<div style="background: white; padding: 8px 12px; border-radius: 4px; border-left: 3px solid ${trendColor}; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 16px;">${trendIcon}</span>
+                        <div style="flex: 1;">
+                            <div style="font-size: 12px; color: #212121; font-weight: 500;">${key.replace(/_/g, ' ')}</div>
+                            <div style="font-size: 11px; color: #757575;">${value}</div>
+                        </div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Render test results
+        function renderTestResults(session) {
+            console.log('Rendering test results:', session.test_results);
+            console.log('Test results count:', session.test_results ? session.test_results.length : 0);
+            
+            if (!session.test_results || session.test_results.length === 0) {
+                document.getElementById('testResults').innerHTML = '<div class="empty-state">No test results yet. Waiting for tests to start...</div>';
+                return;
+            }
+            
+            let html = `
+                <table class="test-results-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%;">Test Name</th>
+                            <th style="width: 12%;">Category</th>
+                            <th style="width: 10%;">Type</th>
+                            <th style="width: 10%;">Status</th>
+                            <th style="width: 10%;">Duration</th>
+                            <th style="width: 23%;">Key Metrics</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            session.test_results.forEach((result, index) => {
+                const statusClass = result.status === 'passed' ? 'passed' : result.status === 'failed' ? 'failed' : result.status === 'running' ? 'running' : result.status === 'error' ? 'error' : 'pending';
+                const isRunning = result.status === 'running';
+                
+                // Format duration
+                let duration = 'N/A';
+                let elapsedSeconds = 0;
+                if (result.duration) {
+                    elapsedSeconds = result.duration;
+                    if (result.duration >= 60) {
+                        const mins = Math.floor(result.duration / 60);
+                        const secs = Math.floor(result.duration % 60);
+                        duration = `${mins}m ${secs}s`;
+                    } else {
+                        duration = `${result.duration.toFixed(1)}s`;
+                    }
+                }
+                
+                // Get test case info
+                const testCase = session.test_cases?.find(tc => tc.id === result.test_id);
+                const category = testCase?.category || '-';
+                const testType = testCase?.test_type || '-';
+                const description = testCase?.description || '';
+                const estimatedDuration = testCase?.duration_estimate || 0;
+                
+                // Calculate progress for running test
+                let progressPercent = 0;
+                let actualElapsedSeconds = elapsedSeconds;
+                let actualTotalSeconds = estimatedDuration;
+                
+                // Prefer real-time progress from metrics if available
+                if (isRunning && result.metrics) {
+                    if (result.metrics._progress_percent !== undefined) {
+                        progressPercent = Math.min(result.metrics._progress_percent, 99);
+                    }
+                    if (result.metrics._elapsed_seconds !== undefined) {
+                        actualElapsedSeconds = result.metrics._elapsed_seconds;
+                    }
+                    if (result.metrics._total_seconds !== undefined) {
+                        actualTotalSeconds = result.metrics._total_seconds;
+                    }
+                }
+                // Fallback to estimate based on elapsed time
+                else if (isRunning && estimatedDuration > 0 && elapsedSeconds > 0) {
+                    progressPercent = Math.min((elapsedSeconds / estimatedDuration) * 100, 99);
+                }
+                
+                // Key metrics (top 3 most relevant)
+                let keyMetrics = [];
+                if (result.metrics) {
+                    if (result.metrics.score !== undefined) keyMetrics.push(`Score: ${result.metrics.score}`);
+                    if (result.metrics.cpu_avg !== undefined) keyMetrics.push(`CPU: ${result.metrics.cpu_avg.toFixed(1)}%`);
+                    if (result.metrics.memory_avg !== undefined) keyMetrics.push(`RAM: ${result.metrics.memory_avg.toFixed(1)}%`);
+                    if (result.metrics.temp_avg !== undefined) keyMetrics.push(`Temp: ${result.metrics.temp_avg.toFixed(1)}°C`);
+                    if (result.metrics.write_speed_mb_s !== undefined) keyMetrics.push(`Write: ${result.metrics.write_speed_mb_s.toFixed(0)} MB/s`);
+                    if (result.metrics.read_speed_mb_s !== undefined) keyMetrics.push(`Read: ${result.metrics.read_speed_mb_s.toFixed(0)} MB/s`);
+                    if (result.metrics.avg_latency_ms !== undefined) keyMetrics.push(`Latency: ${result.metrics.avg_latency_ms.toFixed(1)}ms`);
+                    if (result.metrics.throughput_mb_s !== undefined) keyMetrics.push(`Speed: ${result.metrics.throughput_mb_s.toFixed(0)} MB/s`);
+                }
+                const metricsSummary = keyMetrics.slice(0, 3).join(' | ') || 'No metrics';
+                
+                // Highlight running test
+                const rowBg = isRunning ? '#FFF9C4' : '';
+                const rowBorder = isRunning ? 'border-left: 4px solid #FBC02D;' : '';
+                
+                html += `
+                    <tr id="test-row-${index}" style="cursor: pointer; background: ${rowBg}; ${rowBorder}" onclick="toggleTestRow(${index})" title="${description}">
+                        <td>
+                            <div class="test-name">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    ${isRunning ? '<div style="width: 8px; height: 8px; background: #FBC02D; border-radius: 50%; animation: pulse 1.5s infinite;"></div>' : ''}
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 500; color: #212121;">${result.test_name}</div>
+                                        ${description ? `<div style="font-size: 11px; color: #9E9E9E; margin-top: 2px;">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</div>` : ''}
+                                        ${isRunning && actualTotalSeconds > 0 ? `
+                                            <div style="margin-top: 6px;">
+                                                <div style="font-size: 10px; color: #757575; margin-bottom: 2px;">Progress: ${progressPercent.toFixed(0)}% (${Math.floor(actualElapsedSeconds/60)}m ${Math.floor(actualElapsedSeconds%60)}s / ${Math.floor(actualTotalSeconds/60)}m ${Math.floor(actualTotalSeconds%60)}s)</div>
+                                                <div style="width: 100%; height: 4px; background: #E0E0E0; border-radius: 2px; overflow: hidden;">
+                                                    <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #FBC02D 0%, #F9A825 100%); transition: width 1s linear;"></div>
+                                                </div>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span style="background: #F3E5F5; padding: 3px 8px; border-radius: 12px; font-size: 11px; color: #7B1FA2;">${category}</span></td>
+                        <td><span style="background: #E3F2FD; padding: 3px 8px; border-radius: 12px; font-size: 11px; color: #1565C0;">${testType}</span></td>
+                        <td><span class="status ${statusClass}">${result.status.toUpperCase()}</span></td>
+                        <td style="font-weight: 500;">${duration}</td>
+                        <td style="font-size: 11px; color: #424242;">${metricsSummary}</td>
+                    </tr>
+                    <tr id="test-details-${index}" style="display: none; background: #FAFAFA;">
+                        <td colspan="6" style="padding: 16px 24px;">
+                            ${renderExpandedTestInfo(result, testCase)}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('testResults').innerHTML = html;
+        }
+
+        // Toggle test row details
+        function toggleTestRow(index) {
+            const detailsRow = document.getElementById(`test-details-${index}`);
+            const mainRow = document.getElementById(`test-row-${index}`);
+            
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+                mainRow.style.background = '#F5F5F5';
+            } else {
+                detailsRow.style.display = 'none';
+                mainRow.style.background = '';
+            }
+        }
+        
+        // Render expanded test information
+        function renderExpandedTestInfo(result, testCase) {
+            let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">';
+            
+            // Left column: Test Case Info
+            html += '<div>';
+            if (testCase) {
+                html += '<div style="font-weight: 600; font-size: 14px; margin-bottom: 12px; color: #1976D2;">Test Case Information</div>';
+                
+                if (testCase.description) {
+                    html += `<div style="margin-bottom: 12px;">
+                        <div style="font-size: 12px; color: #757575; margin-bottom: 4px;">Description:</div>
+                        <div style="font-size: 13px; color: #212121;">${testCase.description}</div>
+                    </div>`;
+                }
+                
+                html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">`;
+                if (testCase.duration_estimate) {
+                    const estMins = Math.floor(testCase.duration_estimate / 60);
+                    const estSecs = testCase.duration_estimate % 60;
+                    const estStr = estMins > 0 ? `${estMins}m ${estSecs}s` : `${estSecs}s`;
+                    html += `<div>
+                        <div style="font-size: 12px; color: #757575;">Estimated Duration:</div>
+                        <div style="font-size: 13px; color: #212121; font-weight: 500;">${estStr}</div>
+                    </div>`;
+                }
+                if (testCase.priority) {
+                    html += `<div>
+                        <div style="font-size: 12px; color: #757575;">Priority:</div>
+                        <div style="font-size: 13px; color: #212121; font-weight: 500;">${testCase.priority}/10</div>
+                    </div>`;
+                }
+                html += `</div>`;
+                
+                if (testCase.preconditions && testCase.preconditions.length > 0) {
+                    html += `<div style="margin-bottom: 12px;">
+                        <div style="font-size: 12px; color: #757575; margin-bottom: 4px;">Preconditions:</div>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
+                            ${testCase.preconditions.map(p => `<li>${p}</li>`).join('')}
+                        </ul>
+                    </div>`;
+                }
+            } else {
+                html += '<div style="color: #9E9E9E; font-style: italic;">Test case details not available</div>';
+            }
+            html += '</div>';
+            
+            // Right column: Execution Results
+            html += '<div>';
+            html += '<div style="font-weight: 600; font-size: 14px; margin-bottom: 12px; color: #1976D2;">Execution Results</div>';
+            
+            html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">`;
+            if (result.start_time) {
+                html += `<div>
+                    <div style="font-size: 12px; color: #757575;">Start Time:</div>
+                    <div style="font-size: 12px; color: #212121;">${new Date(result.start_time).toLocaleString()}</div>
+                </div>`;
+            }
+            if (result.end_time) {
+                html += `<div>
+                    <div style="font-size: 12px; color: #757575;">End Time:</div>
+                    <div style="font-size: 12px; color: #212121;">${new Date(result.end_time).toLocaleString()}</div>
+                </div>`;
+            }
+            html += `</div>`;
+            
+            // All metrics
+            if (result.metrics && Object.keys(result.metrics).length > 0) {
+                html += '<div style="margin-bottom: 12px;"><div style="font-size: 12px; color: #757575; margin-bottom: 8px;">Detailed Metrics:</div>';
+                html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">';
+                
+                for (const [key, value] of Object.entries(result.metrics)) {
+                    if (typeof value === 'number' && !isNaN(value) && isFinite(value)) {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const displayValue = value % 1 === 0 ? value : value.toFixed(2);
+                        html += `<div style="background: white; padding: 6px 10px; border-radius: 4px; border-left: 3px solid #1976D2;">
+                            <div style="font-size: 10px; color: #757575;">${label}</div>
+                            <div style="font-size: 14px; color: #212121; font-weight: 500;">${displayValue}</div>
+                        </div>`;
+                    }
+                }
+                html += '</div></div>';
+            }
+            
+            // Errors
+            if (result.errors && result.errors.length > 0) {
+                html += '<div style="background: #FFEBEE; padding: 12px; border-radius: 4px; border-left: 4px solid #E53935;">';
+                html += '<div style="font-size: 12px; font-weight: 600; color: #C62828; margin-bottom: 6px;">Errors:</div>';
+                result.errors.forEach(error => {
+                    html += `<div style="font-size: 11px; color: #C62828; margin-bottom: 4px;">• ${error}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            html += '</div>';
+            
+            return html;
+        }
+
+
+        // Render hardware profile
+        function renderHardwareProfile(session) {
+            document.getElementById('hardwareSection').style.display = 'block';
+            
+            const hw = session.hardware_profile;
+            let html = '<table class="hardware-table"><thead><tr><th style="width: 20%;">Component</th><th>Overview</th><th style="width: 100px;">Details</th></tr></thead><tbody>';
+            
+            let hwIndex = 0;
+            
+            // CPU
+            if (hw.cpu) {
+                html += `
+                    <tr style="cursor: pointer;" onclick="toggleHardwareRow(${hwIndex})">
+                        <td style="font-weight: 500;">CPU</td>
+                        <td>${hw.cpu.name}</td>
+                        <td style="text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                    </tr>
+                    <tr id="hw-details-${hwIndex}" style="display: none; background: #FAFAFA;">
+                        <td colspan="3" style="padding: 16px 24px;">
+                            ${renderCPUDetails(hw.cpu)}
+                        </td>
+                    </tr>
+                `;
+                hwIndex++;
+            }
+            
+            // RAM
+            if (hw.ram && hw.ram.length > 0) {
+                hw.ram.forEach((ram, ramIdx) => {
+                    html += `
+                        <tr style="cursor: pointer;" onclick="toggleHardwareRow(${hwIndex})">
+                            <td style="font-weight: 500;">RAM ${hw.ram.length > 1 ? '#' + (ramIdx + 1) : ''}</td>
+                            <td>${ram.name}</td>
+                            <td style="text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                        </tr>
+                        <tr id="hw-details-${hwIndex}" style="display: none; background: #FAFAFA;">
+                            <td colspan="3" style="padding: 16px 24px;">
+                                ${renderRAMDetails(ram)}
+                            </td>
+                        </tr>
+                    `;
+                    hwIndex++;
+                });
+            }
+            
+            // GPU
+            if (hw.gpu && hw.gpu.length > 0) {
+                hw.gpu.forEach((gpu, gpuIdx) => {
+                    html += `
+                        <tr style="cursor: pointer;" onclick="toggleHardwareRow(${hwIndex})">
+                            <td style="font-weight: 500;">GPU ${hw.gpu.length > 1 ? '#' + (gpuIdx + 1) : ''}</td>
+                            <td>${gpu.name}</td>
+                            <td style="text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                        </tr>
+                        <tr id="hw-details-${hwIndex}" style="display: none; background: #FAFAFA;">
+                            <td colspan="3" style="padding: 16px 24px;">
+                                ${renderGPUDetails(gpu)}
+                            </td>
+                        </tr>
+                    `;
+                    hwIndex++;
+                });
+            }
+            
+            // Storage
+            if (hw.storage && hw.storage.length > 0) {
+                hw.storage.forEach((storage, storageIdx) => {
+                    html += `
+                        <tr style="cursor: pointer;" onclick="toggleHardwareRow(${hwIndex})">
+                            <td style="font-weight: 500;">Storage ${hw.storage.length > 1 ? '#' + (storageIdx + 1) : ''}</td>
+                            <td>${storage.name}</td>
+                            <td style="text-align: center; color: #1976D2; font-size: 11px;">Show Details</td>
+                        </tr>
+                        <tr id="hw-details-${hwIndex}" style="display: none; background: #FAFAFA;">
+                            <td colspan="3" style="padding: 16px 24px;">
+                                ${renderStorageDetails(storage)}
+                            </td>
+                        </tr>
+                    `;
+                    hwIndex++;
+                });
+            }
+            
+            html += '</tbody></table>';
+            document.getElementById('hardwareProfile').innerHTML = html;
+        }
+        
+        // Toggle hardware row details
+        function toggleHardwareRow(index) {
+            const detailsRow = document.getElementById(`hw-details-${index}`);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+            } else {
+                detailsRow.style.display = 'none';
+            }
+        }
+        
+        // Render CPU details
+        function renderCPUDetails(cpu) {
+            let html = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">';
+            
+            // CPU data is in the 'details' object
+            const details = cpu.details || {};
+            
+            const fields = [
+                { key: 'physical_cores', label: 'Physical Cores' },
+                { key: 'logical_cores', label: 'Logical Cores' },
+                { key: 'base_frequency_mhz', label: 'Base Frequency', unit: ' MHz' },
+                { key: 'max_frequency_mhz', label: 'Max Frequency', unit: ' MHz' },
+                { key: 'architecture', label: 'Architecture' },
+                { key: 'vendor', label: 'Vendor' },
+                { key: 'family', label: 'Family' },
+                { key: 'model', label: 'Model' },
+                { key: 'stepping', label: 'Stepping' },
+                { key: 'cache_l1', label: 'L1 Cache' },
+                { key: 'cache_l2', label: 'L2 Cache' },
+                { key: 'cache_l3', label: 'L3 Cache' }
+            ];
+            
+            let hasDetails = false;
+            fields.forEach(field => {
+                if (details[field.key] !== undefined && details[field.key] !== null) {
+                    hasDetails = true;
+                    let value = details[field.key];
+                    if (typeof value === 'number' && !field.unit) {
+                        value = value.toFixed(0);
+                    } else if (field.unit) {
+                        value = (typeof value === 'number' ? value.toFixed(0) : value) + field.unit;
+                    }
+                    html += `<div>
+                        <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${field.label}:</div>
+                        <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            
+            // If no structured details, show raw details object
+            if (!hasDetails && Object.keys(details).length > 0) {
+                html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+                Object.entries(details).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<div>
+                            <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${label}:</div>
+                            <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                return html;
+            }
+            
+            return hasDetails ? html : '<div style="color: #9E9E9E; font-style: italic;">No additional CPU details available</div>';
+        }
+        
+        // Render RAM details
+        function renderRAMDetails(ram) {
+            const details = ram.details || {};
+            let html = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">';
+            
+            const fields = [
+                { key: 'capacity_gb', label: 'Capacity', unit: ' GB' },
+                { key: 'speed_mhz', label: 'Speed', unit: ' MHz' },
+                { key: 'type', label: 'Type' },
+                { key: 'manufacturer', label: 'Manufacturer' },
+                { key: 'part_number', label: 'Part Number' },
+                { key: 'serial_number', label: 'Serial Number' },
+                { key: 'form_factor', label: 'Form Factor' },
+                { key: 'voltage', label: 'Voltage', unit: ' V' }
+            ];
+            
+            let hasDetails = false;
+            fields.forEach(field => {
+                if (details[field.key] !== undefined && details[field.key] !== null) {
+                    hasDetails = true;
+                    let value = details[field.key];
+                    if (typeof value === 'number' && !field.unit) {
+                        value = value.toFixed(2);
+                    } else if (field.unit) {
+                        value = (typeof value === 'number' ? value.toFixed(0) : value) + field.unit;
+                    }
+                    html += `<div>
+                        <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${field.label}:</div>
+                        <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            
+            // If no structured details, show raw details object
+            if (!hasDetails && Object.keys(details).length > 0) {
+                html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+                Object.entries(details).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined && typeof value !== 'object') {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<div>
+                            <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${label}:</div>
+                            <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                return html;
+            }
+            
+            return hasDetails ? html : '<div style="color: #9E9E9E; font-style: italic;">No additional RAM details available</div>';
+        }
+        
+        // Render GPU details
+        function renderGPUDetails(gpu) {
+            const details = gpu.details || {};
+            let html = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">';
+            
+            const fields = [
+                // Memory Information
+                { key: 'memory_total_gb', label: 'VRAM Total', unit: ' GB', priority: 1 },
+                { key: 'memory_total_mb', label: 'VRAM Total', unit: ' MB', priority: 1 },
+                { key: 'memory_free_gb', label: 'VRAM Free', unit: ' GB', priority: 2 },
+                { key: 'memory_used_gb', label: 'VRAM Used', unit: ' GB', priority: 2 },
+                { key: 'memory_bandwidth_gb_s', label: 'Memory Bandwidth', unit: ' GB/s', priority: 2 },
+                
+                // Clock Speeds
+                { key: 'core_clock_mhz', label: 'Core Clock', unit: ' MHz', priority: 1 },
+                { key: 'boost_clock_mhz', label: 'Boost Clock', unit: ' MHz', priority: 1 },
+                { key: 'memory_clock_mhz', label: 'Memory Clock', unit: ' MHz', priority: 1 },
+                { key: 'base_clock_mhz', label: 'Base Clock', unit: ' MHz', priority: 2 },
+                
+                // Compute Units
+                { key: 'cuda_cores', label: 'CUDA Cores', priority: 1 },
+                { key: 'stream_processors', label: 'Stream Processors', priority: 1 },
+                { key: 'compute_units', label: 'Compute Units', priority: 1 },
+                { key: 'sm_count', label: 'SM Count', priority: 2 },
+                
+                // Performance
+                { key: 'gpu_utilization_percent', label: 'GPU Utilization', unit: '%', priority: 1 },
+                { key: 'memory_utilization_percent', label: 'Memory Utilization', unit: '%', priority: 1 },
+                { key: 'tflops', label: 'Performance', unit: ' TFLOPS', priority: 2 },
+                
+                // Power & Thermal
+                { key: 'power_draw_w', label: 'Power Draw', unit: ' W', priority: 1 },
+                { key: 'power_limit_w', label: 'Power Limit', unit: ' W', priority: 2 },
+                { key: 'tdp_w', label: 'TDP', unit: ' W', priority: 2 },
+                { key: 'temperature_c', label: 'Temperature', unit: '°C', priority: 1 },
+                { key: 'temperature_max_c', label: 'Max Temperature', unit: '°C', priority: 2 },
+                { key: 'fan_speed_percent', label: 'Fan Speed', unit: '%', priority: 2 },
+                
+                // Driver & Version Info
+                { key: 'driver_version', label: 'Driver Version', priority: 2 },
+                { key: 'cuda_version', label: 'CUDA Version', priority: 2 },
+                { key: 'opencl_version', label: 'OpenCL Version', priority: 2 },
+                { key: 'compute_capability', label: 'Compute Capability', priority: 2 },
+                
+                // Hardware IDs
+                { key: 'vendor', label: 'Vendor', priority: 2 },
+                { key: 'pci_bus_id', label: 'PCI Bus ID', priority: 3 },
+                { key: 'device_id', label: 'Device ID', priority: 3 },
+                { key: 'subsystem_id', label: 'Subsystem ID', priority: 3 }
+            ];
+            
+            let hasDetails = false;
+            let displayedKeys = new Set();
+            
+            // Display fields by priority
+            fields.forEach(field => {
+                if (!displayedKeys.has(field.key) && details[field.key] !== undefined && details[field.key] !== null) {
+                    hasDetails = true;
+                    displayedKeys.add(field.key);
+                    let value = details[field.key];
+                    if (typeof value === 'number' && !field.unit) {
+                        value = value.toFixed(0);
+                    } else if (field.unit) {
+                        value = (typeof value === 'number' ? value.toFixed(0) : value) + field.unit;
+                    }
+                    html += `<div>
+                        <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${field.label}:</div>
+                        <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            
+            // If no structured details, show raw details object
+            if (!hasDetails && Object.keys(details).length > 0) {
+                html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+                Object.entries(details).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined && typeof value !== 'object') {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<div>
+                            <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${label}:</div>
+                            <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                return html;
+            }
+            
+            return hasDetails ? html : '<div style="color: #9E9E9E; font-style: italic;">No additional GPU details available</div>';
+        }
+        
+        // Render Storage details
+        function renderStorageDetails(storage) {
+            const details = storage.details || {};
+            let html = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">';
+            
+            const fields = [
+                { key: 'capacity_gb', label: 'Capacity', unit: ' GB' },
+                { key: 'free_space_gb', label: 'Free Space', unit: ' GB' },
+                { key: 'type', label: 'Type' },
+                { key: 'interface', label: 'Interface' },
+                { key: 'manufacturer', label: 'Manufacturer' },
+                { key: 'model', label: 'Model' },
+                { key: 'serial_number', label: 'Serial Number' },
+                { key: 'firmware_version', label: 'Firmware' },
+                { key: 'smart_status', label: 'SMART Status' },
+                { key: 'temperature_c', label: 'Temperature', unit: ' C' }
+            ];
+            
+            let hasDetails = false;
+            fields.forEach(field => {
+                if (details[field.key] !== undefined && details[field.key] !== null) {
+                    hasDetails = true;
+                    let value = details[field.key];
+                    if (typeof value === 'number' && !field.unit) {
+                        value = value.toFixed(2);
+                    } else if (field.unit) {
+                        value = (typeof value === 'number' ? value.toFixed(0) : value) + field.unit;
+                    }
+                    html += `<div>
+                        <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${field.label}:</div>
+                        <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            
+            // If no structured details, show raw details object
+            if (!hasDetails && Object.keys(details).length > 0) {
+                html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+                Object.entries(details).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined && typeof value !== 'object') {
+                        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<div>
+                            <div style="font-size: 11px; color: #757575; margin-bottom: 4px;">${label}:</div>
+                            <div style="font-size: 14px; color: #212121; font-weight: 500;">${value}</div>
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                return html;
+            }
+            
+            return hasDetails ? html : '<div style="color: #9E9E9E; font-style: italic;">No additional storage details available</div>';
+        }
+
+        // Render reports
+        function renderReports(session) {
+            document.getElementById('reportsSection').style.display = 'block';
+            
+            if (!session.reports || session.reports.length === 0) {
+                document.getElementById('reportsContent').innerHTML = '<div class="empty-state">No reports generated yet</div>';
+                return;
+            }
+            
+            let html = '<div class="report-links">';
+            
+            session.reports.forEach(report => {
+                const format = report.format.toUpperCase();
+                const fileName = report.file_path ? report.file_path.split('/').pop() : 'Report';
+                // Report path is already relative to reports directory
+                const reportPath = report.file_path || '';
+                const size = report.size_bytes ? ` (${(report.size_bytes / 1024).toFixed(1)} KB)` : '';
+                
+                html += `
+                    <a href="/reports/${reportPath}" class="report-link ${report.format}" target="_blank">
+                        ${format} Report${size}
+                    </a>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('reportsContent').innerHTML = html;
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const map = {
+                'completed': 'passed',
+                'failed': 'failed',
+                'testing': 'running',
+                'analyzing': 'running',
+                'detecting': 'running',
+                'planning': 'running'
+            };
+            return map[status] || 'pending';
+        }
+    </script>
+</body>
+</html>

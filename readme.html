@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID Framework - Automated IPC Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #FAFAFA;
+            color: #212121;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #212121;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: #757575;
+            margin-top: 4px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Section */
+        .section {
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .section-title {
+            font-size: 34px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: #212121;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: #757575;
+            margin-bottom: 32px;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #E0E0E0;
+            margin: 32px 0;
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 32px 0 16px 0;
+            color: #212121;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 24px 0 12px 0;
+            color: #424242;
+        }
+
+        p {
+            font-size: 16px;
+            color: #616161;
+            margin-bottom: 16px;
+            line-height: 1.75;
+        }
+
+        /* Lists */
+        ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            font-size: 16px;
+            color: #616161;
+            margin-bottom: 8px;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .card {
+            background: #FAFAFA;
+            border-radius: 4px;
+            padding: 24px;
+            border-left: 4px solid #1976D2;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            color: #757575;
+        }
+
+        /* SVG Container */
+        .svg-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 32px 0;
+            background: #FAFAFA;
+            border-radius: 4px;
+            padding: 24px;
+        }
+
+        .svg-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+        }
+
+        th {
+            background: #F5F5F5;
+            padding: 16px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 14px;
+            color: #616161;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        td {
+            padding: 16px;
+            font-size: 14px;
+            color: #757575;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        /* Highlight Box */
+        .highlight {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 16px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .highlight p {
+            color: #1565C0;
+            margin: 0;
+        }
+
+        /* Code */
+        code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+            font-size: 14px;
+            color: #D32F2F;
+        }
+
+        /* Footer */
+        .footer {
+            background: #212121;
+            color: #BDBDBD;
+            padding: 48px 24px;
+            text-align: center;
+            margin-top: 64px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            color: #BDBDBD;
+            margin: 8px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section {
+                padding: 24px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>VOID Framework</h1>
+            <div class="subtitle">Validation Of Industrial Devices</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Introduction -->
+        <div class="section">
+            <h1 class="section-title">What is VOID?</h1>
+            <p class="section-subtitle">A robot that tests your industrial PCs automatically</p>
+            
+            <p>VOID (Validation Of Industrial Devices) is like a smart robot that checks if your IPC hardware works correctly. You give it an IPC, wait 48 hours, and it tells you: "GO - this IPC is good" or "NO-GO - there's a problem".</p>
+
+            <div class="highlight">
+                <p><strong>Simple Goal:</strong> Put IPC in → Wait 48 hours → Get answer: Good or Bad?</p>
+            </div>
+
+            <h2>What VOID Does</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-title">Tests Everything Automatically</div>
+                    <div class="card-text">Checks CPU, RAM, GPU, hard drives, USB ports, sensors - everything. No manual work needed.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Uses AI to Find Problems</div>
+                    <div class="card-text">Like a smart detective - finds problems you might miss. Then says: "This is good" or "This is broken".</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Makes Reports</div>
+                    <div class="card-text">Creates different types of reports: for computers (JSON), for people (web page), and for printing (PDF).</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Works Without Internet</div>
+                    <div class="card-text">No cloud, no internet needed. Everything runs on your local network. Safe and secure.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Project Management -->
+        <div class="section">
+            <h1 class="section-title">Project Management</h1>
+            <p class="section-subtitle">Testing many IPCs at once</p>
+
+            <p>Imagine you have 10 IPCs to test. VOID can test them all at the same time. It's like having 10 robots working in parallel. One central computer controls everything.</p>
+
+            <div class="svg-wrapper">
+                <img src="01_project_management.svg" alt="Project Management Overview">
+            </div>
+
+            <h2>What It Does</h2>
+            <ul>
+                <li><strong>Auto Setup:</strong> Automatically installs test software on all IPCs</li>
+                <li><strong>Smart Planning:</strong> Makes sure all tests finish in 48 hours</li>
+                <li><strong>Many IPCs:</strong> Test 10, 20, or 100 IPCs from one place</li>
+                <li><strong>Settings:</strong> Change test settings for all IPCs at once</li>
+                <li><strong>History:</strong> Keeps track of what was tested and when</li>
+            </ul>
+
+        </div>
+
+        <!-- Test Automation Core -->
+        <div class="section">
+            <h1 class="section-title">How VOID Works Inside</h1>
+            <p class="section-subtitle">Four simple steps</p>
+
+            <p>Think of VOID like a factory with 4 stations. Each station does one job. This makes it simple to understand and easy to fix if something breaks.</p>
+
+            <div class="svg-wrapper">
+                <img src="02_test_automation_core.svg" alt="Test Automation Core Architecture">
+            </div>
+
+            <h2>Step 1: Look at Hardware</h2>
+            <p>VOID looks at what hardware the IPC has:</p>
+            <ul>
+                <li><strong>Find Everything:</strong> What CPU? How much RAM? What GPU?</li>
+                <li><strong>Pick Tests:</strong> Decides which tests to run based on what it found</li>
+                <li><strong>Make Plan:</strong> Plans to finish in 48 hours</li>
+                <li><strong>Nothing Forgotten:</strong> Makes sure to test everything important</li>
+            </ul>
+
+            <h2>Step 2: Prepare Tests</h2>
+            <p>VOID prepares what each test will do:</p>
+            <ul>
+                <li><strong>Check Ready:</strong> Is everything ready to test? Drivers installed?</li>
+                <li><strong>Test List:</strong> CPU stress, RAM patterns, GPU compute, disk speed, network</li>
+                <li><strong>Test Recipe:</strong> Setup → Run Test → Check if OK → Clean up → Write down results</li>
+                <li><strong>Know What's Good:</strong> Has baseline data to compare: "Is this normal or broken?"</li>
+            </ul>
+
+            <h2>Step 3: Run Tests</h2>
+            <p>VOID actually runs all the tests:</p>
+            <ul>
+                <li><strong>8 Tests at Once:</strong> Runs multiple tests in parallel to save time</li>
+                <li><strong>Shows Progress:</strong> You can see what's happening in real-time</li>
+                <li><strong>Smart Retry:</strong> If a test fails, tries again to be sure</li>
+                <li><strong>Can Resume:</strong> If power goes out, continues where it stopped</li>
+            </ul>
+
+            <h2>Step 4: Talk to Hardware</h2>
+            <p>VOID connects to all the hardware:</p>
+            <ul>
+                <li><strong>Talks to Everything:</strong> CPU, RAM, GPU, Hard Drives, USB, Network, Sensors, Security Chips</li>
+                <li><strong>Uses Standard Tools:</strong> MemTest86, CrystalDiskMark, HWiNFO, and many more</li>
+                <li><strong>Translation Layer:</strong> Like a universal translator - makes all tools speak the same language</li>
+            </ul>
+
+        </div>
+
+        <!-- AI/ML Analysis -->
+        <div class="section">
+            <h1 class="section-title">The Smart Brain (AI)</h1>
+            <p class="section-subtitle">How VOID thinks</p>
+
+            <p>This is VOID's brain. It uses artificial intelligence to look at test results and find problems. Think of it like a smart doctor looking at your blood test - it knows what's normal and what's not.</p>
+
+            <div class="svg-wrapper">
+                <img src="03_aiml_analysis.svg" alt="AI/ML Analysis Layer">
+            </div>
+
+            <h2>Finding Problems</h2>
+            <p>VOID uses 4 different methods to find problems:</p>
+            <ul>
+                <li><strong>Method 1:</strong> Finds weird values that don't fit the pattern</li>
+                <li><strong>Method 2:</strong> Compares with thousands of good IPCs it saw before</li>
+                <li><strong>Method 3:</strong> Looks for unusual combinations of errors</li>
+                <li><strong>Method 4:</strong> Simple math - is this value too high or too low?</li>
+            </ul>
+            <p>Using 4 methods means VOID catches more problems than using just one method.</p>
+
+            <h2>Understanding Patterns</h2>
+            <p>VOID looks for patterns in the data:</p>
+            <ul>
+                <li><strong>Over Time:</strong> Is temperature going up slowly? That's bad!</li>
+                <li><strong>Connections:</strong> "When CPU gets hot, fan should speed up - but it didn't!"</li>
+                <li><strong>Trends:</strong> "This hard drive is getting slower every hour"</li>
+                <li><strong>Why Failed:</strong> Not just "it failed" but "it failed because the fan stopped"</li>
+            </ul>
+            <p>This helps you fix the real problem, not just treat symptoms.</p>
+
+            <h2>Final Decision</h2>
+            <p>VOID makes the final decision: GO or NO-GO</p>
+            <ul>
+                <li><strong>Critical Failures:</strong> If something critical is broken → Instant NO-GO</li>
+                <li><strong>Smart Score:</strong> Combines all AI results into one score (0-100)</li>
+                <li><strong>Three Brains Vote:</strong> Three AI models must agree</li>
+                <li><strong>Confidence:</strong> Only says GO if it's very sure (98%+)</li>
+            </ul>
+
+            <div class="highlight">
+                <p><strong>Example:</strong> Score 95/100 → Three AIs agree → 98% sure → Decision: GO ✓</p>
+            </div>
+
+        </div>
+
+        <!-- Reporting & Output -->
+        <div class="section">
+            <h1 class="section-title">Reports</h1>
+            <p class="section-subtitle">Three types of reports</p>
+
+            <p>VOID creates 3 types of reports because different people need different things. Some want to read it, some want to print it, some want to feed it to another computer.</p>
+
+            <div class="svg-wrapper">
+                <img src="04_reporting_output.svg" alt="Reporting and Output Layer">
+            </div>
+
+            <h2>1. JSON (For Computers)</h2>
+            <p>Machine-readable data file:</p>
+            <ul>
+                <li>All test results in computer format</li>
+                <li>Other software can read it automatically</li>
+                <li>Includes everything: scores, times, errors</li>
+            </ul>
+
+            <h2>2. HTML Dashboard (For People)</h2>
+            <p>Nice web page you can open in browser:</p>
+            <ul>
+                <li>Progress bars and charts</li>
+                <li>Green = good, Red = bad (easy to understand!)</li>
+                <li>Click to see more details</li>
+                <li>Works on phone too</li>
+            </ul>
+
+            <h2>3. PDF Certificate (For Printing)</h2>
+            <p>Official paper you can print:</p>
+            <ul>
+                <li>Looks like a certificate</li>
+                <li>Has digital signature (can't be faked)</li>
+                <li>Shows: IPC model, score, date, decision (GO/NO-GO)</li>
+                <li>Good for audits and documentation</li>
+            </ul>
+
+
+            <h2>Where Reports Go</h2>
+            <p>VOID can send reports to different places:</p>
+            <ul>
+                <li><strong>Live Website:</strong> Watch tests running in real-time</li>
+                <li><strong>Shared Folder:</strong> Automatically saved where everyone can see</li>
+                <li><strong>Email:</strong> "Your test is finished!" notification</li>
+                <li><strong>API:</strong> Other programs can fetch results automatically</li>
+                <li><strong>Slack/Teams:</strong> Message to your team chat</li>
+            </ul>
+        </div>
+
+        <!-- Data Flow -->
+        <div class="section">
+            <h1 class="section-title">Data Flow</h1>
+            <p class="section-subtitle">Where does the data come from and where does it go?</p>
+
+            <p>Think of this like a river. Water (data) starts at the source (hardware), flows through pipes (tests), gets cleaned (AI analysis), and ends up in the ocean (report). Here's how:</p>
+
+            <div class="svg-wrapper">
+                <img src="05_data_flow.svg" alt="Data Flow Architecture">
+            </div>
+
+            <h2>Where Data Comes From</h2>
+            <p>Three sources of information:</p>
+            <ul>
+                <li><strong>Hardware Direct:</strong> Read CPU temperature, RAM usage, GPU speed directly</li>
+                <li><strong>Custom Tests:</strong> Python scripts that test specific things</li>
+                <li><strong>Standard Tools:</strong> Industry tools like MemTest86, CrystalDiskMark</li>
+            </ul>
+
+
+            <h2>5 Steps to Process Data</h2>
+            <p>Like a factory production line:</p>
+
+            <h3>Step 1: Collect</h3>
+            <p>Gather all raw numbers and logs from everywhere.</p>
+
+            <h3>Step 2: Clean Up</h3>
+            <p>Make everything look the same. Like sorting apples and oranges into separate boxes.</p>
+
+            <h3>Step 3: AI Looks at It</h3>
+            <p>The smart brain analyzes everything and finds problems.</p>
+
+            <h3>Step 4: Decide</h3>
+            <p>Make the final call: GO or NO-GO?</p>
+
+            <h3>Step 5: Make Reports</h3>
+            <p>Create the 3 types of reports (JSON, HTML, PDF).</p>
+
+
+            <h2>Tools VOID Uses</h2>
+            <p>VOID uses many professional tools (like a mechanic has many wrenches):</p>
+            
+            <h3>Internal Siemens Tools (aka API Wrapper for <strong>ORCLA</strong>)</h3>
+            <ul>
+                <li><strong>Siemens IPC Diagnostics:</strong> Special tests for Siemens hardware</li>
+                <li><strong>Siemens Hardware Detection:</strong> Finds all Siemens components</li>
+            </ul>
+            
+            <h3>Vendor Tools</h3>
+            <ul>
+                <li><strong>ASUS API Suite:</strong> Motherboard monitoring and control</li>
+                <li><strong>ATOS Tools:</strong> System validation</li>
+                <li><strong>Broadcom RAID:</strong> Storage array management</li>
+                <li><strong>Adaptec RAID Manager:</strong> Storage array management</li>
+                <li><strong>Intel Diagnostics:</strong> CPU validation</li>
+                <li><strong>NVIDIA tools (nvidia-smi):</strong> GPU monitoring</li>
+            </ul>
+            
+            <h3>Third-Party Tools</h3>
+            <ul>
+                <li><strong>MemTest86:</strong> RAM testing</li>
+                <li><strong>CrystalDiskMark:</strong> Hard drive speed tests</li>
+                <li><strong>HWiNFO64:</strong> Complete hardware information</li>
+                <li><strong>Prime95:</strong> CPU stress testing</li>
+                <li><strong>smartmontools:</strong> Disk health monitoring</li>
+                <li><strong>And many more specialized tools</strong></li>
+            </ul>
+            
+            <p>Each tool is an expert in its area. VOID uses all of them together.</p>
+        </div>
+
+        <!-- Test Execution Flow -->
+        <div class="section">
+            <h1 class="section-title">How a Test Works (Start to Finish)</h1>
+            <p class="section-subtitle">9 steps in 48 hours</p>
+
+            <p>You plug in an IPC. VOID does these 9 steps. 48 hours later, you get your answer. Here's what happens:</p>
+
+            <div class="svg-wrapper">
+                <img src="06_test_execution_flow.svg" alt="Test Execution Flow">
+            </div>
+
+            <h2>Step 1: Hello, What Do You Have? (15 min)</h2>
+            <p>VOID looks at the IPC: "OK, you have Intel i7, 32GB RAM, NVIDIA GPU, 1TB SSD..."</p>
+
+            <h2>Step 2: What Should I Test? (10 min)</h2>
+            <p>VOID makes a plan: "I'll test CPU, RAM, GPU, disks... should take 40 hours"</p>
+
+            <h2>Step 3: Am I Ready? (5 min)</h2>
+            <p>VOID checks itself: "Do I have all tools? Are drivers OK? Temperature normal? Let's go!"</p>
+
+            <h2>Step 4: Run All Tests (40 hours)</h2>
+            <p>The main work happens here:</p>
+            <ul>
+                <li><strong>CPU:</strong> Run hard calculations for hours</li>
+                <li><strong>RAM:</strong> Write and read patterns, check for errors</li>
+                <li><strong>GPU:</strong> Run graphics calculations</li>
+                <li><strong>Disks:</strong> Test read/write speed</li>
+                <li><strong>USB/Network:</strong> Test all ports</li>
+                <li><strong>Sensors:</strong> Watch temperature, fans, voltage all the time</li>
+            </ul>
+
+            <h2>Step 5: Collect Everything (30 min)</h2>
+            <p>VOID gathers all results: "OK, I have 1.2 million data points..."</p>
+
+            <h2>Step 6: Think About It (3 hours)</h2>
+            <p>The AI brain analyzes everything: "Hmm, CPU is good, RAM is good, but disk is a bit slow..."</p>
+
+            <h2>Step 7: Make Decision (15 min)</h2>
+            <p>VOID decides: "Overall score: 95/100. Three AIs agree. Confidence 98%. → Decision: GO"</p>
+
+            <h2>Step 8: Write Reports (1 hour)</h2>
+            <p>VOID creates JSON, HTML, and PDF reports.</p>
+
+            <h2>Step 9: Tell Everyone (30 min)</h2>
+            <p>Send email, copy to shared folder, update dashboard, notify Slack.</p>
+
+            <div class="highlight">
+                <p><strong>Total Time:</strong> ~38-48 hours → You get: GO or NO-GO + detailed reports</p>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="section">
+            <h1 class="section-title">Why VOID is Great</h1>
+            <p class="section-subtitle">The main benefits</p>
+
+            <p>VOID makes IPC testing fast, automatic, and smart. Instead of weeks of manual work, you get results in 48 hours. No human errors. Very reliable.</p>
+
+            <h2>Main Benefits</h2>
+            <ul>
+                <li><strong>Super Fast:</strong> 48 hours vs. weeks of manual work</li>
+                <li><strong>Very Smart:</strong> AI finds problems humans might miss</li>
+                <li><strong>Tests Everything:</strong> Almost every component gets tested</li>
+                <li><strong>No Humans Needed:</strong> Runs fully automatic - you just wait</li>
+                <li><strong>Full History:</strong> Everything is documented for audits</li>
+                <li><strong>Many at Once:</strong> Test 100 IPCs simultaneously</li>
+                <li><strong>Works Offline:</strong> No cloud, no internet, very secure</li>
+            </ul>
+
+            <div class="highlight">
+                <p><strong>Bottom Line:</strong> VOID = Smart Robot + 48 Hours = GO/NO-GO Answer</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <p><strong>VOID Framework</strong></p>
+            <p>Validation Of Industrial Devices</p>
+            <p>Concept Presentation - November 2025</p>
+        </div>
+    </div>
+
+</body>
+</html>
