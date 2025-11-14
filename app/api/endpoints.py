@@ -8,6 +8,7 @@ from typing import Optional, List, Dict, Any
 from app.models.schemas import TestSession, SystemStatus, TestCase
 from app.core.session_manager import SessionManager
 from app.core.preset_loader import PresetLoader
+from config.settings import settings
 from datetime import datetime
 import logging
 
@@ -23,7 +24,7 @@ async def root():
     """API root endpoint"""
     return {
         "name": "VOID Framework API",
-        "version": "1.0.0",
+        "version": settings.app_version,
         "description": "Validation Of Industrial Devices",
         "endpoints": {
             "sessions": "/api/sessions",
@@ -111,6 +112,17 @@ async def get_session(session_id: str):
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
+    # Ensure test_cases are loaded if missing
+    if not session.test_cases and session.test_results:
+        # Load test cases from test loader based on test_ids in results
+        test_ids = [tr.test_id for tr in session.test_results]
+        all_tests = session_manager.test_loader.load_all()
+        session.test_cases = [t for t in all_tests if t.id in test_ids]
+        if session.test_cases:
+            logger.info(f"Loaded {len(session.test_cases)} test cases for session {session_id}")
+            # Save updated session
+            session_manager.db.save_session(session)
+    
     return session
 
 
@@ -121,9 +133,16 @@ async def stop_session(session_id: str):
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    if session.status not in ["testing", "analyzing", "detecting", "planning"]:
-        raise HTTPException(status_code=400, detail=f"Session is not running (status: {session.status})")
+    # Check if session is already stopped or completed
+    if session.status in ["stopped", "completed", "error"]:
+        return {
+            "status": "success",
+            "session_id": session_id,
+            "message": f"Session is already {session.status}",
+            "current_status": session.status
+        }
     
+    # Try to stop the session (even if not in running_tasks, update status)
     stopped = await session_manager.stop_session(session_id)
     
     if stopped:
@@ -133,7 +152,21 @@ async def stop_session(session_id: str):
             "message": "Session stopped successfully"
         }
     else:
-        raise HTTPException(status_code=500, detail="Failed to stop session")
+        # If stop_session returned False, it might not be in running_tasks
+        # But we can still mark it as stopped if it has a running status
+        if session.status in ["testing", "analyzing", "detecting", "planning"]:
+            session.status = "stopped"
+            session.end_time = datetime.now()
+            if session.start_time:
+                session.total_duration = (session.end_time - session.start_time).total_seconds() / 3600
+            session_manager.db.save_session(session)
+            return {
+                "status": "success",
+                "session_id": session_id,
+                "message": "Session marked as stopped"
+            }
+        else:
+            raise HTTPException(status_code=400, detail=f"Session is not running (status: {session.status})")
 
 
 @router.delete("/sessions/{session_id}")
@@ -497,6 +530,29 @@ async def delete_test_case(test_id: str):
     except Exception as e:
         logger.error(f"Failed to delete test case: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/models/info")
+async def get_model_info():
+    """Get information about loaded AI models"""
+    try:
+        from app.ai.large_models import LargeModelManager
+        manager = LargeModelManager()
+        info = manager.get_model_info()
+        return info
+    except Exception as e:
+        logger.error(f"Failed to get model info: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/version")
+async def get_version():
+    """Get framework version information"""
+    return {
+        "version": settings.app_version,
+        "app_name": settings.app_name,
+        "description": "Validation Of Industrial Devices"
+    }
 
 
 @router.get("/presets")

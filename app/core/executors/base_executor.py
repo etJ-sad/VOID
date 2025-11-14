@@ -7,7 +7,7 @@ import asyncio
 import logging
 import time
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Callable, Optional
 from abc import ABC, abstractmethod
 from app.models.schemas import TestCase, TestResult, TestStatus
 
@@ -19,10 +19,14 @@ class BaseTestExecutor(ABC):
     
     def __init__(self):
         self.category = self.__class__.__name__.replace('Executor', '').upper()
+        self.test_progress_callback: Optional[Callable] = None
     
-    async def execute(self, test_case: TestCase) -> TestResult:
+    async def execute(self, test_case: TestCase, progress_callback: Optional[Callable] = None) -> TestResult:
         """Execute a test case and return result"""
         logger.info(f"Executing {self.category} test: {test_case.name}")
+        
+        # Store progress callback for use during test execution
+        self.test_progress_callback = progress_callback
         
         result = TestResult(
             test_id=test_case.id,
@@ -89,9 +93,32 @@ class BaseTestExecutor(ABC):
     
     async def run_generic_test(self, test_case: TestCase) -> Dict[str, Any]:
         """Run generic test (default implementation)"""
-        duration = test_case.parameters.get("duration", 5)
+        # Use duration_estimate from YAML (in seconds), fallback to parameters.duration
+        duration = test_case.duration_estimate if hasattr(test_case, 'duration_estimate') and test_case.duration_estimate else test_case.parameters.get("duration", 5)
         await self._safe_sleep(duration)
         return {"completed": True, "duration": duration}
+    
+    def _get_test_duration(self, test_case: TestCase) -> float:
+        """Get test duration from duration_estimate (preferred) or parameters.duration"""
+        # Prefer duration_estimate from YAML (actual test duration)
+        if hasattr(test_case, 'duration_estimate') and test_case.duration_estimate:
+            return float(test_case.duration_estimate)
+        # Fallback to parameters.duration if duration_estimate not set
+        return float(test_case.parameters.get("duration", 300))  # Default 5 minutes
+    
+    def _report_progress(self, elapsed_seconds: float, total_seconds: float, metrics: Dict[str, Any] = None):
+        """Report test progress during execution"""
+        if self.test_progress_callback:
+            try:
+                progress_data = {
+                    "elapsed_seconds": elapsed_seconds,
+                    "total_seconds": total_seconds,
+                    "progress_percent": (elapsed_seconds / total_seconds * 100) if total_seconds > 0 else 0,
+                    "metrics": metrics or {}
+                }
+                self.test_progress_callback(progress_data)
+            except Exception as e:
+                logger.warning(f"Progress callback error: {e}")
     
     async def _safe_sleep(self, delay: float):
         """Sleep with cancellation support - raises CancelledError if cancelled"""
@@ -100,6 +127,43 @@ class BaseTestExecutor(ABC):
         except asyncio.CancelledError:
             # Re-raise to allow proper cancellation handling upstream
             raise
+    
+    async def _sleep_with_progress(self, total_duration: float, progress_callback: Callable = None, interval: float = 1.0):
+        """Sleep for duration but yield control periodically to allow progress updates"""
+        elapsed = 0.0
+        while elapsed < total_duration:
+            sleep_time = min(interval, total_duration - elapsed)
+            await self._safe_sleep(sleep_time)
+            elapsed += sleep_time
+            if progress_callback:
+                try:
+                    progress_callback(elapsed / total_duration * 100 if total_duration > 0 else 0)
+                except Exception:
+                    pass  # Ignore callback errors
+    
+    def _get_yield_interval(self, duration: float) -> float:
+        """Get appropriate yield interval based on test duration to prevent Event Loop blocking"""
+        # For very long tests (30+ minutes), yield more frequently
+        if duration >= 1800:  # 30 minutes
+            return 0.1  # Yield every 100ms
+        elif duration >= 600:  # 10 minutes
+            return 0.05  # Yield every 50ms
+        elif duration >= 300:  # 5 minutes
+            return 0.01  # Yield every 10ms
+        else:
+            return 0.01  # Default: yield every 10ms
+    
+    def _should_yield(self, iteration: int, duration: float) -> bool:
+        """Determine if we should yield control to event loop based on iteration and duration"""
+        # For very long tests, yield more frequently
+        if duration >= 1800:  # 30 minutes
+            return iteration % 10 == 0  # Every 10 iterations
+        elif duration >= 600:  # 10 minutes
+            return iteration % 50 == 0  # Every 50 iterations
+        elif duration >= 300:  # 5 minutes
+            return iteration % 100 == 0  # Every 100 iterations
+        else:
+            return iteration % 100 == 0  # Default: every 100 iterations
     
     def _evaluate_result(self, test_case: TestCase, metrics: Dict[str, Any]) -> TestStatus:
         """Evaluate if test passed based on metrics and thresholds"""

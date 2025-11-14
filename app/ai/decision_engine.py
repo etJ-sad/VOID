@@ -12,6 +12,7 @@ from app.models.schemas import (
 )
 from app.ai.anomaly_detection import AnomalyDetector
 from app.ai.pattern_recognition import PatternRecognizer
+from app.ai.large_models import LargeModelManager
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ class DecisionEngine:
     def __init__(self):
         self.anomaly_detector = AnomalyDetector()
         self.pattern_recognizer = PatternRecognizer()
+        self.large_model_manager = LargeModelManager()
         self.confidence_threshold = 95.0
         self.score_threshold = 70.0
         
@@ -42,11 +44,33 @@ class DecisionEngine:
         """Run complete AI/ML analysis"""
         logger.info("Running AI/ML analysis")
         
-        # Anomaly detection
+        # Anomaly detection (traditional + large models)
         anomaly_results = self.anomaly_detector.detect_anomalies(test_results)
         
-        # Pattern recognition
+        # Advanced anomaly detection with large models
+        try:
+            large_anomaly_results = self.large_model_manager.detect_anomalies_advanced(test_results)
+            if large_anomaly_results:
+                anomaly_results.extend(large_anomaly_results)
+                logger.info(f"Added {len(large_anomaly_results)} results from large models")
+        except Exception as e:
+            logger.debug(f"Large model anomaly detection not available: {e}")
+        
+        # Pattern recognition (traditional + large models)
         pattern_result = self.pattern_recognizer.analyze_patterns(test_results)
+        
+        # Advanced time-series analysis with large models
+        try:
+            large_ts_result = self.large_model_manager.analyze_time_series(test_results)
+            if large_ts_result and large_ts_result.get("patterns"):
+                # Merge patterns from large model
+                pattern_result.patterns_detected.extend(large_ts_result["patterns"])
+                # Increase confidence if large model was used
+                if large_ts_result.get("confidence", 0) > pattern_result.confidence:
+                    pattern_result.confidence = (pattern_result.confidence + large_ts_result["confidence"] * 100) / 2
+                logger.info("Enhanced pattern recognition with large transformer model")
+        except Exception as e:
+            logger.debug(f"Large model time-series analysis not available: {e}")
         
         # Calculate overall anomaly score - weight algorithms differently
         if anomaly_results:
@@ -188,20 +212,22 @@ class DecisionEngine:
             # If tests failed, NO-GO regardless of score
             decision = DecisionStatus.NO_GO
             reasoning.append(f"{failed_tests} test(s) failed")
+        elif pass_rate == 100.0 and score >= 80:
+            # All tests passed and score is good - GO (prioritize this over confidence)
+            decision = DecisionStatus.GO
+            reasoning.append("All tests passed and score meets threshold")
+            if confidence < self.confidence_threshold and total_tests < 5:
+                warnings.append(f"Low confidence ({confidence:.1f}%) due to limited test data ({total_tests} tests) - consider running more tests")
         elif score < self.score_threshold:
             decision = DecisionStatus.NO_GO
             reasoning.append(f"Score {score:.1f} below threshold {self.score_threshold}")
-        elif confidence < self.confidence_threshold and total_tests < 5:
-            # Only use confidence threshold if we have very few tests
-            decision = DecisionStatus.NO_GO
-            reasoning.append(f"Low confidence ({confidence:.1f}%) due to limited test data ({total_tests} tests)")
-        elif pass_rate == 100.0 and score >= 80:
-            # All tests passed and score is good - GO
-            decision = DecisionStatus.GO
-            reasoning.append("All tests passed and score meets threshold")
         elif score >= self.score_threshold and confidence >= self.confidence_threshold:
             decision = DecisionStatus.GO
             reasoning.append("All criteria met for GO decision")
+        elif confidence < self.confidence_threshold and total_tests < 5 and pass_rate < 100.0:
+            # Only use confidence threshold if we have very few tests AND some tests failed
+            decision = DecisionStatus.NO_GO
+            reasoning.append(f"Low confidence ({confidence:.1f}%) due to limited test data ({total_tests} tests)")
         else:
             # Default to GO if tests passed but score/confidence are borderline
             if pass_rate == 100.0:

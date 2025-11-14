@@ -18,6 +18,29 @@ numpy>=1.26.4
 scikit-learn>=1.4.0
 scipy>=1.12.0
 
+# Deep Learning Models (optional - for large AI models)
+# PyTorch - Required for loading large models (LLM, transformers)
+# 
+# For CPU-only (simpler, smaller):
+#   pip install torch torchvision torchaudio
+#
+# For CUDA support (GPU acceleration - check your CUDA version first):
+#   Visit https://pytorch.org/get-started/locally/ and select your system
+#   Example for CUDA 11.8:
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+#
+# Note: Do NOT uncomment the line below - PyTorch installation varies by system
+# torch>=2.1.0
+
+# Large AI Models (Hugging Face) - OPTIONAL, for advanced analysis
+# transformers>=4.35.0  # Required for large models (LLM, time-series)
+# huggingface-hub>=0.19.0  # Required for downloading models (first time only)
+# accelerate>=0.25.0  # Optional: for faster inference
+# bitsandbytes>=0.41.0  # Optional: for quantized models (smaller memory)
+# 
+# Note: VOID works fine without these - uses sklearn models by default
+# Install only if you want to use large AI models (phi-1.5, phi-2, etc.)
+
 # YAML Processing
 PyYAML>=6.0.1
 

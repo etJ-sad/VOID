@@ -23,7 +23,7 @@ class StorageExecutor(BaseTestExecutor):
         
         metrics = {"write_times": []}
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         write_pattern = test_case.parameters.get("write_pattern", "continuous")
         data_size_gb = test_case.parameters.get("data_size_gb", 1)
         monitor_wear = test_case.parameters.get("monitor_wear", False)
@@ -57,7 +57,7 @@ class StorageExecutor(BaseTestExecutor):
         """Run Storage pattern test"""
         logger.info(f"Running Storage pattern test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 60)
+        duration = self._get_test_duration(test_case)
         patterns = test_case.parameters.get("patterns", ["sequential"])
         block_size_kb = test_case.parameters.get("block_size_kb", 4)
         data_size_gb = test_case.parameters.get("data_size_gb", 1)
@@ -146,7 +146,11 @@ class StorageExecutor(BaseTestExecutor):
         
         else:
             # Generic pattern test
-            await asyncio.sleep(duration)
+            # Run for full duration (as defined in YAML duration_estimate)
+            if duration > 60:  # For tests longer than 1 minute, use progress updates
+                await self._sleep_with_progress(duration, interval=1.0)
+            else:
+                await self._safe_sleep(duration)
             metrics["completed"] = True
         
         return metrics
@@ -155,10 +159,36 @@ class StorageExecutor(BaseTestExecutor):
         """Run Storage diagnostic test"""
         logger.info(f"Running Storage diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         test_type = test_case.parameters.get("test_type", "default")
         
-        await asyncio.sleep(min(duration, 10))
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds")
+        start_time = time.time()
+        iteration = 0
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)
         
         if test_type == "smart_validation":
             return {
@@ -190,7 +220,7 @@ class StorageExecutor(BaseTestExecutor):
         """Run Storage benchmark test"""
         logger.info(f"Running Storage benchmark test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         io_pattern = test_case.parameters.get("io_pattern", "sequential")
         block_size_kb = test_case.parameters.get("block_size_kb", 4)
         test_type = test_case.parameters.get("test_type", "default")

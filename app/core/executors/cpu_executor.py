@@ -28,7 +28,7 @@ class CPUExecutor(BaseTestExecutor):
             "temperature_samples": []
         }
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         algorithm = test_case.parameters.get("algorithm", "default")
         intensity = test_case.parameters.get("intensity", "medium")
         matrix_size = test_case.parameters.get("matrix_size", 1000)
@@ -252,7 +252,7 @@ class CPUExecutor(BaseTestExecutor):
         """Run CPU pattern test"""
         logger.info(f"Running CPU pattern test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 60)
+        duration = self._get_test_duration(test_case)
         pattern_type = test_case.parameters.get("pattern_type", "instruction_mix")
         instruction_types = test_case.parameters.get("instruction_types", ["arithmetic", "logical"])
         mix_ratio = test_case.parameters.get("mix_ratio", [0.5, 0.5])
@@ -368,7 +368,9 @@ class CPUExecutor(BaseTestExecutor):
         
         elif pattern_type == "instruction_mix" or "instruction_types" in test_case.parameters:
             # Instruction mix pattern
+            iteration = 0
             while time.time() - start_time < duration:
+                iteration += 1
                 # Arithmetic operations
                 if "arithmetic" in instruction_types:
                     result = 0
@@ -436,7 +438,9 @@ class CPUExecutor(BaseTestExecutor):
         
         else:
             # Generic pattern test
+            iteration = 0
             while time.time() - start_time < duration:
+                iteration += 1
                 _ = sum(range(10000))
                 operations += 1
                 await self._safe_sleep(0.001)
@@ -450,7 +454,7 @@ class CPUExecutor(BaseTestExecutor):
         """Run CPU benchmark test"""
         logger.info(f"Running CPU benchmark test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         algorithm = test_case.parameters.get("algorithm", "default")
         workload = test_case.parameters.get("workload", "default")
         algorithms = test_case.parameters.get("algorithms", [])  # Support plural form
@@ -512,8 +516,9 @@ class CPUExecutor(BaseTestExecutor):
                     
                     op_count += 1
                     operations += 1
-                    if op_count % 100 == 0:
-                        await self._safe_sleep(0.001)
+                    # Yield control to event loop every 10 operations (for long-running tests)
+                    if op_count % 10 == 0:
+                        await self._safe_sleep(0.01)
                 
                 op_elapsed = time.time() - op_start
                 op_results[op_type] = {
@@ -686,17 +691,21 @@ class CPUExecutor(BaseTestExecutor):
                 def matrix_multiply_task():
                     return np.random.rand(matrix_size, matrix_size) @ np.random.rand(matrix_size, matrix_size)
                 
+                iteration = 0
                 while time.time() - start_time < duration:
+                    iteration += 1
                     # Run multiple threads concurrently
                     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
                         futures = [executor.submit(matrix_multiply_task) for _ in range(threads)]
                         concurrent.futures.wait(futures)
                         operations += threads
-                    if operations % (threads * 10) == 0:
+                    if iteration % 10 == 0:
                         await self._safe_sleep(0.01)
             else:
                 # Single-threaded
+                iteration = 0
                 while time.time() - start_time < duration:
+                    iteration += 1
                     _ = np.random.rand(matrix_size, matrix_size) @ np.random.rand(matrix_size, matrix_size)
                     operations += 1
                     if operations % 10 == 0:
@@ -710,7 +719,9 @@ class CPUExecutor(BaseTestExecutor):
         else:
             # Default CPU benchmark
             operations = 0
+            iteration = 0
             while time.time() - start_time < duration:
+                iteration += 1
                 _ = sum(range(10000))
                 operations += 1
                 if operations % 1000 == 0:
@@ -726,12 +737,48 @@ class CPUExecutor(BaseTestExecutor):
         """Run CPU diagnostic test"""
         logger.info(f"Running CPU diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         test_name = test_case.name.lower()
         test_id_lower = test_case.id.lower()
         test_name_lower = test_case.name.lower()
         
-        await self._safe_sleep(min(duration, 10))  # Cap at 10 seconds for diagnostics
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds (duration_estimate: {test_case.duration_estimate if hasattr(test_case, 'duration_estimate') else 'N/A'})")
+        start_time = time.time()
+        iteration = 0
+        
+        # Use adaptive yield interval based on duration
+        yield_interval = self._get_yield_interval(duration)
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work (collecting metrics, checking hardware, etc.)
+            # Small CPU work to simulate actual diagnostic operations
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically (especially important for long tests)
+            # For 5-minute tests, yield every 10 iterations (very frequently)
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)  # Yield every 10 iterations for long tests
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)  # Yield every 50 iterations for medium tests
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)  # Yield every 100 iterations for short tests
+            
+            # Log progress for long tests
+            if duration >= 300 and iteration % 1000 == 0:
+                progress = (elapsed / duration) * 100
+                logger.info(f"Diagnostic test progress: {progress:.1f}% ({elapsed:.1f}s / {duration}s)")
         
         metrics = {
             "completed": True,

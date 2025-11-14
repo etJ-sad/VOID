@@ -24,7 +24,7 @@ class GPUExecutor(BaseTestExecutor):
         
         metrics = {"gpu_temp_samples": []}
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         workload = test_case.parameters.get("workload", "continuous_compute")
         monitor_temperature = test_case.parameters.get("monitor_temperature", True)
         iterations_per_second = test_case.parameters.get("iterations_per_second", 2)
@@ -63,7 +63,7 @@ class GPUExecutor(BaseTestExecutor):
         """Run GPU pattern test"""
         logger.info(f"Running GPU pattern test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 60)
+        duration = self._get_test_duration(test_case)
         patterns = test_case.parameters.get("patterns", ["matrix"])
         data_size_mb = test_case.parameters.get("data_size_mb", 500)
         access_patterns = test_case.parameters.get("access_patterns", ["coalesced"])
@@ -144,7 +144,11 @@ class GPUExecutor(BaseTestExecutor):
         
         else:
             # Generic pattern test
-            await asyncio.sleep(duration)
+            # Run for full duration (as defined in YAML duration_estimate)
+            if duration > 60:  # For tests longer than 1 minute, use progress updates
+                await self._sleep_with_progress(duration, interval=1.0)
+            else:
+                await self._safe_sleep(duration)
             metrics["completed"] = True
         
         return metrics
@@ -153,8 +157,34 @@ class GPUExecutor(BaseTestExecutor):
         """Run GPU diagnostic test"""
         logger.info(f"Running GPU diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 10)
-        await asyncio.sleep(min(duration, 10))
+        duration = self._get_test_duration(test_case)
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds")
+        start_time = time.time()
+        iteration = 0
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)
         
         metrics = {
             "completed": True,
@@ -180,7 +210,7 @@ class GPUExecutor(BaseTestExecutor):
         """Run GPU benchmark test"""
         logger.info(f"Running GPU benchmark test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         test_type = test_case.parameters.get("test_type", "default")
         compute_type = test_case.parameters.get("compute_type", "cuda")
         

@@ -7,8 +7,8 @@ import asyncio
 import logging
 import uuid
 from datetime import datetime
-from typing import Dict, Optional, Callable
-from app.models.schemas import TestSession, HardwareProfile, TestResult
+from typing import Dict, Optional, Callable, List
+from app.models.schemas import TestSession, HardwareProfile, TestResult, CheckpointResult, DecisionStatus
 from app.core.hardware_detection import HardwareDetector
 from app.core.test_loader import TestCaseLoader
 from app.core.test_generator import TestGenerator
@@ -176,14 +176,61 @@ class SessionManager:
             session.progress_percent = 20.0
             self._save_and_notify(session, progress_callback)
             
+            # Define checkpoints (hours from start)
+            checkpoint_hours = [6, 18, 36, 46]
+            checkpoint_names = {
+                6: "Initial Validation",
+                18: "Mid-point Review",
+                36: "Final Checks",
+                46: "Pre-completion"
+            }
+            checkpoint_progress = {
+                6: 30.0,   # 6h checkpoint at ~30% progress
+                18: 50.0,  # 18h checkpoint at ~50% progress
+                36: 80.0,  # 36h checkpoint at ~80% progress
+                46: 95.0   # 46h checkpoint at ~95% progress
+            }
+            
+            test_start_time = datetime.now()
+            
             def test_progress(progress: float, result: TestResult):
                 # Map test progress from 20% to 70%
                 session.progress_percent = 20.0 + (progress * 0.5)
+                
+                # session.test_results is already managed by the executor via results_list parameter
+                # We just update the session's overall progress here
+                
+                # Check for checkpoint evaluation
+                elapsed_hours = (datetime.now() - test_start_time).total_seconds() / 3600
+                for checkpoint_hour in checkpoint_hours:
+                    # Check if we've passed this checkpoint and haven't evaluated it yet
+                    checkpoint_id = f"{checkpoint_hour}h"
+                    already_evaluated = any(cp.checkpoint_id == checkpoint_id for cp in session.checkpoints)
+                    
+                    if elapsed_hours >= checkpoint_hour and not already_evaluated:
+                        logger.info(f"Evaluating checkpoint at {checkpoint_hour}h (elapsed: {elapsed_hours:.2f}h)")
+                        checkpoint_result = self._evaluate_checkpoint(
+                            session,
+                            checkpoint_id,
+                            checkpoint_names[checkpoint_hour],
+                            elapsed_hours,
+                            session.test_results
+                        )
+                        session.checkpoints.append(checkpoint_result)
+                        session.progress_percent = checkpoint_progress[checkpoint_hour]
+                        
+                        # If checkpoint is NO-GO, we can optionally stop early
+                        if checkpoint_result.decision == DecisionStatus.NO_GO:
+                            logger.warning(f"Checkpoint {checkpoint_hour}h returned NO-GO - continuing but will flag in final decision")
+                        
+                        self._save_and_notify(session, progress_callback)
+                
                 self._save_and_notify(session, progress_callback)
             
-            session.test_results = await self.test_executor.execute_test_plan(
+            await self.test_executor.execute_test_plan(
                 session.test_cases,
-                progress_callback=test_progress
+                progress_callback=test_progress,
+                results_list=session.test_results
             )
             
             # Step 5: Data Aggregation (30 min simulated as 1 second)
@@ -291,6 +338,79 @@ class SessionManager:
             except Exception as e:
                 logger.error(f"Progress callback failed: {e}")
     
+    def _evaluate_checkpoint(
+        self,
+        session: TestSession,
+        checkpoint_id: str,
+        checkpoint_name: str,
+        elapsed_hours: float,
+        completed_tests: List[TestResult]
+    ) -> CheckpointResult:
+        """Evaluate checkpoint and make GO/NO-GO decision"""
+        logger.info(f"Evaluating checkpoint {checkpoint_id}: {checkpoint_name}")
+        
+        # Count test results
+        total_completed = len(completed_tests)
+        passed = sum(1 for r in completed_tests if r.status.value == "passed")
+        failed = sum(1 for r in completed_tests if r.status.value == "failed")
+        
+        # Calculate pass rate
+        pass_rate = (passed / total_completed * 100) if total_completed > 0 else 0
+        
+        # Quick AI analysis on current results (simplified)
+        from app.ai.decision_engine import DecisionEngine
+        decision_engine = DecisionEngine()
+        
+        # Run quick analysis
+        ai_analysis, decision = decision_engine.analyze_and_decide(completed_tests)
+        
+        # Determine checkpoint decision
+        # More lenient at early checkpoints, stricter at later ones
+        if checkpoint_id == "6h":
+            # Early checkpoint - only fail on critical issues
+            checkpoint_decision = DecisionStatus.NO_GO if (failed > 0 and pass_rate < 50) else DecisionStatus.GO
+        elif checkpoint_id == "18h":
+            # Mid-point - moderate threshold
+            checkpoint_decision = DecisionStatus.NO_GO if (failed > 0 and pass_rate < 70) else DecisionStatus.GO
+        elif checkpoint_id in ["36h", "46h"]:
+            # Late checkpoints - use full decision engine result
+            checkpoint_decision = decision.decision
+        else:
+            checkpoint_decision = DecisionStatus.GO
+        
+        # Build reasoning
+        reasoning = [
+            f"Checkpoint at {elapsed_hours:.1f} hours",
+            f"Tests completed: {total_completed}/{len(session.test_cases)}",
+            f"Pass rate: {pass_rate:.1f}% ({passed} passed, {failed} failed)"
+        ]
+        
+        if decision.score < 70:
+            reasoning.append(f"Score below threshold: {decision.score:.1f}/100")
+        
+        warnings = []
+        if failed > 0:
+            warnings.append(f"{failed} test(s) failed at checkpoint")
+        if decision.confidence < 80:
+            warnings.append(f"Low confidence: {decision.confidence:.1f}%")
+        
+        checkpoint_result = CheckpointResult(
+            checkpoint_id=checkpoint_id,
+            checkpoint_name=checkpoint_name,
+            elapsed_hours=elapsed_hours,
+            decision=checkpoint_decision,
+            score=decision.score,
+            confidence=decision.confidence,
+            tests_completed=total_completed,
+            tests_passed=passed,
+            tests_failed=failed,
+            reasoning=reasoning,
+            warnings=warnings
+        )
+        
+        logger.info(f"Checkpoint {checkpoint_id} decision: {checkpoint_decision} (Score: {decision.score:.1f})")
+        return checkpoint_result
+    
     def get_session(self, session_id: str) -> Optional[TestSession]:
         """Get session by ID (from memory or database)"""
         if session_id in self.sessions:
@@ -316,33 +436,41 @@ class SessionManager:
     
     async def stop_session(self, session_id: str) -> bool:
         """Stop a running test session"""
-        if session_id not in self.running_tasks:
-            logger.warning(f"Session {session_id} is not running")
+        session = self.get_session(session_id)
+        if not session:
+            logger.warning(f"Session {session_id} not found")
             return False
+        
+        # Check if session is already stopped or completed
+        if session.status in ["stopped", "completed", "error"]:
+            logger.info(f"Session {session_id} is already {session.status}")
+            return True
         
         logger.info(f"Stopping session {session_id}")
         
-        # Cancel the running task
-        task = self.running_tasks.get(session_id)
-        if task:
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                pass
-        
-        # Update session status
-        session = self.get_session(session_id)
-        if session:
-            session.status = "stopped"
-            session.end_time = datetime.now()
-            if session.start_time:
-                session.total_duration = (session.end_time - session.start_time).total_seconds() / 3600
-            self.db.save_session(session)
-        
-        # Remove from running tasks
+        # Cancel the running task if it exists
         if session_id in self.running_tasks:
+            task = self.running_tasks.get(session_id)
+            if task:
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    logger.info(f"Task for session {session_id} was cancelled")
+                except Exception as e:
+                    logger.warning(f"Error while cancelling task for session {session_id}: {e}")
+            
+            # Remove from running tasks
             del self.running_tasks[session_id]
+        else:
+            logger.info(f"Session {session_id} not in running_tasks, but marking as stopped")
+        
+        # Update session status regardless of whether it was in running_tasks
+        session.status = "stopped"
+        session.end_time = datetime.now()
+        if session.start_time:
+            session.total_duration = (session.end_time - session.start_time).total_seconds() / 3600
+        self._save_and_notify(session, None)
         
         logger.info(f"Session {session_id} stopped")
         return True

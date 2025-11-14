@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import datetime
 from jinja2 import Template
 from app.models.schemas import TestSession, Report
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -70,10 +71,9 @@ class HTMLReporter:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID Test Report - {{ ipc_id }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background: #FAFAFA; color: #212121; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #FAFAFA; color: #212121; line-height: 1.6; }
         .header { background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 24px 0; }
         .header-content { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         .header h1 { font-size: 24px; font-weight: 400; color: #212121; }
@@ -186,30 +186,92 @@ class HTMLReporter:
         {% if hardware_profile %}
         <div class="section">
             <h2 class="section-title">Hardware Profile</h2>
+            
+            {% if hardware_profile.cpu %}
+            <h3 style="color: #1976D2; font-size: 16px; margin-top: 20px; margin-bottom: 10px;">CPU</h3>
             <table>
                 <tr>
                     <th>Component</th>
-                    <th>Details</th>
+                    <th>Value</th>
                 </tr>
-                {% if hardware_profile.cpu %}
                 <tr>
-                    <td><strong>CPU</strong></td>
+                    <td><strong>Name</strong></td>
                     <td>{{ hardware_profile.cpu.name }}</td>
                 </tr>
-                {% endif %}
-                {% for ram in hardware_profile.ram %}
+                {% for key, value in hardware_profile.cpu.details.items() %}
                 <tr>
-                    <td><strong>RAM</strong></td>
-                    <td>{{ ram.name }}</td>
-                </tr>
-                {% endfor %}
-                {% for gpu in hardware_profile.gpu %}
-                <tr>
-                    <td><strong>GPU</strong></td>
-                    <td>{{ gpu.name }}</td>
+                    <td>{{ key.replace('_', ' ').title() }}</td>
+                    <td>{{ value }}</td>
                 </tr>
                 {% endfor %}
             </table>
+            {% endif %}
+            
+            {% if hardware_profile.ram %}
+            <h3 style="color: #1976D2; font-size: 16px; margin-top: 20px; margin-bottom: 10px;">RAM</h3>
+            {% for ram in hardware_profile.ram %}
+            <table style="margin-bottom: 15px;">
+                <tr>
+                    <th>Component</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>{{ ram.name }}</td>
+                </tr>
+                {% for key, value in ram.details.items() %}
+                <tr>
+                    <td>{{ key.replace('_', ' ').title() }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endfor %}
+            {% endif %}
+            
+            {% if hardware_profile.gpu %}
+            <h3 style="color: #1976D2; font-size: 16px; margin-top: 20px; margin-bottom: 10px;">GPU</h3>
+            {% for gpu in hardware_profile.gpu %}
+            <table style="margin-bottom: 15px;">
+                <tr>
+                    <th>Component</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>{{ gpu.name }}</td>
+                </tr>
+                {% for key, value in gpu.details.items() %}
+                <tr>
+                    <td>{{ key.replace('_', ' ').title() }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endfor %}
+            {% endif %}
+            
+            {% if hardware_profile.storage %}
+            <h3 style="color: #1976D2; font-size: 16px; margin-top: 20px; margin-bottom: 10px;">Storage</h3>
+            {% for storage in hardware_profile.storage %}
+            <table style="margin-bottom: 15px;">
+                <tr>
+                    <th>Component</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>{{ storage.name }}</td>
+                </tr>
+                {% for key, value in storage.details.items() %}
+                <tr>
+                    <td>{{ key.replace('_', ' ').title() }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endfor %}
+            {% endif %}
         </div>
         {% endif %}
 
@@ -226,7 +288,7 @@ class HTMLReporter:
     </div>
 
     <div class="footer">
-        <p><strong>VOID Framework v1.0.0</strong></p>
+        <p><strong>VOID Framework {{ version }}</strong></p>
         <p>Validation Of Industrial Devices</p>
     </div>
 </body>
@@ -268,7 +330,8 @@ class HTMLReporter:
             start_time=session.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             end_time=session.end_time.strftime("%Y-%m-%d %H:%M:%S") if session.end_time else "In Progress",
             duration_hours=round(session.total_duration, 2) if session.total_duration else 0,
-            generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            version=settings.app_version
         )
         
         return html_content

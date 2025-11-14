@@ -104,6 +104,22 @@ class AIAnalysisResult(BaseModel):
     recommendations: List[str] = Field(default_factory=list)
 
 
+class CheckpointResult(BaseModel):
+    """Checkpoint evaluation result during test execution"""
+    checkpoint_id: str = Field(..., description="Checkpoint identifier (e.g., '6h', '18h', '36h', '46h')")
+    checkpoint_name: str = Field(..., description="Human-readable checkpoint name")
+    elapsed_hours: float = Field(..., description="Hours elapsed since test start")
+    decision: DecisionStatus = Field(..., description="GO/NO-GO decision at this checkpoint")
+    score: float = Field(..., description="Score at checkpoint 0-100")
+    confidence: float = Field(..., description="Confidence in decision 0-100")
+    tests_completed: int = Field(..., description="Number of tests completed at checkpoint")
+    tests_passed: int = Field(..., description="Number of tests passed at checkpoint")
+    tests_failed: int = Field(..., description="Number of tests failed at checkpoint")
+    reasoning: List[str] = Field(default_factory=list, description="Reasoning for decision")
+    warnings: List[str] = Field(default_factory=list, description="Warnings at checkpoint")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
 class DecisionResult(BaseModel):
     """Final GO/NO-GO decision"""
     decision: DecisionStatus
@@ -132,6 +148,7 @@ class TestSession(BaseModel):
     hardware_profile: Optional[HardwareProfile] = None
     test_cases: List[TestCase] = Field(default_factory=list)
     test_results: List[TestResult] = Field(default_factory=list)
+    checkpoints: List[CheckpointResult] = Field(default_factory=list, description="Checkpoint evaluations during test execution")
     ai_analysis: Optional[AIAnalysisResult] = None
     decision: Optional[DecisionResult] = None
     reports: List[Report] = Field(default_factory=list, description="Generated reports")

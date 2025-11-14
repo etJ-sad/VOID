@@ -26,19 +26,40 @@ class TestExecutor:
     async def execute_test_plan(
         self, 
         test_cases: List[TestCase],
-        progress_callback: Callable = None
+        progress_callback: Callable = None,
+        results_list: List[TestResult] = None
     ) -> List[TestResult]:
         """Execute all test cases with parallel execution"""
         logger.info(f"Starting test execution: {len(test_cases)} tests")
         self.progress_callback = progress_callback
-        self.results = []
+        self.results = results_list if results_list is not None else []
         
         # Execute tests sequentially (can be parallelized later)
         for i, test_case in enumerate(test_cases):
-            result = await self._execute_single_test(test_case)
-            self.results.append(result)
+            # Create initial result with RUNNING status
+            from datetime import datetime
+            initial_result = TestResult(
+                test_id=test_case.id,
+                test_name=test_case.name,
+                status=TestStatus.RUNNING,
+                start_time=datetime.now()
+            )
+            self.results.append(initial_result)
             
-            # Report progress
+            # Report that test started
+            progress = (i / len(test_cases)) * 100
+            if self.progress_callback:
+                self.progress_callback(progress, initial_result)
+            
+            logger.info(f"Starting test {i+1}/{len(test_cases)}: {test_case.name}")
+            
+            # Execute the test, passing the initial_result to update in real-time
+            result = await self._execute_single_test(test_case, result_to_update=initial_result)
+            
+            # Update the result in the list
+            self.results[i] = result
+            
+            # Report progress after completion
             progress = ((i + 1) / len(test_cases)) * 100
             if self.progress_callback:
                 self.progress_callback(progress, result)
@@ -48,7 +69,7 @@ class TestExecutor:
         logger.info(f"Test execution completed: {len(self.results)} results")
         return self.results
     
-    async def _execute_single_test(self, test_case: TestCase) -> TestResult:
+    async def _execute_single_test(self, test_case: TestCase, result_to_update: TestResult = None) -> TestResult:
         """Execute a single test case using appropriate category executor"""
         logger.info(f"Executing test: {test_case.name} (Category: {test_case.category})")
         
@@ -56,8 +77,28 @@ class TestExecutor:
             # Get appropriate executor for this test category
             executor = ExecutorFactory.get_executor(test_case)
             
-            # Execute test using category-specific executor
-            result = await executor.execute(test_case)
+            # Create progress callback that updates the result in real-time
+            def test_progress_callback(progress_data: dict):
+                """Update test result with progress information"""
+                if result_to_update:
+                    # Update elapsed time in the result
+                    result_to_update.duration = progress_data.get("elapsed_seconds", 0)
+                    # Store progress metrics
+                    if "progress_percent" in progress_data:
+                        if not result_to_update.metrics:
+                            result_to_update.metrics = {}
+                        result_to_update.metrics["_progress_percent"] = progress_data["progress_percent"]
+                        result_to_update.metrics["_elapsed_seconds"] = progress_data.get("elapsed_seconds", 0)
+                        result_to_update.metrics["_total_seconds"] = progress_data.get("total_seconds", 0)
+                    # Call session-level progress callback if available
+                    if self.progress_callback:
+                        try:
+                            self.progress_callback(progress_data.get("progress_percent", 0), result_to_update)
+                        except Exception:
+                            pass
+            
+            # Execute test using category-specific executor with progress callback
+            result = await executor.execute(test_case, progress_callback=test_progress_callback)
             
             return result
         except asyncio.CancelledError:

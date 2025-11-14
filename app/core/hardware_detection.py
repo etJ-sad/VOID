@@ -170,6 +170,52 @@ class HardwareDetector:
         """Detect CPU information"""
         try:
             cpu_freq = psutil.cpu_freq()
+            cpu_name = "Unknown CPU"
+            
+            # Try to get actual CPU name (not just processor string)
+            system = platform.system()
+            if system == "Windows":
+                try:
+                    # Try WMI first for better CPU name
+                    import wmi
+                    c = wmi.WMI()
+                    for processor in c.Win32_Processor():
+                        cpu_name = processor.Name.strip() if processor.Name else cpu_name
+                        break
+                except ImportError:
+                    logger.debug("WMI not available for CPU detection")
+                except Exception as e:
+                    logger.debug(f"WMI CPU detection failed: {e}")
+                
+                # Fallback: Try registry
+                if cpu_name == "Unknown CPU":
+                    try:
+                        import winreg
+                        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                                            r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
+                        cpu_name = winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
+                        winreg.CloseKey(key)
+                    except Exception as e:
+                        logger.debug(f"Registry CPU detection failed: {e}")
+            elif system == "Linux":
+                try:
+                    # Read from /proc/cpuinfo
+                    with open('/proc/cpuinfo', 'r') as f:
+                        for line in f:
+                            if 'model name' in line.lower():
+                                cpu_name = line.split(':')[1].strip()
+                                break
+                except Exception as e:
+                    logger.debug(f"Linux CPU detection failed: {e}")
+            
+            # Final fallback to platform.processor()
+            if cpu_name == "Unknown CPU":
+                cpu_name = platform.processor() or "Unknown CPU"
+                # Clean up generic processor strings
+                if "Intel64" in cpu_name and "Family" in cpu_name:
+                    # Try to get better name from details
+                    cpu_name = "Intel Processor"
+            
             cpu_info = {
                 "physical_cores": psutil.cpu_count(logical=False),
                 "logical_cores": psutil.cpu_count(logical=True),
@@ -181,7 +227,7 @@ class HardwareDetector:
             
             return HardwareComponent(
                 component_type="CPU",
-                name=platform.processor() or "Unknown CPU",
+                name=cpu_name,
                 details=cpu_info
             )
         except Exception as e:
@@ -220,10 +266,32 @@ class HardwareDetector:
         gpus = []
         
         try:
-            # Try to detect NVIDIA GPU using nvidia-smi
+            # Try to detect NVIDIA GPU using nvidia-smi with comprehensive query
             import subprocess
+            
+            # Query for extensive GPU information
+            query_fields = [
+                'name',
+                'driver_version',
+                'memory.total',
+                'memory.free',
+                'memory.used',
+                'temperature.gpu',
+                'power.draw',
+                'power.limit',
+                'clocks.current.graphics',
+                'clocks.current.memory',
+                'clocks.max.graphics',
+                'clocks.max.memory',
+                'utilization.gpu',
+                'utilization.memory',
+                'compute_cap',
+                'pci.bus_id',
+                'fan.speed'
+            ]
+            
             result = subprocess.run(
-                ['nvidia-smi', '--query-gpu=name,memory.total', '--format=csv,noheader'],
+                ['nvidia-smi', f'--query-gpu={",".join(query_fields)}', '--format=csv,noheader,nounits'],
                 capture_output=True,
                 text=True,
                 timeout=5
@@ -232,17 +300,124 @@ class HardwareDetector:
             if result.returncode == 0:
                 for line in result.stdout.strip().split('\n'):
                     if line:
-                        parts = line.split(',')
-                        name = parts[0].strip()
-                        memory = parts[1].strip() if len(parts) > 1 else "Unknown"
-                        
+                        parts = [p.strip() for p in line.split(',')]
+                        if len(parts) >= 1:
+                            name = parts[0]
+                            
+                            details = {
+                                "vendor": "NVIDIA"
+                            }
+                            
+                            # Parse all available fields
+                            if len(parts) > 1 and parts[1] and parts[1] != '[N/A]':
+                                details["driver_version"] = parts[1]
+                            if len(parts) > 2 and parts[2] and parts[2] != '[N/A]':
+                                try:
+                                    details["memory_total_mb"] = float(parts[2])
+                                    details["memory_total_gb"] = round(float(parts[2]) / 1024, 2)
+                                except ValueError:
+                                    pass
+                            if len(parts) > 3 and parts[3] and parts[3] != '[N/A]':
+                                try:
+                                    details["memory_free_mb"] = float(parts[3])
+                                    details["memory_free_gb"] = round(float(parts[3]) / 1024, 2)
+                                except ValueError:
+                                    pass
+                            if len(parts) > 4 and parts[4] and parts[4] != '[N/A]':
+                                try:
+                                    details["memory_used_mb"] = float(parts[4])
+                                    details["memory_used_gb"] = round(float(parts[4]) / 1024, 2)
+                                except ValueError:
+                                    pass
+                            if len(parts) > 5 and parts[5] and parts[5] != '[N/A]':
+                                try:
+                                    details["temperature_c"] = float(parts[5])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 6 and parts[6] and parts[6] != '[N/A]':
+                                try:
+                                    details["power_draw_w"] = float(parts[6])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 7 and parts[7] and parts[7] != '[N/A]':
+                                try:
+                                    details["power_limit_w"] = float(parts[7])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 8 and parts[8] and parts[8] != '[N/A]':
+                                try:
+                                    details["core_clock_mhz"] = float(parts[8])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 9 and parts[9] and parts[9] != '[N/A]':
+                                try:
+                                    details["memory_clock_mhz"] = float(parts[9])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 10 and parts[10] and parts[10] != '[N/A]':
+                                try:
+                                    details["max_core_clock_mhz"] = float(parts[10])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 11 and parts[11] and parts[11] != '[N/A]':
+                                try:
+                                    details["max_memory_clock_mhz"] = float(parts[11])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 12 and parts[12] and parts[12] != '[N/A]':
+                                try:
+                                    details["gpu_utilization_percent"] = float(parts[12])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 13 and parts[13] and parts[13] != '[N/A]':
+                                try:
+                                    details["memory_utilization_percent"] = float(parts[13])
+                                except ValueError:
+                                    pass
+                            if len(parts) > 14 and parts[14] and parts[14] != '[N/A]':
+                                details["compute_capability"] = parts[14]
+                            if len(parts) > 15 and parts[15] and parts[15] != '[N/A]':
+                                details["pci_bus_id"] = parts[15]
+                            if len(parts) > 16 and parts[16] and parts[16] != '[N/A]':
+                                try:
+                                    details["fan_speed_percent"] = float(parts[16])
+                                except ValueError:
+                                    pass
+                            
+                            gpus.append(HardwareComponent(
+                                component_type="GPU",
+                                name=name,
+                                details=details
+                            ))
+                            
+                            logger.info(f"Detected NVIDIA GPU: {name} with {details.get('memory_total_gb', 'N/A')} GB VRAM")
+        except FileNotFoundError:
+            logger.debug("nvidia-smi not found, trying alternative GPU detection")
+        except Exception as e:
+            logger.debug(f"NVIDIA GPU detection failed: {e}")
+        
+        # Try AMD GPU detection if no NVIDIA GPU found
+        if not gpus:
+            try:
+                import subprocess
+                result = subprocess.run(
+                    ['rocm-smi', '--showproductname'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                
+                if result.returncode == 0:
+                    name = result.stdout.strip()
+                    if name:
                         gpus.append(HardwareComponent(
                             component_type="GPU",
                             name=name,
-                            details={"memory": memory, "vendor": "NVIDIA"}
+                            details={"vendor": "AMD", "note": "Limited information available"}
                         ))
-        except Exception as e:
-            logger.debug(f"NVIDIA GPU detection failed: {e}")
+                        logger.info(f"Detected AMD GPU: {name}")
+            except Exception as e:
+                logger.debug(f"AMD GPU detection failed: {e}")
         
         # If no GPU detected, add a placeholder
         if not gpus:
@@ -251,6 +426,7 @@ class HardwareDetector:
                 name="Integrated Graphics",
                 details={"vendor": "Unknown", "note": "No discrete GPU detected"}
             ))
+            logger.info("No discrete GPU detected, using integrated graphics")
         
         return gpus
     

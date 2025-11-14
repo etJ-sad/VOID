@@ -3,6 +3,8 @@ VOID Framework - Validation Of Industrial Devices
 Main application package
 """
 
-__version__ = "1.0.0"
+from config.settings import settings
+
+__version__ = settings.app_version
 __author__ = "VOID Development Team"
 

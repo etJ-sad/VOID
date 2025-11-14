@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     
     # Application
     app_name: str = "VOID Framework"
-    app_version: str = "0.0.1 night alpha concept"
+    app_version: str = "0.0.1 alpha | concept"
     debug: bool = False
     
     # Server
@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     testcases_dir: str = "testcases"
     reports_dir: str = "reports"
     logs_dir: str = "logs"
+    models_dir: str = "models"
     
     # Logging
     log_level: str = "INFO"

@@ -5,6 +5,7 @@ Handles all RAM-related test execution
 
 import asyncio
 import logging
+import time
 import psutil
 import numpy as np
 from typing import Dict, Any
@@ -23,7 +24,7 @@ class RAMExecutor(BaseTestExecutor):
         
         metrics = {"memory_samples": []}
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         allocation_size_mb = test_case.parameters.get("allocation_size_mb", 100)
         allocation_pattern = test_case.parameters.get("allocation_pattern", "sequential")
         iterations_per_second = test_case.parameters.get("iterations_per_second", 2)
@@ -229,6 +230,7 @@ class RAMExecutor(BaseTestExecutor):
             data_size_mb = test_case.parameters.get("data_size_mb", 200)
             stride_sizes = test_case.parameters.get("stride_sizes", [1, 4, 16, 64, 256])
             
+            duration = self._get_test_duration(test_case)
             data = np.random.rand(data_size_mb * 1024 * 1024 // 8)
             pattern_results = {}
             
@@ -236,7 +238,9 @@ class RAMExecutor(BaseTestExecutor):
                 pattern_ops = 0
                 pattern_start = time.time()
                 
+                pattern_iteration = 0
                 while time.time() - pattern_start < (duration / len(patterns)):
+                    pattern_iteration += 1
                     if pattern == "sequential":
                         for i in range(0, len(data), 1000):
                             _ = data[i]
@@ -257,7 +261,9 @@ class RAMExecutor(BaseTestExecutor):
                             _ = data[idx]
                             pattern_ops += 1
                     
-                    await self._safe_sleep(0.01)
+                    # Yield control to event loop periodically (especially important for 30-min tests)
+                    if self._should_yield(pattern_iteration, duration):
+                        await self._safe_sleep(self._get_yield_interval(duration))
                 
                 pattern_elapsed = time.time() - pattern_start
                 pattern_results[pattern] = {
@@ -356,7 +362,7 @@ class RAMExecutor(BaseTestExecutor):
         
         import time
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         test_type = test_case.parameters.get("test_type", "default")
         
         # Detect test type from ID/name
@@ -379,7 +385,9 @@ class RAMExecutor(BaseTestExecutor):
                 latencies = []
                 pattern_start = time.time()
                 
+                pattern_iteration = 0
                 while time.time() - pattern_start < (duration / len(access_patterns)):
+                    pattern_iteration += 1
                     for _ in range(iterations // len(access_patterns)):
                         access_start = time.time_ns()
                         
@@ -396,7 +404,9 @@ class RAMExecutor(BaseTestExecutor):
                         latency_ns = time.time_ns() - access_start
                         latencies.append(latency_ns)
                     
-                    await self._safe_sleep(0.01)
+                    # Yield control to event loop periodically (especially important for 30-min tests)
+                    if self._should_yield(pattern_iteration, duration):
+                        await self._safe_sleep(self._get_yield_interval(duration))
                 
                 if latencies:
                     latency_results[pattern] = {
@@ -424,7 +434,9 @@ class RAMExecutor(BaseTestExecutor):
                 op_count = 0
                 op_start = time.time()
                 
+                op_iteration = 0
                 while time.time() - op_start < (duration / len(operations)):
+                    op_iteration += 1
                     if op == "read":
                         _ = data.sum()
                     elif op == "write":
@@ -434,8 +446,9 @@ class RAMExecutor(BaseTestExecutor):
                         del copy_data
                     
                     op_count += 1
-                    if op_count % 100 == 0:
-                        await self._safe_sleep(0.01)
+                    # Yield control to event loop periodically (especially important for 30-min tests)
+                    if self._should_yield(op_iteration, duration):
+                        await self._safe_sleep(self._get_yield_interval(duration))
                 
                 op_elapsed = time.time() - op_start
                 throughput_mbps = (op_count * block_size_mb) / op_elapsed if op_elapsed > 0 else 0
@@ -504,7 +517,9 @@ class RAMExecutor(BaseTestExecutor):
             
             data = np.random.rand(data_size_mb * 1024 * 1024 // 8)
             
+            iteration = 0
             while time.time() - start_time < duration:
+                iteration += 1
                 if access_pattern == "random":
                     idx = np.random.randint(0, len(data))
                 else:
@@ -517,8 +532,9 @@ class RAMExecutor(BaseTestExecutor):
                     cache_misses += 1
                 total_accesses += 1
                 
-                if total_accesses % 10000 == 0:
-                    await self._safe_sleep(0.001)
+                # Yield control to event loop periodically (especially important for 30-min tests)
+                if self._should_yield(iteration, duration):
+                    await self._safe_sleep(self._get_yield_interval(duration))
             
             metrics["cache_hit_rate"] = cache_hits / total_accesses if total_accesses > 0 else 0
             metrics["cache_hits"] = cache_hits
@@ -527,12 +543,16 @@ class RAMExecutor(BaseTestExecutor):
             metrics["score"] = int(metrics["cache_hit_rate"] * 1000)
         else:
             operations = 0
+            iteration = 0
             while time.time() - start_time < duration:
+                iteration += 1
                 data = np.random.rand(1000)
                 _ = data.sum()
                 operations += 1
-                if operations % 1000 == 0:
-                    await self._safe_sleep(0.001)
+                
+                # Yield control to event loop periodically (especially important for 30-min tests)
+                if self._should_yield(iteration, duration):
+                    await self._safe_sleep(self._get_yield_interval(duration))
             
             elapsed = time.time() - start_time
             metrics["operations_per_second"] = operations / elapsed
@@ -544,12 +564,38 @@ class RAMExecutor(BaseTestExecutor):
         """Run RAM diagnostic test"""
         logger.info(f"Running RAM diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         test_name = test_case.name.lower()
         test_id_lower = test_case.id.lower()
         test_name_lower = test_case.name.lower()
         
-        await self._safe_sleep(min(duration, 10))
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds")
+        start_time = time.time()
+        iteration = 0
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)
         
         mem = psutil.virtual_memory()
         swap = psutil.swap_memory()

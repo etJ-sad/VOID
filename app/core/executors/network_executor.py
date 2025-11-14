@@ -24,7 +24,7 @@ class NetworkExecutor(BaseTestExecutor):
         
         metrics = {"network_samples": []}
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         test_type = test_case.parameters.get("test_type", "bandwidth_saturation")
         target_bandwidth_percent = test_case.parameters.get("target_bandwidth_percent", 95)
         monitor_disconnects = test_case.parameters.get("monitor_disconnects", False)
@@ -71,7 +71,7 @@ class NetworkExecutor(BaseTestExecutor):
         """Run Network pattern test"""
         logger.info(f"Running Network pattern test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 60)
+        duration = self._get_test_duration(test_case)
         patterns = test_case.parameters.get("patterns", ["steady"])
         packet_size_bytes = test_case.parameters.get("packet_size_bytes", 1500)
         target_host = test_case.parameters.get("target_host", "8.8.8.8")
@@ -156,8 +156,34 @@ class NetworkExecutor(BaseTestExecutor):
         """Run Network diagnostic test"""
         logger.info(f"Running Network diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 10)
-        await asyncio.sleep(min(duration, 10))
+        duration = self._get_test_duration(test_case)
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds")
+        start_time = time.time()
+        iteration = 0
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)
         
         net_io = psutil.net_io_counters()
         net_if_addrs = psutil.net_if_addrs()
@@ -192,7 +218,7 @@ class NetworkExecutor(BaseTestExecutor):
         """Run Network benchmark test"""
         logger.info(f"Running Network benchmark test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         test_type_param = test_case.parameters.get("test_type", "throughput")
         target_host = test_case.parameters.get("target_host", "8.8.8.8")
         
@@ -285,7 +311,11 @@ class NetworkExecutor(BaseTestExecutor):
         else:
             # Default throughput benchmark
             net_io_start = psutil.net_io_counters()
-            await asyncio.sleep(duration)
+            # Run for full duration (as defined in YAML duration_estimate)
+            if duration > 60:  # For tests longer than 1 minute, use progress updates
+                await self._sleep_with_progress(duration, interval=1.0)
+            else:
+                await self._safe_sleep(duration)
             net_io_end = psutil.net_io_counters()
             
             bytes_sent = net_io_end.bytes_sent - net_io_start.bytes_sent

@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from app.models.schemas import TestSession, Report
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +126,7 @@ class PDFReporter:
         <div class="footer">
             <p>This certificate confirms that the IPC has undergone comprehensive automated testing.</p>
             <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-            <p>VOID Framework v1.0.0</p>
+            <p>VOID Framework {settings.app_version}</p>
         </div>
     </div>
 </body>
@@ -201,12 +202,54 @@ class PDFReporter:
         ])
         
         story.append(table)
-        story.append(Spacer(1, 2*cm))
+        story.append(Spacer(1, 1*cm))
+        
+        # Hardware Details
+        if session.hardware_profile:
+            hw_title_style = ParagraphStyle('HardwareTitle', parent=styles['Heading2'], fontSize=14, textColor=colors.HexColor("#1976D2"), spaceAfter=12)
+            story.append(Paragraph("Hardware Details", hw_title_style))
+            
+            hw_data = []
+            
+            # CPU
+            if session.hardware_profile.cpu:
+                hw_data.append(["CPU", session.hardware_profile.cpu.name])
+                if session.hardware_profile.cpu.details:
+                    for key, value in list(session.hardware_profile.cpu.details.items())[:5]:  # Limit to 5 details
+                        hw_data.append([f"  {key.replace('_', ' ').title()}", str(value)])
+            
+            # GPU
+            if session.hardware_profile.gpu:
+                for gpu in session.hardware_profile.gpu:
+                    hw_data.append(["GPU", gpu.name])
+                    if gpu.details:
+                        for key, value in list(gpu.details.items())[:5]:  # Limit to 5 details
+                            hw_data.append([f"  {key.replace('_', ' ').title()}", str(value)])
+            
+            # RAM
+            if session.hardware_profile.ram:
+                for ram in session.hardware_profile.ram:
+                    hw_data.append(["RAM", ram.name])
+            
+            if hw_data:
+                hw_table = Table(hw_data, colWidths=[6*cm, 10*cm])
+                hw_table.setStyle([
+                    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 10),
+                    ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor("#616161")),
+                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ])
+                story.append(hw_table)
+        
+        story.append(Spacer(1, 1*cm))
         
         # Footer
         footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=10, textColor=colors.grey, alignment=1)
         story.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", footer_style))
-        story.append(Paragraph("VOID Framework v1.0.0", footer_style))
+        story.append(Paragraph(f"VOID Framework {settings.app_version}", footer_style))
         
         doc.build(story)
         

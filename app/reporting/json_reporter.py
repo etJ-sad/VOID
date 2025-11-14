@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
 from app.models.schemas import TestSession, Report
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ class JSONReporter:
         """Build complete report data structure"""
         data = {
             "metadata": {
-                "version": "1.0.0",
+                "version": settings.app_version,
                 "framework": "VOID - Validation Of Industrial Devices",
                 "generated_at": datetime.now().isoformat(),
                 "session_id": session.session_id

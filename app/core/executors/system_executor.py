@@ -28,7 +28,7 @@ class SystemExecutor(BaseTestExecutor):
             "temperature_samples": []
         }
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         load_type = test_case.parameters.get("load_type", "full_system")
         monitor_all_components = test_case.parameters.get("monitor_all_components", True)
         iterations_per_second = test_case.parameters.get("iterations_per_second", 2)
@@ -74,7 +74,7 @@ class SystemExecutor(BaseTestExecutor):
         """Run System pattern test"""
         logger.info(f"Running System pattern test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 60)
+        duration = self._get_test_duration(test_case)
         patterns = test_case.parameters.get("patterns", ["cpu_intensive"])
         load_levels = test_case.parameters.get("load_levels", [50])
         
@@ -143,7 +143,7 @@ class SystemExecutor(BaseTestExecutor):
         """Run System benchmark test"""
         logger.info(f"Running System benchmark test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 5)
+        duration = self._get_test_duration(test_case)
         test_type_param = test_case.parameters.get("test_type", "default")
         
         metrics = {"score": 0}
@@ -201,10 +201,36 @@ class SystemExecutor(BaseTestExecutor):
         """Run System diagnostic test"""
         logger.info(f"Running System diagnostic test: {test_case.name}")
         
-        duration = test_case.parameters.get("duration", 10)
+        duration = self._get_test_duration(test_case)
         test_name = test_case.name.lower()
         
-        await self._safe_sleep(min(duration, 10))
+        # Run for full duration (as defined in YAML duration_estimate)
+        # For diagnostic tests, simulate work during the duration instead of just sleeping
+        logger.info(f"Running diagnostic test for {duration} seconds")
+        start_time = time.time()
+        iteration = 0
+        
+        while time.time() - start_time < duration:
+            iteration += 1
+            elapsed = time.time() - start_time
+            
+            # Simulate diagnostic work
+            _ = sum(range(100))
+            
+            # Report progress every 2 seconds
+            if iteration % 20 == 0:
+                self._report_progress(elapsed, duration, {"iteration": iteration})
+            
+            # Always yield control to Event Loop periodically
+            if duration >= 300:
+                if iteration % 10 == 0:
+                    await self._safe_sleep(0.1)
+            elif duration >= 60:
+                if iteration % 50 == 0:
+                    await self._safe_sleep(0.05)
+            else:
+                if iteration % 100 == 0:
+                    await self._safe_sleep(0.01)
         
         import platform
         

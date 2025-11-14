@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
 from app.api.endpoints import router
+from config.settings import settings
 
 # Configure logging
 logging.basicConfig(
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="VOID Framework API",
     description="Validation Of Industrial Devices - Automated IPC Testing System",
-    version="1.0.0",
+    version=settings.app_version,
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
@@ -56,7 +57,7 @@ async def serve_dashboard():
     else:
         return {
             "message": "VOID Framework API",
-            "version": "1.0.0",
+            "version": settings.app_version,
             "docs": "/api/docs",
             "dashboard": "Not configured"
         }
@@ -107,7 +108,7 @@ async def startup_event():
     """Application startup"""
     logger.info("=" * 60)
     logger.info("VOID Framework Starting...")
-    logger.info("Validation Of Industrial Devices v1.0.0")
+    logger.info(f"Validation Of Industrial Devices {settings.app_version}")
     logger.info("=" * 60)
     
     # Create necessary directories
@@ -116,8 +117,38 @@ async def startup_event():
     Path("reports/html").mkdir(parents=True, exist_ok=True)
     Path("reports/pdf").mkdir(parents=True, exist_ok=True)
     Path("static").mkdir(exist_ok=True)
+    models_dir = Path("models")
+    models_dir.mkdir(exist_ok=True)  # AI model storage
+    Path("logs").mkdir(exist_ok=True)
     
     logger.info("✓ Directories initialized")
+    
+    # Pre-load AI models to verify they're available
+    logger.info("Loading AI models...")
+    try:
+        from app.ai.anomaly_detection import AnomalyDetector
+        from app.ai.pattern_recognition import PatternRecognizer
+        from app.ai.large_models import LargeModelManager
+        
+        # Load sklearn models (always available)
+        anomaly_detector = AnomalyDetector()
+        logger.info("✓ AnomalyDetector initialized")
+        
+        pattern_recognizer = PatternRecognizer()
+        logger.info("✓ PatternRecognizer initialized")
+        
+        # Load large models (if available)
+        large_model_manager = LargeModelManager()
+        model_info = large_model_manager.get_model_info()
+        if model_info["models_loaded"]:
+            logger.info(f"✓ Large models loaded: {', '.join(model_info['models_loaded'])}")
+        else:
+            logger.info("⚠ No large models loaded (use scripts/download_models.py to download)")
+        
+        logger.info("✓ AI models initialized")
+    except Exception as e:
+        logger.warning(f"⚠ AI model initialization warning: {e}")
+    
     logger.info("✓ API Server ready")
     logger.info("✓ Dashboard available at http://localhost:8000")
     logger.info("✓ API Docs at http://localhost:8000/api/docs")

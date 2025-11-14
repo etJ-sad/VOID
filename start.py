@@ -7,6 +7,7 @@ Quick start script for VOID Framework
 import sys
 import subprocess
 from pathlib import Path
+from config.settings import settings
 
 
 def check_python_version():
@@ -56,7 +57,7 @@ def main():
     """Main startup sequence"""
     print("=" * 60)
     print("🚀 VOID Framework Starting...")
-    print("   Validation Of Industrial Devices v1.0.0")
+    print(f"   Validation Of Industrial Devices {settings.app_version}")
     print("=" * 60)
     print()
     
